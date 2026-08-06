@@ -1,0 +1,174 @@
+/*-- scss:defaults --*/
+
+// ---- Paleta -------------------------------------------------------------
+// papel   #F4F6F3   fondo, blanco frío (no crema)
+// tinta   #16211D   texto, casi negro con verde
+// verde   #2E7D5B   acento del proyecto = canal T22
+// ocre    #A85F1B   identidad de Fiji
+// azul    #2A6390   identidad de Python
+// gris    #6E7A74   texto secundario y hairlines
+
+$papel:  #F4F6F3;
+$tinta:  #16211D;
+$verde:  #2E7D5B;
+$ocre:   #A85F1B;
+$azul:   #2A6390;
+$gris:   #6E7A74;
+
+$font-family-sans-serif: "IBM Plex Serif", Georgia, serif;
+$font-family-monospace:  "IBM Plex Mono", ui-monospace, monospace;
+$headings-font-family:   "IBM Plex Sans", system-ui, sans-serif;
+
+$font-size-root:   17px;
+$line-height-base: 1.65;
+$headings-font-weight: 600;
+
+$body-bg:    $papel;
+$body-color: $tinta;
+
+$link-color:       $verde;
+$link-hover-color: darken($verde, 12%);
+
+$navbar-bg: $tinta;
+$navbar-fg: #E6EBE7;
+$navbar-hl: #8FD9B6;
+
+$sidebar-bg: $papel;
+$sidebar-fg: $tinta;
+$sidebar-hl: $verde;
+
+$footer-bg: $papel;
+$footer-fg: $gris;
+
+$code-color:            darken($verde, 8%);
+$code-bg:               rgba(46, 125, 91, 0.08);
+$code-block-bg:         #ECEFEA;
+$code-block-border-left: $gris;
+
+$table-border-color: rgba(22, 33, 29, 0.12);
+
+$border-radius: 3px;
+
+/*-- scss:rules --*/
+
+// ---- Tipografía ---------------------------------------------------------
+
+h1, h2, h3, h4, h5 {
+  letter-spacing: -0.01em;
+}
+
+h1.title {
+  font-size: 2.1rem;
+  line-height: 1.2;
+  max-width: 22ch;
+}
+
+// Las secciones se anuncian con una regla fina, no con tamaño.
+h2 {
+  border-top: 1px solid rgba(22, 33, 29, 0.14);
+  padding-top: 0.9rem;
+  margin-top: 2.6rem;
+  font-size: 1.35rem;
+}
+
+.subtitle {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 400;
+  color: $gris;
+}
+
+// Etiqueta breve sobre un título. Uso: [Metodología]{.eyebrow}
+.eyebrow {
+  display: block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $gris;
+  margin-bottom: 0.35rem;
+}
+
+// ---- Codificación por herramienta ---------------------------------------
+// El color identifica de qué herramienta se está hablando, en todo el sitio.
+
+.duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+@media (max-width: 700px) {
+  .duo { grid-template-columns: 1fr; }
+}
+
+.panel-fiji, .panel-python {
+  border: 1px solid rgba(22, 33, 29, 0.12);
+  border-top-width: 3px;
+  border-radius: 0;
+  padding: 1.1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.55);
+}
+.panel-fiji   { border-top-color: $ocre; }
+.panel-python { border-top-color: $azul; }
+
+.panel-fiji   h3, .panel-fiji   strong { color: $ocre; }
+.panel-python h3, .panel-python strong { color: $azul; }
+.panel-fiji h3, .panel-python h3 {
+  border: 0;
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  font-family: "IBM Plex Mono", monospace;
+  letter-spacing: 0.02em;
+}
+
+// Aplicar en el YAML de la página:  body-class: pag-fiji
+.pag-fiji   h1.title { border-bottom: 3px solid $ocre; padding-bottom: 0.5rem; }
+.pag-python h1.title { border-bottom: 3px solid $azul; padding-bottom: 0.5rem; }
+.pag-fiji   a:not(.nav-link) { color: $ocre; }
+.pag-python a:not(.nav-link) { color: $azul; }
+.pag-fiji   div.sourceCode { border-left: 3px solid $ocre; }
+.pag-python div.sourceCode { border-left: 3px solid $azul; }
+
+// ---- Detalles -----------------------------------------------------------
+
+div.sourceCode {
+  border-radius: 0;
+  border-left: 3px solid $gris;
+  font-size: 0.86rem;
+}
+
+figcaption, .figure-caption {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: $gris;
+}
+
+table {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 0.9rem;
+}
+thead th {
+  border-bottom: 2px solid $tinta !important;
+  font-weight: 600;
+}
+
+blockquote {
+  border-left: 3px solid $verde;
+  padding-left: 1.1rem;
+  font-style: normal;
+  color: $tinta;
+}
+
+#quarto-margin-sidebar .toc-active { font-weight: 600; }
+.sidebar-item-text { font-family: "IBM Plex Sans", sans-serif; font-size: 0.92rem; }
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid $verde;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

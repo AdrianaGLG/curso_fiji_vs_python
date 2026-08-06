@@ -1,0 +1,17 @@
+---
+title: "Presentación del proyecto"
+subtitle: "Avances hasta la fecha"
+---
+
+[Entrega]{.eyebrow}
+
+Presentación de diez minutos con el estado actual del trabajo: la pregunta
+metodológica, el flujo común, ambas implementaciones y los primeros resultados.
+
+[Ver las diapositivas](https://docs.google.com/presentation/d/1IwFh8FqBlaCMy3AqY5LbsKlEHfUqGIa_o0nr77lCmmA/edit?usp=sharing){.btn .btn-primary target="_blank"}
+
+## Qué mostramos
+
+Una imagen, la máscara obtenida en Fiji, la máscara obtenida en Python y una tabla
+con las métricas comparadas. La demostración en vivo es breve y está respaldada por
+resultados ya generados, por si el procesamiento falla.

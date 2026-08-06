@@ -1,0 +1,6 @@
+---
+title: "Imágenes y datos"
+subtitle: "Canales, adquisición y calibración"
+---
+
+Contenido en preparación.

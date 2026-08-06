@@ -1,0 +1,53 @@
+---
+title: "Flujo común"
+subtitle: "Las mismas operaciones, dos implementaciones"
+---
+
+[Metodología]{.eyebrow}
+
+Para que la comparación sea justa, ambas herramientas parten exactamente del mismo
+archivo, canal, proyección y región de análisis. Esta tabla es el contrato: cada fila
+es una operación conceptual, y las dos columnas son la forma de escribirla en cada
+herramienta.
+
+| Etapa | Fiji | Python |
+|---|---|---|
+| Abrir imagen | Bio-Formats / TIFF | `tifffile` o `skimage.io` |
+| Seleccionar canal | Split Channels | indexación del array |
+| Proyección Z | Z Project (máxima) | `np.max()` sobre el eje Z |
+| Corregir fondo | Subtract Background | `restoration.rolling_ball` |
+| Reducir ruido | Median Filter | `filters.median` |
+| Umbralizar | Otsu o umbral manual | `threshold_otsu` o valor fijo |
+| Limpiar máscara | Binary Open / Close | `morphology.opening` / `closing` |
+| Quitar objetos pequeños | Analyze Particles (size) | `remove_small_objects` |
+| Separar solapamientos | Watershed | `segmentation.watershed` |
+| Cuantificar | Analyze Particles | `regionprops_table` |
+| Exportar | Results + máscara TIFF | CSV + máscara TIFF |
+
+## Dos versiones de la imagen
+
+Una decisión que conviene tomar explícitamente y dejar escrita:
+
+- **Imagen de segmentación:** puede recibir filtros o realce de contraste.
+- **Imagen de medición:** conserva las intensidades originales, o solo corregidas por fondo.
+
+Medir intensidad sobre una imagen procesada con CLAHE, Enhance Contrast o normalización
+independiente por campo cambia los valores de fluorescencia y hace incomparables los
+resultados entre imágenes.
+
+## Tamaño mínimo de objeto
+
+No hay un umbral universal. Se define en µm² a partir de la calibración espacial, el
+tamaño aparente de los puncta reales, el tamaño del ruido y la resolución óptica,
+usando un conjunto pequeño de imágenes representativas. **El valor elegido queda fijo
+para todas las imágenes comparadas.**
+
+## Métricas
+
+| Métrica | Interpretación |
+|---|---|
+| Número de puncta | Objetos segmentados dentro de la ROI |
+| Área (µm²) | Tamaño 2D de cada objeto |
+| Circularidad | Forma, sin asumir esfericidad |
+| Intensidad media | Promedio dentro del objeto |
+| Fracción de área positiva | Porcentaje de la ROI ocupado por señal |

@@ -1,0 +1,57 @@
+---
+title: "Cuantificación reproducible de patrones de fosforilación proteínas: comparación entre Fiji y Python"
+toc: false
+---
+
+[Trabajo práctico integrador]{.eyebrow}
+
+Dos personas analizan la misma imagen de microscopía confocal. Una usa Fiji, otra usa
+Python. Aplican los mismos pasos conceptuales: corregir el fondo, filtrar el ruido,
+umbralizar, separar objetos en contacto y medir. ¿Obtienen el mismo resultado?
+
+Este sitio documenta un flujo clásico de segmentación implementado dos veces sobre las
+mismas imágenes, para medir cuánto concuerdan y dónde se separan.
+
+::: {.duo}
+::: {.panel-fiji}
+### Fiji / ImageJ
+Interfaz gráfica, decisiones visibles paso a paso y automatización por macro. Es la vía
+de entrada habitual en biología.
+
+[Ver la implementación →](fiji.qmd)
+:::
+
+::: {.panel-python}
+### Python
+Las mismas operaciones escritas como código: procesamiento por lotes, parámetros
+explícitos y un registro exacto de lo que se hizo.
+
+[Ver la implementación →](python.qmd)
+:::
+:::
+
+## La pregunta
+
+> ¿En qué medida dos implementaciones equivalentes de un mismo flujo clásico, una en Fiji
+> y otra en Python, producen segmentaciones y cuantificaciones concordantes de los puncta
+> intracelulares reconocidos por el anticuerpo T22 en las mismas imágenes confocales?
+
+El objetivo no es evaluar el efecto biológico del tratamiento. Las imágenes funcionan como
+caso de estudio para enseñar segmentación, cuantificación, automatización y comparación
+entre herramientas.
+
+## Cómo recorrer el sitio
+
+| Página | Qué encontrás |
+|---|---|
+| [Contexto y pregunta](contexto.qmd) | Por qué la segmentación depende de decisiones |
+| [Imágenes y datos](datos.qmd) | Canales, z-stack, calibración espacial |
+| [Flujo común](flujo.qmd) | La tabla de equivalencias entre ambas herramientas |
+| [Comparación](comparacion.qmd) | Máscaras superpuestas, métricas y discrepancias |
+
+## Alcance
+
+El análisis se hace en 2D sobre la misma proyección del z-stack, en el canal verde. Los
+objetos se describen como *puncta segmentados en la proyección*, sin asumir que cada uno
+corresponda a un agregado individual en tres dimensiones. Sin una máscara manual de
+referencia, lo que se mide es **concordancia entre métodos**, no exactitud.

@@ -1,0 +1,210 @@
+---
+title: "Python"
+subtitle: "¿Qué podemos lograr en Python?"
+body-class: pag-python
+---
+
+[Implementación 2 de 2]{.eyebrow}
+
+En Fiji cada operación se hace con el mouse: abrir la imagen, elegir un umbral con
+un deslizador, apretar *Analyze Particles*. En Python esas mismas operaciones se
+escriben como texto. Eso obliga a explicitar cada decisión, y a cambio permite
+repetir el análisis completo sobre cincuenta imágenes sin volver a tocar nada.
+
+Esta página recorre el notebook paso a paso. No hace falta saber programar para
+seguirla: alcanza con entender qué pregunta responde cada línea.
+
+## La idea de fondo: una imagen es una tabla de números
+
+Todo lo que sigue depende de una sola idea. Para Python, una imagen no es un dibujo:
+es una grilla de números, uno por píxel, donde cada número es la intensidad de
+fluorescencia medida en ese punto. Nuestras imágenes son de 16 bits, así que esos
+valores van de 0 a 65535.
+
+Segmentar es, entonces, una operación aritmética: preguntarle a cada número si supera
+cierto valor. Todo el resto —los filtros, el etiquetado, las mediciones— son
+manipulaciones de esa misma grilla.
+
+## 1. Cargar las herramientas
+
+Python viene "vacío" de fábrica. Las funciones especializadas se agrupan en
+bibliotecas que hay que pedir explícitamente al empezar. La palabra `import`
+significa exactamente eso: traer una caja de herramientas a la mesa de trabajo.
+
+```python
+import numpy as np          # matemática sobre grillas de números
+import tifffile             # leer y escribir imágenes TIFF
+import czifile              # leer los archivos .czi del microscopio Zeiss
+import pandas as pd         # tablas de resultados, como una planilla
+from skimage import measure, segmentation   # análisis de imágenes
+import matplotlib.pyplot as plt             # gráficos y visualización
+```
+
+`skimage` es **scikit-image**, el equivalente conceptual de las funciones de Fiji.
+`pandas` es lo que después produce el CSV que se abre en Excel.
+
+## 2. Leer el archivo del microscopio
+
+Un `.czi` no contiene una imagen sino un bloque de cuatro dimensiones. En nuestro
+caso: **4 canales × 3 planos Z × 1437 × 1437 píxeles**.
+
+Los canales son las cuatro marcaciones adquiridas (Alexa 488 / T22, Alexa 555 / Tau
+total, campo claro, DAPI). Los planos Z son los tres cortes ópticos en profundidad.
+
+El notebook no adivina ese orden: le pregunta al archivo cuáles son sus ejes y los
+reordena siempre a la misma disposición, `C-Z-Y-X`. Eso es lo que hace la función
+`leer_czi`. Es la parte menos vistosa del código y la que más problemas evita: si el
+orden de los ejes cambia entre archivos, todo lo demás mide la estructura equivocada.
+
+De paso, esa función lee del archivo el **tamaño real del píxel en micrómetros**. Sin
+ese dato las áreas solo podrían informarse en píxeles, que no son comparables entre
+microscopios.
+
+## 3. Elegir el canal
+
+Con el bloque ya ordenado, quedarse con el canal verde es pedir el primero:
+
+```python
+CANAL_T22 = 0
+verde = datos[CANAL_T22]
+```
+
+Python numera desde cero, así que el canal 0 es el primero. `verde` ahora contiene los
+tres planos Z de la marcación T22 y nada más.
+
+## 4. Aplanar el stack en una sola imagen
+
+Los tres planos Z se combinan en una única imagen 2D mediante una **proyección de
+máxima intensidad**: para cada posición (x, y) se conserva el valor más alto entre los
+tres cortes.
+
+```python
+mip = verde.max(axis=0)
+```
+
+Esto no es un detalle estético. Si midiéramos los tres planos por separado, una misma
+estructura que aparece en dos cortes se contaría dos veces. La proyección es también
+lo que hace posible la comparación: ese mismo TIFF de 16 bits es el que se abre en
+Fiji, de modo que ambas herramientas parten del píxel idéntico.
+
+## 5. El umbral: la línea que define todo
+
+Acá está el corazón del análisis, y es una sola línea:
+
+```python
+mascara = mip > 15000
+```
+
+Se le pregunta a cada píxel si su intensidad supera 15000. El resultado es una imagen
+del mismo tamaño donde cada posición vale verdadero o falso: la **máscara**. Es
+exactamente lo que en Fiji produce el deslizador de *Threshold*, pero con el valor
+escrito y fijo en lugar de ajustado a ojo.
+
+::: {.callout-important}
+## El umbral es una decisión, no un resultado
+
+15000 está expresado en unidades crudas de la imagen de 16 bits. Solo tiene sentido
+entre imágenes adquiridas con los mismos parámetros del microscopio: si cambia la
+potencia del láser o el tiempo de exposición, ese número deja de significar lo mismo.
+:::
+
+El notebook toma una decisión metodológica deliberada: **no** resta fondo, **no**
+normaliza, **no** aplica Otsu ni filtro mediano. Esas operaciones se probaron y
+deformaban una máscara que ya se veía correcta. Es un caso instructivo: más
+procesamiento no es mejor procesamiento.
+
+Para justificarlo, el notebook grafica el histograma de intensidades con el umbral
+marcado en rojo. Ese gráfico muestra dónde cae el corte respecto de la distribución
+real de la imagen, y es lo que convierte a 15000 de número arbitrario en decisión
+defendible.
+
+## 6. De máscara a objetos contables
+
+La máscara dice qué píxeles son señal, pero no cuántos puncta hay: un píxel no sabe a
+qué objeto pertenece. Etiquetar es agrupar píxeles vecinos encendidos y darle un
+número a cada grupo.
+
+```python
+etiquetas = measure.label(mascara, connectivity=2)
+```
+
+`connectivity=2` significa que dos píxeles se consideran del mismo objeto también
+cuando se tocan en diagonal. Es uno de esos detalles que parecen menores y que
+explican discrepancias con Fiji, porque cada herramienta tiene su propio valor por
+defecto.
+
+El watershed —que separa objetos en contacto— está implementado pero **apagado**. Se
+puede encender cambiando una sola variable, y por eso es honesto informarlo: separar
+dos puncta pegados es una hipótesis sobre la biología, no una observación.
+
+## 7. Medir
+
+Con los objetos numerados, `regionprops` recorre cada uno y calcula sus propiedades:
+área, circularidad, intensidad media, intensidad integrada. El resultado es una tabla
+—una fila por punctum— que se guarda como CSV.
+
+Las áreas se convierten a µm² usando el tamaño de píxel leído en el paso 2. Y un
+punto crítico: **la intensidad se mide sobre la imagen original**, no sobre ninguna
+versión procesada. Medir fluorescencia sobre una imagen con el contraste realzado
+devuelve números que no representan nada.
+
+Los filtros de tamaño, circularidad y exclusión de bordes se aplican *después* del
+etiquetado, igual que en *Analyze Particles*. En el notebook arrancan desactivados a
+propósito: primero se miran los overlays, después se elige un área mínima, y ese valor
+se usa idéntico en ambas herramientas.
+
+## 8. Mirar lo que se midió
+
+Ninguna cifra vale sin control visual. El notebook genera, para cada imagen, un panel
+de tres vistas: la proyección original, la máscara cruda, y la imagen con el contorno
+de cada objeto medido dibujado en rojo y su centro marcado.
+
+Ese tercer panel es la prueba de que el análisis detectó las estructuras que uno ve, y
+no ruido, bordes de célula o saturación.
+
+## 9. Procesar todo el conjunto
+
+Hasta acá el flujo corrió sobre una imagen. La ventaja decisiva de Python aparece
+ahora: el mismo procedimiento se aplica a todos los archivos con un bucle, y de cada
+uno se guardan la proyección, ambas máscaras, la imagen etiquetada, el overlay y las
+tablas.
+
+Todos los parámetros están reunidos en un único bloque al principio. Cambiar el umbral
+para todo el conjunto es editar un número y volver a ejecutar. Esa es la diferencia
+práctica entre las dos herramientas: en Fiji la reproducibilidad depende de recordar
+qué se apretó; acá está escrita.
+
+## 10. Comparar con Fiji
+
+El último paso responde la pregunta del proyecto. Cargadas las máscaras de Fiji, se
+calculan dos índices de superposición:
+
+- **Dice** y **IoU**, que miden cuánto se solapan ambas máscaras. Valen 1 si son
+  idénticas y 0 si no comparten ningún píxel.
+
+```python
+dice = 2 * interseccion / (a.sum() + b.sum())
+iou  = interseccion / union
+```
+
+Esto evalúa **concordancia entre métodos**, no exactitud. Sin una máscara manual de
+referencia, ninguna de las dos herramientas tiene la verdad: solo se puede decir
+cuánto se parecen y dónde difieren.
+
+## Parámetros a replicar en Fiji
+
+| Decisión | Valor |
+|---|---|
+| Imagen | MIP del canal T22, 16 bits |
+| Corrección de fondo | Sin sustracción |
+| Umbral | Manual, 15000–65535 |
+| Watershed | Desactivado |
+| Conectividad | Diagonal incluida |
+| Filtros de tamaño y forma | Los mismos en ambas |
+
+## Ejecutar el notebook
+
+El notebook está preparado para Google Colab, que corre Python en el navegador sin
+instalar nada. Lee los archivos directamente de Google Drive.
+
+[Abrir en Colab](https://colab.research.google.com/drive/1yBDSKWkYui2RaaLLnegf4GiUsNC9HkUm){.btn .btn-primary target="_blank"}

@@ -1,0 +1,6 @@
+---
+title: "Comparación"
+subtitle: "Concordancia entre las dos implementaciones"
+---
+
+Contenido en preparación.

@@ -1,0 +1,80 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Fiji vs. Python"
+  description: "Segmentación y cuantificación reproducible de puncta de Tau oligomérica"
+  favicon: media/favicon.png
+  page-navigation: true
+  bread-crumbs: false
+
+  navbar:
+    background: dark
+    left:
+      - href: index.qmd
+        text: Inicio
+      - href: flujo.qmd
+        text: Flujo común
+      - href: comparacion.qmd
+        text: Comparación
+    right:
+      - href: presentacion.qmd
+        text: Presentación
+      # Cuando exista el repositorio, descomentar:
+      # - icon: github
+      #   href: https://github.com/USUARIO/curso_fiji_vs_python
+
+  sidebar:
+    style: floating
+    search: true
+    collapse-level: 2
+    contents:
+      - href: index.qmd
+        text: Inicio
+      - section: "El proyecto"
+        contents:
+          - href: contexto.qmd
+            text: Contexto y pregunta
+          - href: datos.qmd
+            text: Imágenes y datos
+          - href: flujo.qmd
+            text: Flujo común
+      - section: "Herramientas"
+        contents:
+          - href: fiji.qmd
+            text: Fiji / ImageJ
+          - href: python.qmd
+            text: Python
+      - href: comparacion.qmd
+        text: Comparación
+      - text: "---"
+      - href: presentacion.qmd
+        text: Presentación
+      - href: integrantes.qmd
+        text: Integrantes
+
+  page-footer:
+    border: false
+    left: "Taller de Fundamentos en Análisis de Bioimágenes — 2026"
+    right:
+      - text: "CC BY-NC 4.0"
+        href: https://creativecommons.org/licenses/by-nc/4.0/deed.es
+
+format:
+  html:
+    theme: [cosmo, custom.scss]
+    toc: true
+    toc-depth: 3
+    toc-title: "En esta página"
+    code-copy: true
+    code-overflow: wrap
+    code-line-numbers: false
+    lightbox: true
+    fig-cap-location: bottom
+    include-in-header:
+      - text: |
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+bibliography: references.bib

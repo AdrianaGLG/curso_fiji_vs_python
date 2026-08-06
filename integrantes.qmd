@@ -1,0 +1,47 @@
+---
+title: "Integrantes"
+subtitle: "Quiénes hicimos este trabajo"
+---
+
+[Equipo]{.eyebrow}
+
+Este trabajo fue desarrollado en el marco del **Taller de Fundamentos en Análisis
+de Bioimágenes (Formación de Formadores)**, Buenos Aires, agosto de 2026.
+
+## Pablo Pomata
+
+Servicio de Microscopía, IBYME – CONICET
+
+[pablopomato@gmail.com](mailto:pablopomato@gmail.com)
+
+## Rodrigo Tomás-Grau
+
+Investigador Asistente CONICET, IMMCA
+
+[rodrigo.tomasgrau@fbqf.unt.edu.ar](mailto:rodrigo.tomasgrau@fbqf.unt.edu.ar)
+
+## María José Godás Willems
+
+IFIBA – CONICET
+
+[mjgodaswillems@gmail.com](mailto:mjgodaswillems@gmail.com)
+
+## Adriana Gabriela López Guerra
+
+Laboratorio de Biología Celular y Molecular, Instituto de Investigaciones
+Biomédicas (UCA – CONICET)
+
+[adrianalopezguerra@uca.edu.ar](mailto:adrianalopezguerra@uca.edu.ar)
+
+## Agradecimientos
+
+Al **Centro de Microscopía Avanzada (CMA)** y a la **Facultad de Ciencias Exactas
+y Naturales de la Universidad de Buenos Aires** por la organización del taller y
+el acceso a la infraestructura.
+
+Al comité organizador —Dr. Agustín A. Corbat, Dra. Lorena Sigaut y Dra. Lía I.
+Pietrasanta— y al equipo de instructores y facilitadores, por el marco conceptual
+y metodológico que hizo posible este trabajo.
+
+A **FUNDACEN** por el apoyo económico que permitió la participación de asistentes
+de distintos puntos del país y de la región.

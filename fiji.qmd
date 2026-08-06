@@ -1,0 +1,20 @@
+---
+title: "Fiji / ImageJ"
+subtitle: "Implementación con interfaz gráfica y macro"
+body-class: pag-fiji
+---
+
+[Implementación 1 de 2]{.eyebrow}
+
+Contenido en preparación.
+
+## Procedimiento manual
+
+## Macro
+
+```java
+// segmentacion_tau.ijm
+run("Bio-Formats Importer");
+```
+
+## Máscara obtenida
