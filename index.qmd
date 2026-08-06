@@ -1,57 +1,45 @@
 ---
-title: "Cuantificación reproducible de patrones de fosforilación proteínas: comparación entre Fiji y Python"
+title: "Detección y cuantificación de puncta fluorescentes"
+subtitle: "Un tutorial introductorio con Fiji y Python"
+description: "Tutorial paso a paso para segmentar y cuantificar puncta fluorescentes detectados con T22 en imágenes confocales."
+page-layout: full
 toc: false
 ---
 
 [Trabajo práctico integrador]{.eyebrow}
 
-Dos personas analizan la misma imagen de microscopía confocal. Una usa Fiji, otra usa
-Python. Aplican los mismos pasos conceptuales: corregir el fondo, filtrar el ruido,
-umbralizar, separar objetos en contacto y medir. ¿Obtienen el mismo resultado?
+Dos personas analizan la misma imagen de microscopía confocal. Una utiliza Fiji y la otra Python. Ambas parten de la misma imagen y aplican los mismos criterios de segmentación.
 
-Este sitio documenta un flujo clásico de segmentación implementado dos veces sobre las
-mismas imágenes, para medir cuánto concuerdan y dónde se separan.
+¿Obtienen los mismos resultados?
 
-::: {.duo}
-::: {.panel-fiji}
-### Fiji / ImageJ
-Interfaz gráfica, decisiones visibles paso a paso y automatización por macro. Es la vía
-de entrada habitual en biología.
+Este sitio presenta un tutorial paso a paso para aprender a detectar, visualizar y medir *puncta* fluorescentes mediante dos herramientas diferentes.
 
-[Ver la implementación →](fiji.qmd)
-:::
+> **No es necesario tener experiencia previa en programación ni en análisis de bioimágenes.**
 
-::: {.panel-python}
-### Python
-Las mismas operaciones escritas como código: procesamiento por lotes, parámetros
-explícitos y un registro exacto de lo que se hizo.
+## ¿Qué vas a aprender?
 
-[Ver la implementación →](python.qmd)
-:::
-:::
+Al finalizar este tutorial podrás:
 
-## La pregunta
+- Reconocer los canales y planos de una imagen confocal.
+- Comprender qué es una proyección de máxima intensidad.
+- Diferenciar una imagen original de una máscara binaria.
+- Aplicar un umbral para separar señal y fondo.
+- Detectar y medir puncta fluorescentes.
+- Automatizar el análisis en Fiji mediante una macro.
+- Ejecutar el mismo análisis en Python utilizando Google Colab.
+- Comparar las máscaras y mediciones producidas por ambos métodos.
+- Reconocer las principales limitaciones del análisis.
 
-> ¿En qué medida dos implementaciones equivalentes de un mismo flujo clásico, una en Fiji
-> y otra en Python, producen segmentaciones y cuantificaciones concordantes de los puncta
-> intracelulares reconocidos por el anticuerpo T22 en las mismas imágenes confocales?
+## El problema, en pocas palabras
 
-El objetivo no es evaluar el efecto biológico del tratamiento. Las imágenes funcionan como
-caso de estudio para enseñar segmentación, cuantificación, automatización y comparación
-entre herramientas.
+Una imagen de fluorescencia está formada por píxeles con diferentes valores de intensidad. Algunos corresponden a la señal que queremos estudiar y otros al fondo.
 
-## Cómo recorrer el sitio
+Para poder medir los puncta necesitamos transformar la imagen original en una **máscara binaria**:
 
-| Página | Qué encontrás |
-|---|---|
-| [Contexto y pregunta](contexto.qmd) | Por qué la segmentación depende de decisiones |
-| [Imágenes y datos](datos.qmd) | Canales, z-stack, calibración espacial |
-| [Flujo común](flujo.qmd) | La tabla de equivalencias entre ambas herramientas |
-| [Comparación](comparacion.qmd) | Máscaras superpuestas, métricas y discrepancias |
+- Los píxeles blancos representan la señal seleccionada.
+- Los píxeles negros representan el fondo.
 
-## Alcance
+A este proceso lo llamamos **segmentación**.
 
-El análisis se hace en 2D sobre la misma proyección del z-stack, en el canal verde. Los
-objetos se describen como *puncta segmentados en la proyección*, sin asumir que cada uno
-corresponda a un agregado individual en tres dimensiones. Sin una máscara manual de
-referencia, lo que se mide es **concordancia entre métodos**, no exactitud.
+```text
+Imagen original → Selección del canal → Proyección 2D → Umbral → Máscara → Mediciones
