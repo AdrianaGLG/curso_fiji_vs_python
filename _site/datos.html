@@ -233,8 +233,15 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#acceso-a-las-imágenes" id="toc-acceso-a-las-imágenes" class="nav-link active" data-scroll-target="#acceso-a-las-imágenes">Acceso a las imágenes</a></li>
+  <li><a href="#calibración" id="toc-calibración" class="nav-link" data-scroll-target="#calibración">Calibración</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -259,14 +266,52 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p><span class="eyebrow">Material de trabajo</span></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="media/Presentacion_.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Metodología."><img src="media/Presentacion_.png" class="img-fluid figure-img" alt="Metodología."></a></p>
-<figcaption>Metodología.</figcaption>
+<p><a href="media/Presentacion_.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Modelo experimental y adquisición. Células HEK-Tau+HS3ST2 tratadas con DDMC 50 µM, inmunomarcadas con T22 y Tau5, contrastadas con DAPI y adquiridas por microscopía confocal. Panel superior adaptado de Huynh et al., 2022."><img src="media/Presentacion_.png" class="img-fluid figure-img" style="width:80.0%" alt="Modelo experimental y adquisición. Células HEK-Tau+HS3ST2 tratadas con DDMC 50 µM, inmunomarcadas con T22 y Tau5, contrastadas con DAPI y adquiridas por microscopía confocal. Panel superior adaptado de Huynh et al., 2022."></a></p>
+<figcaption>Modelo experimental y adquisición. Células HEK-Tau+HS3ST2 tratadas con DDMC 50 µM, inmunomarcadas con T22 y Tau5, contrastadas con DAPI y adquiridas por microscopía confocal. Panel superior adaptado de <a href="https://www.nature.com/articles/s41598-022-13486-6">Huynh et al., 2022</a>.</figcaption>
 </figure>
 </div>
+<p>Las imágenes son stacks confocales adquiridos en formato <code>.czi</code> (Zeiss), con cuatro canales y tres planos Z por campo.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Canal</th>
+<th>Marcación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>Alexa Fluor 488 — anticuerpo T22 (Tau oligomérica)</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Alexa Fluor 555 — Tau total</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Campo claro</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>DAPI — núcleos</td>
+</tr>
+</tbody>
+</table>
+<p>El análisis se realiza sobre el canal 0. El resto se conserva como información complementaria y para definir regiones celulares.</p>
+<section id="acceso-a-las-imágenes" class="level2">
+<h2 class="anchored" data-anchor-id="acceso-a-las-imágenes">Acceso a las imágenes</h2>
+<p><a href="https://drive.google.com/drive/folders/1X41TaVmOoNw8Ib_pixlh-E2HoWsH21Pj?usp=sharing" class="btn btn-primary" target="_blank">Carpeta de imágenes control</a></p>
+<p><a href="https://drive.google.com/drive/folders/1_niGxXvsaPEXFCDAudcdaos_J5BxDaDX?usp=sharing" class="btn btn-primary" target="_blank">Carpeta de imágenes tratadas</a></p>
+</section>
+<section id="calibración" class="level2">
+<h2 class="anchored" data-anchor-id="calibración">Calibración</h2>
+<p>El tamaño de píxel se lee directamente de los metadatos del <code>.czi</code>, sin cargarlo a mano. De ese valor dependen todas las áreas informadas en µm²: sin él, las mediciones solo podrían expresarse en píxeles y no serían comparables entre equipos.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

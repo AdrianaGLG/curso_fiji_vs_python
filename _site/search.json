@@ -286,7 +286,7 @@
     "href": "datos.html",
     "title": "Imágenes y datos",
     "section": "",
-    "text": "Metodología.",
+    "text": "Material de trabajo\nLas imágenes son stacks confocales adquiridos en formato .czi (Zeiss), con cuatro canales y tres planos Z por campo.\nEl análisis se realiza sobre el canal 0. El resto se conserva como información complementaria y para definir regiones celulares.",
     "crumbs": [
       "Inicio",
       "El proyecto",
@@ -424,6 +424,42 @@
     "crumbs": [
       "Inicio",
       "Presentación"
+    ]
+  },
+  {
+    "objectID": "datos.html#markdown",
+    "href": "datos.html#markdown",
+    "title": "Imágenes y datos",
+    "section": "markdown",
+    "text": "markdown\ntitle: “Imágenes y datos” subtitle: “Canales, adquisición y calibración” —\nMaterial de trabajo\nLas imágenes son stacks confocales adquiridos en formato .czi (Zeiss), con cuatro canales y tres planos Z por campo.\n\n\n\nCanal\nMarcación\n\n\n\n\n0\nAlexa Fluor 488 — anticuerpo T22 (Tau oligomérica)\n\n\n1\nAlexa Fluor 555 — Tau total\n\n\n2\nCampo claro\n\n\n3\nDAPI — núcleos\n\n\n\nEl análisis se realiza sobre el canal 0. El resto se conserva como información complementaria y para definir regiones celulares.",
+    "crumbs": [
+      "Inicio",
+      "El proyecto",
+      "Imágenes y datos"
+    ]
+  },
+  {
+    "objectID": "datos.html#acceso-a-las-imágenes",
+    "href": "datos.html#acceso-a-las-imágenes",
+    "title": "Imágenes y datos",
+    "section": "Acceso a las imágenes",
+    "text": "Acceso a las imágenes\nCarpeta de imágenes control\nCarpeta de imágenes tratadas",
+    "crumbs": [
+      "Inicio",
+      "El proyecto",
+      "Imágenes y datos"
+    ]
+  },
+  {
+    "objectID": "datos.html#calibración",
+    "href": "datos.html#calibración",
+    "title": "Imágenes y datos",
+    "section": "Calibración",
+    "text": "Calibración\nEl tamaño de píxel se lee directamente de los metadatos del .czi, sin cargarlo a mano. De ese valor dependen todas las áreas informadas en µm²: sin él, las mediciones solo podrían expresarse en píxeles y no serían comparables entre equipos.",
+    "crumbs": [
+      "Inicio",
+      "El proyecto",
+      "Imágenes y datos"
     ]
   }
 ]

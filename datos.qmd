@@ -3,4 +3,31 @@ title: "Imágenes y datos"
 subtitle: "Canales y adquisición"
 ---
 
-![Metodología.](media/Presentacion_.png)
+[Material de trabajo]{.eyebrow}
+
+![Modelo experimental y adquisición. Células HEK-Tau+HS3ST2 tratadas con DDMC 50 µM, inmunomarcadas con T22 y Tau5, contrastadas con DAPI y adquiridas por microscopía confocal. Panel superior adaptado de [Huynh et al., 2022](https://www.nature.com/articles/s41598-022-13486-6).](media/Presentacion_.png){width=80%}
+
+Las imágenes son stacks confocales adquiridos en formato `.czi` (Zeiss), con cuatro
+canales y tres planos Z por campo.
+
+| Canal | Marcación |
+|---|---|
+| 0 | Alexa Fluor 488 — anticuerpo T22 (Tau oligomérica) |
+| 1 | Alexa Fluor 555 — Tau total |
+| 2 | Campo claro |
+| 3 | DAPI — núcleos |
+
+El análisis se realiza sobre el canal 0. El resto se conserva como información
+complementaria y para definir regiones celulares.
+
+## Acceso a las imágenes
+
+[Carpeta de imágenes control](https://drive.google.com/drive/folders/1X41TaVmOoNw8Ib_pixlh-E2HoWsH21Pj?usp=sharing){.btn .btn-primary target="_blank"}
+
+[Carpeta de imágenes tratadas](https://drive.google.com/drive/folders/1_niGxXvsaPEXFCDAudcdaos_J5BxDaDX?usp=sharing){.btn .btn-primary target="_blank"}
+
+## Calibración
+
+El tamaño de píxel se lee directamente de los metadatos del `.czi`, sin cargarlo a mano.
+De ese valor dependen todas las áreas informadas en µm²: sin él, las mediciones solo
+podrían expresarse en píxeles y no serían comparables entre equipos.
