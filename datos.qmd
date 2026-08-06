@@ -1,6 +1,6 @@
 ---
 title: "Imágenes y datos"
-subtitle: "Canales, adquisición y calibración"
+subtitle: "Canales y adquisición"
 ---
 
-Contenido en preparación.
+![Metodología.](media/Presentacion_.png)

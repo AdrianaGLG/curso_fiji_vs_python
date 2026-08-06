@@ -1,0 +1,429 @@
+[
+  {
+    "objectID": "python.html",
+    "href": "python.html",
+    "title": "Python",
+    "section": "",
+    "text": "Implementación 2 de 2\nEn Fiji cada operación se hace con el mouse: abrir la imagen, elegir un umbral con un deslizador, apretar Analyze Particles. En Python esas mismas operaciones se escriben como texto. Eso obliga a explicitar cada decisión, y a cambio permite repetir el análisis completo sobre cincuenta imágenes sin volver a tocar nada.\nEsta página recorre el notebook paso a paso. No hace falta saber programar para seguirla: alcanza con entender qué pregunta responde cada línea.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#la-idea-de-fondo-una-imagen-es-una-tabla-de-números",
+    "href": "python.html#la-idea-de-fondo-una-imagen-es-una-tabla-de-números",
+    "title": "Python",
+    "section": "La idea de fondo: una imagen es una tabla de números",
+    "text": "La idea de fondo: una imagen es una tabla de números\nTodo lo que sigue depende de una sola idea. Para Python, una imagen no es un dibujo: es una grilla de números, uno por píxel, donde cada número es la intensidad de fluorescencia medida en ese punto. Nuestras imágenes son de 16 bits, así que esos valores van de 0 a 65535.\nSegmentar es, entonces, una operación aritmética: preguntarle a cada número si supera cierto valor. Todo el resto —los filtros, el etiquetado, las mediciones— son manipulaciones de esa misma grilla.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#cargar-las-herramientas",
+    "href": "python.html#cargar-las-herramientas",
+    "title": "Python",
+    "section": "1. Cargar las herramientas",
+    "text": "1. Cargar las herramientas\nPython viene “vacío” de fábrica. Las funciones especializadas se agrupan en bibliotecas que hay que pedir explícitamente al empezar. La palabra import significa exactamente eso: traer una caja de herramientas a la mesa de trabajo.\nimport numpy as np          # matemática sobre grillas de números\nimport tifffile             # leer y escribir imágenes TIFF\nimport czifile              # leer los archivos .czi del microscopio Zeiss\nimport pandas as pd         # tablas de resultados, como una planilla\nfrom skimage import measure, segmentation   # análisis de imágenes\nimport matplotlib.pyplot as plt             # gráficos y visualización\nskimage es scikit-image, el equivalente conceptual de las funciones de Fiji. pandas es lo que después produce el CSV que se abre en Excel.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#leer-el-archivo-del-microscopio",
+    "href": "python.html#leer-el-archivo-del-microscopio",
+    "title": "Python",
+    "section": "2. Leer el archivo del microscopio",
+    "text": "2. Leer el archivo del microscopio\nUn .czi no contiene una imagen sino un bloque de cuatro dimensiones. En nuestro caso: 4 canales × 3 planos Z × 1437 × 1437 píxeles.\nLos canales son las cuatro marcaciones adquiridas (Alexa 488 / T22, Alexa 555 / Tau total, campo claro, DAPI). Los planos Z son los tres cortes ópticos en profundidad.\nEl notebook no adivina ese orden: le pregunta al archivo cuáles son sus ejes y los reordena siempre a la misma disposición, C-Z-Y-X. Eso es lo que hace la función leer_czi. Es la parte menos vistosa del código y la que más problemas evita: si el orden de los ejes cambia entre archivos, todo lo demás mide la estructura equivocada.\nDe paso, esa función lee del archivo el tamaño real del píxel en micrómetros. Sin ese dato las áreas solo podrían informarse en píxeles, que no son comparables entre microscopios.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#elegir-el-canal",
+    "href": "python.html#elegir-el-canal",
+    "title": "Python",
+    "section": "3. Elegir el canal",
+    "text": "3. Elegir el canal\nCon el bloque ya ordenado, quedarse con el canal verde es pedir el primero:\nCANAL_T22 = 0\nverde = datos[CANAL_T22]\nPython numera desde cero, así que el canal 0 es el primero. verde ahora contiene los tres planos Z de la marcación T22 y nada más.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#aplanar-el-stack-en-una-sola-imagen",
+    "href": "python.html#aplanar-el-stack-en-una-sola-imagen",
+    "title": "Python",
+    "section": "4. Aplanar el stack en una sola imagen",
+    "text": "4. Aplanar el stack en una sola imagen\nLos tres planos Z se combinan en una única imagen 2D mediante una proyección de máxima intensidad: para cada posición (x, y) se conserva el valor más alto entre los tres cortes.\nmip = verde.max(axis=0)\nEsto no es un detalle estético. Si midiéramos los tres planos por separado, una misma estructura que aparece en dos cortes se contaría dos veces. La proyección es también lo que hace posible la comparación: ese mismo TIFF de 16 bits es el que se abre en Fiji, de modo que ambas herramientas parten del píxel idéntico.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#el-umbral-la-línea-que-define-todo",
+    "href": "python.html#el-umbral-la-línea-que-define-todo",
+    "title": "Python",
+    "section": "5. El umbral: la línea que define todo",
+    "text": "5. El umbral: la línea que define todo\nAcá está el corazón del análisis, y es una sola línea:\nmascara = mip &gt; 15000\nSe le pregunta a cada píxel si su intensidad supera 15000. El resultado es una imagen del mismo tamaño donde cada posición vale verdadero o falso: la máscara. Es exactamente lo que en Fiji produce el deslizador de Threshold, pero con el valor escrito y fijo en lugar de ajustado a ojo.\n\n\n\n\n\n\nImportantEl umbral es una decisión, no un resultado\n\n\n\n15000 está expresado en unidades crudas de la imagen de 16 bits. Solo tiene sentido entre imágenes adquiridas con los mismos parámetros del microscopio: si cambia la potencia del láser o el tiempo de exposición, ese número deja de significar lo mismo.\n\n\nEl notebook toma una decisión metodológica deliberada: no resta fondo, no normaliza, no aplica Otsu ni filtro mediano. Esas operaciones se probaron y deformaban una máscara que ya se veía correcta. Es un caso instructivo: más procesamiento no es mejor procesamiento.\nPara justificarlo, el notebook grafica el histograma de intensidades con el umbral marcado en rojo. Ese gráfico muestra dónde cae el corte respecto de la distribución real de la imagen, y es lo que convierte a 15000 de número arbitrario en decisión defendible.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#de-máscara-a-objetos-contables",
+    "href": "python.html#de-máscara-a-objetos-contables",
+    "title": "Python",
+    "section": "6. De máscara a objetos contables",
+    "text": "6. De máscara a objetos contables\nLa máscara dice qué píxeles son señal, pero no cuántos puncta hay: un píxel no sabe a qué objeto pertenece. Etiquetar es agrupar píxeles vecinos encendidos y darle un número a cada grupo.\netiquetas = measure.label(mascara, connectivity=2)\nconnectivity=2 significa que dos píxeles se consideran del mismo objeto también cuando se tocan en diagonal. Es uno de esos detalles que parecen menores y que explican discrepancias con Fiji, porque cada herramienta tiene su propio valor por defecto.\nEl watershed —que separa objetos en contacto— está implementado pero apagado. Se puede encender cambiando una sola variable, y por eso es honesto informarlo: separar dos puncta pegados es una hipótesis sobre la biología, no una observación.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#medir",
+    "href": "python.html#medir",
+    "title": "Python",
+    "section": "7. Medir",
+    "text": "7. Medir\nCon los objetos numerados, regionprops recorre cada uno y calcula sus propiedades: área, circularidad, intensidad media, intensidad integrada. El resultado es una tabla —una fila por punctum— que se guarda como CSV.\nLas áreas se convierten a µm² usando el tamaño de píxel leído en el paso 2. Y un punto crítico: la intensidad se mide sobre la imagen original, no sobre ninguna versión procesada. Medir fluorescencia sobre una imagen con el contraste realzado devuelve números que no representan nada.\nLos filtros de tamaño, circularidad y exclusión de bordes se aplican después del etiquetado, igual que en Analyze Particles. En el notebook arrancan desactivados a propósito: primero se miran los overlays, después se elige un área mínima, y ese valor se usa idéntico en ambas herramientas.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#mirar-lo-que-se-midió",
+    "href": "python.html#mirar-lo-que-se-midió",
+    "title": "Python",
+    "section": "8. Mirar lo que se midió",
+    "text": "8. Mirar lo que se midió\nNinguna cifra vale sin control visual. El notebook genera, para cada imagen, un panel de tres vistas: la proyección original, la máscara cruda, y la imagen con el contorno de cada objeto medido dibujado en rojo y su centro marcado.\nEse tercer panel es la prueba de que el análisis detectó las estructuras que uno ve, y no ruido, bordes de célula o saturación.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#procesar-todo-el-conjunto",
+    "href": "python.html#procesar-todo-el-conjunto",
+    "title": "Python",
+    "section": "9. Procesar todo el conjunto",
+    "text": "9. Procesar todo el conjunto\nHasta acá el flujo corrió sobre una imagen. La ventaja decisiva de Python aparece ahora: el mismo procedimiento se aplica a todos los archivos con un bucle, y de cada uno se guardan la proyección, ambas máscaras, la imagen etiquetada, el overlay y las tablas.\nTodos los parámetros están reunidos en un único bloque al principio. Cambiar el umbral para todo el conjunto es editar un número y volver a ejecutar. Esa es la diferencia práctica entre las dos herramientas: en Fiji la reproducibilidad depende de recordar qué se apretó; acá está escrita.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#comparar-con-fiji",
+    "href": "python.html#comparar-con-fiji",
+    "title": "Python",
+    "section": "10. Comparar con Fiji",
+    "text": "10. Comparar con Fiji\nEl último paso responde la pregunta del proyecto. Cargadas las máscaras de Fiji, se calculan dos índices de superposición:\n\nDice y IoU, que miden cuánto se solapan ambas máscaras. Valen 1 si son idénticas y 0 si no comparten ningún píxel.\n\ndice = 2 * interseccion / (a.sum() + b.sum())\niou  = interseccion / union\nEsto evalúa concordancia entre métodos, no exactitud. Sin una máscara manual de referencia, ninguna de las dos herramientas tiene la verdad: solo se puede decir cuánto se parecen y dónde difieren.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#parámetros-a-replicar-en-fiji",
+    "href": "python.html#parámetros-a-replicar-en-fiji",
+    "title": "Python",
+    "section": "Parámetros a replicar en Fiji",
+    "text": "Parámetros a replicar en Fiji\n\n\n\nDecisión\nValor\n\n\n\n\nImagen\nMIP del canal T22, 16 bits\n\n\nCorrección de fondo\nSin sustracción\n\n\nUmbral\nManual, 15000–65535\n\n\nWatershed\nDesactivado\n\n\nConectividad\nDiagonal incluida\n\n\nFiltros de tamaño y forma\nLos mismos en ambas",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "python.html#ejecutar-el-notebook",
+    "href": "python.html#ejecutar-el-notebook",
+    "title": "Python",
+    "section": "Ejecutar el notebook",
+    "text": "Ejecutar el notebook\nEl notebook está preparado para Google Colab, que corre Python en el navegador sin instalar nada. Lee los archivos directamente de Google Drive.\nAbrir en Colab",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Python"
+    ]
+  },
+  {
+    "objectID": "integrantes.html",
+    "href": "integrantes.html",
+    "title": "Integrantes",
+    "section": "",
+    "text": "Equipo\nEste trabajo fue desarrollado en el marco del Taller de Fundamentos en Análisis de Bioimágenes (Formación de Formadores), Buenos Aires, agosto de 2026.",
+    "crumbs": [
+      "Inicio",
+      "Integrantes"
+    ]
+  },
+  {
+    "objectID": "integrantes.html#pablo-pomata",
+    "href": "integrantes.html#pablo-pomata",
+    "title": "Integrantes",
+    "section": "Pablo Pomata",
+    "text": "Pablo Pomata\nServicio de Microscopía, IBYME – CONICET\npablopomato@gmail.com",
+    "crumbs": [
+      "Inicio",
+      "Integrantes"
+    ]
+  },
+  {
+    "objectID": "integrantes.html#rodrigo-tomás-grau",
+    "href": "integrantes.html#rodrigo-tomás-grau",
+    "title": "Integrantes",
+    "section": "Rodrigo Tomás-Grau",
+    "text": "Rodrigo Tomás-Grau\nInvestigador Asistente CONICET, IMMCA\nrodrigo.tomasgrau@fbqf.unt.edu.ar",
+    "crumbs": [
+      "Inicio",
+      "Integrantes"
+    ]
+  },
+  {
+    "objectID": "integrantes.html#maría-josé-godás-willems",
+    "href": "integrantes.html#maría-josé-godás-willems",
+    "title": "Integrantes",
+    "section": "María José Godás Willems",
+    "text": "María José Godás Willems\nIFIBA – CONICET\nmjgodaswillems@gmail.com",
+    "crumbs": [
+      "Inicio",
+      "Integrantes"
+    ]
+  },
+  {
+    "objectID": "integrantes.html#adriana-gabriela-lópez-guerra",
+    "href": "integrantes.html#adriana-gabriela-lópez-guerra",
+    "title": "Integrantes",
+    "section": "Adriana Gabriela López Guerra",
+    "text": "Adriana Gabriela López Guerra\nLaboratorio de Biología Celular y Molecular, Instituto de Investigaciones Biomédicas (UCA – CONICET)\nadrianalopezguerra@uca.edu.ar",
+    "crumbs": [
+      "Inicio",
+      "Integrantes"
+    ]
+  },
+  {
+    "objectID": "integrantes.html#agradecimientos",
+    "href": "integrantes.html#agradecimientos",
+    "title": "Integrantes",
+    "section": "Agradecimientos",
+    "text": "Agradecimientos\nAl Centro de Microscopía Avanzada (CMA) y a la Facultad de Ciencias Exactas y Naturales de la Universidad de Buenos Aires por la organización del taller y el acceso a la infraestructura.\nAl comité organizador —Dr. Agustín A. Corbat, Dra. Lorena Sigaut y Dra. Lía I. Pietrasanta— y al equipo de instructores y facilitadores, por el marco conceptual y metodológico que hizo posible este trabajo.\nA FUNDACEN por el apoyo económico que permitió la participación de asistentes de distintos puntos del país y de la región.",
+    "crumbs": [
+      "Inicio",
+      "Integrantes"
+    ]
+  },
+  {
+    "objectID": "flujo.html",
+    "href": "flujo.html",
+    "title": "Flujo común",
+    "section": "",
+    "text": "Metodología\nPara que la comparación sea justa, ambas herramientas parten exactamente del mismo archivo, canal, proyección y región de análisis. Esta tabla es el contrato: cada fila es una operación conceptual, y las dos columnas son la forma de escribirla en cada herramienta.",
+    "crumbs": [
+      "Inicio",
+      "El proyecto",
+      "Flujo común"
+    ]
+  },
+  {
+    "objectID": "flujo.html#dos-versiones-de-la-imagen",
+    "href": "flujo.html#dos-versiones-de-la-imagen",
+    "title": "Flujo común",
+    "section": "Dos versiones de la imagen",
+    "text": "Dos versiones de la imagen\nUna decisión que conviene tomar explícitamente y dejar escrita:\n\nImagen de segmentación: puede recibir filtros o realce de contraste.\nImagen de medición: conserva las intensidades originales, o solo corregidas por fondo.\n\nMedir intensidad sobre una imagen procesada con CLAHE, Enhance Contrast o normalización independiente por campo cambia los valores de fluorescencia y hace incomparables los resultados entre imágenes.",
+    "crumbs": [
+      "Inicio",
+      "El proyecto",
+      "Flujo común"
+    ]
+  },
+  {
+    "objectID": "flujo.html#tamaño-mínimo-de-objeto",
+    "href": "flujo.html#tamaño-mínimo-de-objeto",
+    "title": "Flujo común",
+    "section": "Tamaño mínimo de objeto",
+    "text": "Tamaño mínimo de objeto\nNo hay un umbral universal. Se define en µm² a partir de la calibración espacial, el tamaño aparente de los puncta reales, el tamaño del ruido y la resolución óptica, usando un conjunto pequeño de imágenes representativas. El valor elegido queda fijo para todas las imágenes comparadas.",
+    "crumbs": [
+      "Inicio",
+      "El proyecto",
+      "Flujo común"
+    ]
+  },
+  {
+    "objectID": "flujo.html#métricas",
+    "href": "flujo.html#métricas",
+    "title": "Flujo común",
+    "section": "Métricas",
+    "text": "Métricas\n\n\n\nMétrica\nInterpretación\n\n\n\n\nNúmero de puncta\nObjetos segmentados dentro de la ROI\n\n\nÁrea (µm²)\nTamaño 2D de cada objeto\n\n\nCircularidad\nForma, sin asumir esfericidad\n\n\nIntensidad media\nPromedio dentro del objeto\n\n\nFracción de área positiva\nPorcentaje de la ROI ocupado por señal",
+    "crumbs": [
+      "Inicio",
+      "El proyecto",
+      "Flujo común"
+    ]
+  },
+  {
+    "objectID": "datos.html",
+    "href": "datos.html",
+    "title": "Imágenes y datos",
+    "section": "",
+    "text": "Metodología.",
+    "crumbs": [
+      "Inicio",
+      "El proyecto",
+      "Imágenes y datos"
+    ]
+  },
+  {
+    "objectID": "comparacion.html",
+    "href": "comparacion.html",
+    "title": "Comparación",
+    "section": "",
+    "text": "Contenido en preparación.",
+    "crumbs": [
+      "Inicio",
+      "Comparación"
+    ]
+  },
+  {
+    "objectID": "contexto.html",
+    "href": "contexto.html",
+    "title": "Contexto y pregunta",
+    "section": "",
+    "text": "Contenido en preparación.",
+    "crumbs": [
+      "Inicio",
+      "El proyecto",
+      "Contexto y pregunta"
+    ]
+  },
+  {
+    "objectID": "fiji.html",
+    "href": "fiji.html",
+    "title": "Fiji / ImageJ",
+    "section": "",
+    "text": "Implementación 1 de 2\nContenido en preparación.",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Fiji / ImageJ"
+    ]
+  },
+  {
+    "objectID": "fiji.html#procedimiento-manual",
+    "href": "fiji.html#procedimiento-manual",
+    "title": "Fiji / ImageJ",
+    "section": "Procedimiento manual",
+    "text": "Procedimiento manual",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Fiji / ImageJ"
+    ]
+  },
+  {
+    "objectID": "fiji.html#macro",
+    "href": "fiji.html#macro",
+    "title": "Fiji / ImageJ",
+    "section": "Macro",
+    "text": "Macro\n// segmentacion_tau.ijm\nrun(\"Bio-Formats Importer\");",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Fiji / ImageJ"
+    ]
+  },
+  {
+    "objectID": "fiji.html#máscara-obtenida",
+    "href": "fiji.html#máscara-obtenida",
+    "title": "Fiji / ImageJ",
+    "section": "Máscara obtenida",
+    "text": "Máscara obtenida",
+    "crumbs": [
+      "Inicio",
+      "Herramientas",
+      "Fiji / ImageJ"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Cuantificación reproducible de patrones de fosforilación proteínas: comparación entre Fiji y Python",
+    "section": "",
+    "text": "Trabajo práctico integrador\nDos personas analizan la misma imagen de microscopía confocal. Una usa Fiji, otra usa Python. Aplican los mismos pasos conceptuales: corregir el fondo, filtrar el ruido, umbralizar, separar objetos en contacto y medir. ¿Obtienen el mismo resultado?\nEste sitio documenta un flujo clásico de segmentación implementado dos veces sobre las mismas imágenes, para medir cuánto concuerdan y dónde se separan.",
+    "crumbs": [
+      "Inicio"
+    ]
+  },
+  {
+    "objectID": "index.html#la-pregunta",
+    "href": "index.html#la-pregunta",
+    "title": "Cuantificación reproducible de patrones de fosforilación proteínas: comparación entre Fiji y Python",
+    "section": "La pregunta",
+    "text": "La pregunta\n\n¿En qué medida dos implementaciones equivalentes de un mismo flujo clásico, una en Fiji y otra en Python, producen segmentaciones y cuantificaciones concordantes de los puncta intracelulares reconocidos por el anticuerpo T22 en las mismas imágenes confocales?\n\nEl objetivo no es evaluar el efecto biológico del tratamiento. Las imágenes funcionan como caso de estudio para enseñar segmentación, cuantificación, automatización y comparación entre herramientas.",
+    "crumbs": [
+      "Inicio"
+    ]
+  },
+  {
+    "objectID": "index.html#cómo-recorrer-el-sitio",
+    "href": "index.html#cómo-recorrer-el-sitio",
+    "title": "Cuantificación reproducible de patrones de fosforilación proteínas: comparación entre Fiji y Python",
+    "section": "Cómo recorrer el sitio",
+    "text": "Cómo recorrer el sitio\n\n\n\nPágina\nQué encontrás\n\n\n\n\nContexto y pregunta\nPor qué la segmentación depende de decisiones\n\n\nImágenes y datos\nCanales, z-stack, calibración espacial\n\n\nFlujo común\nLa tabla de equivalencias entre ambas herramientas\n\n\nComparación\nMáscaras superpuestas, métricas y discrepancias",
+    "crumbs": [
+      "Inicio"
+    ]
+  },
+  {
+    "objectID": "index.html#alcance",
+    "href": "index.html#alcance",
+    "title": "Cuantificación reproducible de patrones de fosforilación proteínas: comparación entre Fiji y Python",
+    "section": "Alcance",
+    "text": "Alcance\nEl análisis se hace en 2D sobre la misma proyección del z-stack, en el canal verde. Los objetos se describen como puncta segmentados en la proyección, sin asumir que cada uno corresponda a un agregado individual en tres dimensiones. Sin una máscara manual de referencia, lo que se mide es concordancia entre métodos, no exactitud.",
+    "crumbs": [
+      "Inicio"
+    ]
+  },
+  {
+    "objectID": "presentacion.html",
+    "href": "presentacion.html",
+    "title": "Presentación del proyecto",
+    "section": "",
+    "text": "Entrega\nPresentación de diez minutos con el estado actual del trabajo: la pregunta metodológica, el flujo común, ambas implementaciones y los primeros resultados.\nVer las diapositivas",
+    "crumbs": [
+      "Inicio",
+      "Presentación"
+    ]
+  },
+  {
+    "objectID": "presentacion.html#qué-mostramos",
+    "href": "presentacion.html#qué-mostramos",
+    "title": "Presentación del proyecto",
+    "section": "Qué mostramos",
+    "text": "Qué mostramos\nUna imagen, la máscara obtenida en Fiji, la máscara obtenida en Python y una tabla con las métricas comparadas. La demostración en vivo es breve y está respaldada por resultados ya generados, por si el procesamiento falla.",
+    "crumbs": [
+      "Inicio",
+      "Presentación"
+    ]
+  }
+]
