@@ -1,18 +1,18 @@
 ---
 title: "Detección y cuantificación de puncta fluorescentes"
 subtitle: "Un tutorial introductorio con Fiji y Python"
-description: "Tutorial paso a paso para segmentar y cuantificar puncta fluorescentes detectados con T22 en imágenes confocales."
+description: "Tutorial paso a paso para segmentar y cuantificar elementos fluorescentes detectados con T22 en imágenes confocales."
 page-layout: full
 toc: false
 ---
 
 [Trabajo práctico integrador]{.eyebrow}
 
-Dos personas analizan la misma imagen de microscopía confocal. Una utiliza Fiji y la otra Python. Ambas parten de la misma imagen y aplican los mismos criterios de segmentación.
+Dos personas analizan la misma imagen de microscopía confocal. Una utiliza Fiji y la otra Python. Ambas parten de la misma imagen y aplican criterios de segmentación.
 
-¿Obtienen los mismos resultados?
+Pero, ¿obtienen los mismos resultados?
 
-Este sitio presenta un tutorial paso a paso para aprender a detectar, visualizar y medir *puncta* fluorescentes mediante dos herramientas diferentes.
+Este sitio busca presentar un tutorial paso a paso para aprender a detectar, visualizar y medir *puncta* o elementos intracelulares fluorescentes mediante dos herramientas diferentes.
 
 > **No es necesario tener experiencia previa en programación ni en análisis de bioimágenes.**
 
@@ -41,5 +41,4 @@ Para poder medir los puncta necesitamos transformar la imagen original en una **
 
 A este proceso lo llamamos **segmentación**.
 
-```text
-Imagen original → Selección del canal → Proyección 2D → Umbral → Máscara → Mediciones
+**Imagen .CZI** → **Segmentación** → **Resultados**
