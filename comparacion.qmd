@@ -1,6 +1,356 @@
 ---
-title: "Comparación"
-subtitle: "Concordancia entre las dos implementaciones"
+title: "Comparación de resultados"
+subtitle: "¿Qué tan concordantes son las segmentaciones de Fiji y Python?"
+description: "Criterios y métricas para comparar los resultados obtenidos con Fiji y Python."
+toc: true
+toc-depth: 3
 ---
 
-Contenido en preparación.
+[Comparación]{.eyebrow}
+
+## ¿Qué queremos comparar?
+
+El objetivo es determinar en qué medida Fiji y Python producen resultados concordantes cuando analizan la misma imagen con parámetros equivalentes.
+
+La comparación se realiza en dos niveles:
+
+1. **Comparación de las máscaras:** evalúa si ambas herramientas seleccionan los mismos píxeles.
+2. **Comparación de las mediciones:** evalúa si producen valores semejantes de número, área, forma e intensidad.
+
+::: {.callout-important}
+## Comparar métodos no es comparar condiciones
+
+La comparación entre **Fiji y Python** responde una pregunta metodológica: si ambas herramientas producen resultados semejantes.
+
+La comparación entre imágenes **control y tratadas** responde una pregunta biológica diferente.
+
+Primero debemos comprobar que los métodos sean comparables. Después podremos estudiar las diferencias entre condiciones.
+:::
+
+## Condiciones necesarias
+
+Para que la comparación sea válida, Fiji y Python deben analizar exactamente la misma imagen y trabajar sobre el mismo canal y la misma proyección. También deben utilizar un umbral equivalente, los mismos límites de tamaño y criterios idénticos para incluir o excluir objetos.
+
+De esta manera, las diferencias observadas pueden atribuirse a la implementación de cada herramienta y no a cambios en las decisiones del análisis.
+
+El flujo acordado utiliza:
+
+| Parámetro | Valor común |
+|---|---|
+| Imagen | MIP T22 de 16 bits |
+| Corrección de fondo | No aplicada |
+| Normalización | No aplicada |
+| Filtro de ruido | No aplicado |
+| Umbral en Python | `imagen > 15000` |
+| Umbral equivalente en Fiji | `15001–65535` |
+| Watershed | Desactivado |
+| Área mínima inicial | Sin filtro |
+| Circularidad inicial | Sin filtro |
+| Objetos en el borde | Se conservan |
+| Medición de intensidad | Sobre la MIP original |
+
+## Archivos necesarios
+
+Para cada imagen deben existir dos máscaras:
+
+```text
+Control_Experiment-178_python_mask.tif
+Control_Experiment-178_fiji_mask.tif
+```
+
+La máscara de Python se genera dentro de:
+
+```text
+mascaras_filtradas/
+```
+
+La máscara de Fiji debe guardarse dentro de:
+
+```text
+fiji/
+```
+
+Ambas máscaras deben tener:
+
+- El mismo ancho.
+- El mismo alto.
+- La misma orientación.
+- El mismo campo de visión.
+- Fondo con valor 0.
+- Señal con un valor mayor que 0.
+
+Si las dimensiones no coinciden, la comparación se detiene porque los píxeles no representan las mismas posiciones.
+
+## Comparación visual
+
+La primera evaluación consiste en observar ambas máscaras junto con la imagen original.
+
+Para cada campo conviene mostrar:
+
+| Panel | Contenido |
+|---|---|
+| A | MIP original del canal T22 |
+| B | Máscara generada en Fiji |
+| C | Máscara generada en Python |
+| D | Superposición de ambas máscaras |
+
+En una futura imagen de superposición pueden utilizarse diferentes colores:
+
+- Verde: píxeles detectados por ambos métodos.
+- Rojo: píxeles detectados solamente por Fiji.
+- Azul: píxeles detectados solamente por Python.
+
+Una superposición mayor indica una mayor concordancia entre las máscaras.
+
+::: {.callout-note}
+## ¿Por qué mirar las máscaras?
+
+Un único valor numérico puede ocultar diferencias importantes. Dos máscaras pueden tener áreas totales similares y, aun así, detectar regiones diferentes.
+
+La inspección visual permite reconocer desplazamientos, objetos fusionados, ruido y diferencias en los bordes.
+:::
+
+## Dice e IoU
+
+El notebook incluye dos métricas para medir la superposición entre las máscaras.
+
+### Coeficiente Dice
+
+Dice compara la intersección entre las máscaras con la cantidad total de píxeles positivos.
+
+$$
+Dice = \frac{2 |A \cap B|}{|A| + |B|}
+$$
+
+### Intersección sobre unión
+
+IoU compara la intersección con todos los píxeles detectados por al menos uno de los métodos.
+
+$$
+IoU = \frac{|A \cap B|}{|A \cup B|}
+$$
+
+En estas fórmulas:
+
+- $A$ representa la máscara de Fiji.
+- $B$ representa la máscara de Python.
+- $A \cap B$ representa los píxeles detectados por ambos.
+- $A \cup B$ representa los píxeles detectados por al menos uno.
+
+## Interpretación de los valores
+
+| Valor | Interpretación general |
+|---:|---|
+| 1 | Las máscaras tienen una superposición completa |
+| Cercano a 1 | Superposición alta |
+| Intermedio | Existen discrepancias entre las máscaras |
+| Cercano a 0 | Superposición muy baja |
+| 0 | No comparten píxeles positivos |
+| `NaN` | No puede calcularse, por ejemplo si ambas máscaras están vacías |
+
+Estos valores deben interpretarse junto con los overlays. No se utilizará inicialmente un punto de corte universal para clasificar la concordancia como buena o mala.
+
+::: {.callout-warning}
+## Dice e IoU no miden exactitud
+
+Estas métricas indican cuánto se parecen las máscaras generadas en Fiji y Python. No demuestran que los puncta detectados correspondan correctamente a la señal biológica real.
+
+Para evaluar la exactitud sería necesaria una máscara de referencia validada de manera independiente.
+:::
+
+::: {.callout-note}
+## Estado actual
+
+El cálculo de Dice e IoU ya está implementado en el notebook, pero todavía no se obtuvieron valores porque faltan las máscaras finales generadas en Fiji.
+
+Cuando esas máscaras se guarden con los nombres esperados, el notebook realizará la comparación automáticamente y creará:
+
+```text
+comparacion_mascaras_fiji_python.csv
+```
+:::
+
+## Comparación de mediciones
+
+Además de las máscaras, pueden compararse los valores obtenidos para cada imagen:
+
+| Métrica | Pregunta |
+|---|---|
+| Número de puncta | ¿Ambos métodos detectan una cantidad semejante? |
+| Área positiva | ¿Seleccionan una proporción similar de la imagen? |
+| Área mediana | ¿Los objetos tienen tamaños semejantes? |
+| Circularidad mediana | ¿Las formas calculadas son comparables? |
+| Intensidad media | ¿Miden valores semejantes dentro de los objetos? |
+| Intensidad integrada | ¿La señal total segmentada es comparable? |
+
+La unidad principal de comparación debe ser la **imagen o campo**, no cada punctum individual.
+
+::: {.callout-important}
+## Los puncta no son réplicas independientes
+
+Los objetos de una misma imagen comparten la misma preparación, adquisición y contexto celular. Por eso, no deben tratarse automáticamente como experimentos independientes.
+
+Para comparar métodos, primero se resumen las mediciones por imagen.
+:::
+
+## Diferencias que pueden aparecer
+
+Aunque se utilicen parámetros equivalentes, algunas mediciones podrían presentar pequeñas diferencias.
+
+| Diferencia | Posible explicación |
+|---|---|
+| Número de objetos | Diferencias en la conectividad o en el tratamiento de píxeles diagonales |
+| Área | Inclusión diferente del valor exacto del umbral |
+| Perímetro | Algoritmos diferentes para representar el borde |
+| Circularidad | Depende del perímetro calculado por cada herramienta |
+| Objetos en contacto | Diferencias en el etiquetado |
+| Intensidad integrada | Diferencias entre `IntDen`, `RawIntDen` y la fórmula utilizada |
+| Objetos del borde | Configuración diferente para excluirlos |
+| Unidades | Calibración espacial ausente o interpretada de forma distinta |
+
+Las diferencias pequeñas no necesariamente representan errores. Algunas pueden surgir de la forma en que cada programa implementa una operación.
+
+## Fiji y Python: fortalezas complementarias
+
+| Aspecto | Fiji | Python |
+|---|---|---|
+| Inicio del análisis | Accesible mediante interfaz gráfica | Requiere ejecutar código |
+| Exploración visual | Muy directa | Depende de visualizaciones programadas |
+| Registro de parámetros | Puede hacerse mediante macros y documentación | Queda explícito en el notebook |
+| Procesamiento por lotes | Posible mediante macros | Integrado naturalmente en el flujo |
+| Incorporación de nuevas métricas | Depende de herramientas y complementos | Flexible mediante bibliotecas |
+| Relación objeto–imagen | ROI Manager facilita la inspección | Etiquetas y overlays permiten rastrear objetos |
+| Reproducibilidad | Alta si se utiliza una macro estable | Alta si se conservan código, parámetros y versiones |
+| Curva de aprendizaje | Más sencilla para comenzar | Mayor al modificar el pipeline |
+
+Ninguna herramienta es universalmente mejor. La elección depende del objetivo, la experiencia del usuario y el grado de automatización necesario.
+
+## Resultados piloto disponibles
+
+La exploración inicial en Fiji produjo una planilla con mediciones correspondientes a tres campos control y tres campos tratados.
+
+Se registraron variables como:
+
+- Intensidad media.
+- Intensidad integrada de la señal.
+- Número de núcleos.
+- Mediciones normalizadas por el número de núcleos.
+
+Estos datos muestran que es posible obtener mediciones y organizarlas por condición, pero todavía no constituyen una comparación directa con Python.
+
+La macro inicial utilizó sustracción de fondo, el umbral automático Huang, operaciones morfológicas y un filtro de tamaño de `20–Infinity`. El notebook final utiliza una máscara con un umbral manual de `15000` y comienza sin filtro de tamaño.
+
+Por lo tanto, los resultados actuales de ambos flujos no deben compararse numéricamente como si provinieran del mismo procedimiento.
+
+::: {.callout-warning}
+## Resultado exploratorio
+
+La planilla piloto documenta lo que se consiguió durante la exploración en Fiji, pero sus valores no representan todavía una validación del pipeline ni una comparación final entre herramientas.
+:::
+
+## Estado actual
+
+El notebook procesó siete imágenes CZI: cuatro controles y tres tratadas.
+
+| Componente | Estado |
+|---|---|
+| Lectura de los siete archivos CZI | Completada |
+| Imágenes control encontradas | 4 |
+| Imágenes tratadas encontradas | 3 |
+| Pipeline de Python | Implementado |
+| Procesamiento por lotes en Python | Implementado |
+| MIP, máscaras y overlays de Python | Generados |
+| Exportación de resultados de Python | Implementada |
+| Análisis exploratorio en Fiji | Realizado |
+| Planilla piloto de Fiji | Disponible |
+| Macro de Fiji equivalente a Python | Pendiente |
+| Máscaras finales de Fiji | Pendientes |
+| Función para calcular Dice e IoU | Implementada |
+| Valores de Dice e IoU | Pendientes |
+| Comparación de métricas por imagen | Pendiente |
+| Máscara manual de referencia | No disponible |
+| Análisis estadístico | Pendiente |
+
+## Qué falta para completar la comparación
+
+Para completar el análisis será necesario generar una nueva versión de la macro de Fiji que utilice la misma MIP, el mismo umbral y los mismos criterios del notebook.
+
+La macro deberá procesar todas las imágenes, guardar una máscara por campo y exportar las mediciones con nombres consistentes.
+
+Una vez obtenidas las máscaras de Fiji, deberán copiarse a la carpeta `fiji` esperada por el notebook. Python calculará Dice e IoU y generará una tabla con una fila por imagen.
+
+Después podrán compararse el número de puncta, el área positiva, el área mediana y las mediciones de intensidad.
+
+## Máscaras de Fiji pendientes
+
+El notebook busca actualmente estas siete máscaras:
+
+```text
+Control_Experiment-178_fiji_mask.tif
+Control_Experiment-179_fiji_mask.tif
+Control_Experiment-185_fiji_mask.tif
+Control_Experiment-186_fiji_mask.tif
+Tratadas_Experiment-198_fiji_mask.tif
+Tratadas_Experiment-199_fiji_mask.tif
+Tratadas_Experiment-200_fiji_mask.tif
+```
+
+Todas deben guardarse dentro de:
+
+```text
+Fotos de Rodri CZI/fiji/
+```
+
+## Tabla final esperada
+
+Cuando estén disponibles las máscaras de Fiji, el notebook generará una tabla con una fila por imagen:
+
+| Imagen | Condición | Dice | IoU |
+|---|---|---:|---:|
+| Control_Experiment-178 | Control | Pendiente | Pendiente |
+| Control_Experiment-179 | Control | Pendiente | Pendiente |
+| Control_Experiment-185 | Control | Pendiente | Pendiente |
+| Control_Experiment-186 | Control | Pendiente | Pendiente |
+| Tratadas_Experiment-198 | Tratada | Pendiente | Pendiente |
+| Tratadas_Experiment-199 | Tratada | Pendiente | Pendiente |
+| Tratadas_Experiment-200 | Tratada | Pendiente | Pendiente |
+
+Después, esta tabla podrá ampliarse con el número de puncta, el área positiva y otras mediciones obtenidas mediante cada herramienta.
+
+## Posibles gráficos
+
+La comparación podrá visualizarse mediante:
+
+- Un gráfico de dispersión de Fiji frente a Python.
+- Líneas que conecten ambas mediciones para cada imagen.
+- Diferencias entre métodos por imagen.
+- Distribución de Dice e IoU.
+- Paneles de superposición de máscaras.
+
+Un gráfico de correlación puede mostrar asociación, pero no demuestra por sí solo concordancia. Con un número suficiente de imágenes también podría incorporarse un análisis de diferencias entre métodos, como un gráfico de Bland–Altman.
+
+## Conclusiones permitidas
+
+Si Fiji y Python producen máscaras superpuestas y mediciones semejantes, podrá concluirse que ambos métodos presentan buena concordancia bajo los parámetros evaluados.
+
+Si aparecen diferencias, será necesario determinar en qué etapa se originan: umbral, conectividad, tratamiento del borde, cálculo del perímetro, filtro de tamaño o medición de intensidad.
+
+Los resultados no permitirán afirmar todavía:
+
+- Que una herramienta es universalmente superior.
+- Que cada punctum representa un agregado tridimensional individual.
+- Que existe un efecto biológico definitivo del tratamiento.
+- Que el umbral es válido para imágenes adquiridas con otros parámetros.
+- Que las máscaras son exactas sin una referencia independiente.
+
+## Conclusión provisional
+
+El proyecto permitió implementar el procesamiento completo en Python y realizar una primera exploración en Fiji. También se programó la comparación automática de las máscaras mediante Dice e IoU.
+
+Sin embargo, todavía no existen valores de Dice e IoU porque faltan las siete máscaras finales de Fiji generadas con parámetros equivalentes a Python.
+
+Por lo tanto, el cálculo está **implementado**, pero la comparación cuantitativa está **pendiente de ejecución**. Esta distinción evita presentar como resultados valores que todavía no fueron obtenidos.
+
+[Volver al inicio](index.qmd){.btn .btn-outline-primary}
+
+[Ver la presentación](presentacion.qmd){.btn .btn-primary}

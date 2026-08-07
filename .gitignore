@@ -1,3 +1,35 @@
-
+# --- Quarto ---------------------------------------------------------
+/_site/
 /.quarto/
+*_files/
+*_cache/
+
+# --- Imágenes crudas del microscopio --------------------------------
+# Pesadas y no versionables. Solo un TIFF de ejemplo liviano.
+*.czi
+*.lsm
+*.nd2
+*.oib
+*.lif
+
+# --- Salidas regenerables del análisis ------------------------------
+/results/
+/resultados_Majo/
+tif_mip/
+mascaras_crudas/
+mascaras_filtradas/
+etiquetas/
+overlays/
+
+# --- Python ---------------------------------------------------------
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+env/
+
+# --- Sistema --------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
 **/*.quarto_ipynb

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Etapas y parámetros utilizados para segmentar elementos (puncta) con Fiji y Python.">
 
-<title>Flujo común – Fiji vs.&nbsp;Python</title>
+<title>Flujo de análisis – Fiji vs.&nbsp;Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -63,21 +99,19 @@ ul.task-list li input[type="checkbox"] {
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
   }
 }</script>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet">
 
 
 </head>
@@ -93,8 +127,8 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">Fiji vs.&nbsp;Python</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -103,19 +137,47 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Inicio</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./flujo.html"> 
-<span class="menu-text">Flujo común</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Tutorial</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+        <li>
+    <a class="dropdown-item" href="./contexto.html">
+ <span class="dropdown-text">1. Contexto y pregunta</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./comparacion.html"> 
-<span class="menu-text">Comparación</span></a>
+        <li>
+    <a class="dropdown-item" href="./datos.html">
+ <span class="dropdown-text">2. Conocer las imágenes</span></a>
   </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+        <li>
+    <a class="dropdown-item" href="./flujo.html">
+ <span class="dropdown-text">3. Flujo de análisis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./fiji.html">
+ <span class="dropdown-text">4. Análisis en Fiji</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./python.html">
+ <span class="dropdown-text">5. Análisis en Python</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./comparacion.html">
+ <span class="dropdown-text">6. Comparación</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="./presentacion.html"> 
 <span class="menu-text">Presentación</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AdrianaGLG/curso_fiji_vs_python"> <i class="bi bi-github" role="img" aria-label="Repositorio en GitHub">
+</i> 
+<span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -125,15 +187,12 @@ ul.task-list li input[type="checkbox"] {
     </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-          <h1 class="quarto-secondary-nav-title">Flujo común</h1>
-        </a>     
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./contexto.html">Introducción</a></li><li class="breadcrumb-item"><a href="./flujo.html">3. Flujo de análisis</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
     </div>
   </nav>
 </header>
@@ -141,11 +200,6 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -157,8 +211,8 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">El proyecto</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Introducción</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -166,19 +220,19 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contexto.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Contexto y pregunta</span></a>
+ <span class="menu-text">1. Contexto y pregunta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./datos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Imágenes y datos</span></a>
+ <span class="menu-text">2. Conocer las imágenes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./flujo.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Flujo común</span></a>
+ <span class="menu-text">3. Flujo de análisis</span></a>
   </div>
 </li>
       </ul>
@@ -186,8 +240,8 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Herramientas</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Tutorial paso a paso</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -195,23 +249,23 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fiji.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Fiji / ImageJ</span></a>
+ <span class="menu-text">4. Análisis en Fiji</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./python.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Python</span></a>
+ <span class="menu-text">5. Análisis en Python</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Comparación de resultados</span></a>
   </div>
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./comparacion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Comparación</span></a>
-  </div>
-</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -234,22 +288,36 @@ ul.task-list li input[type="checkbox"] {
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">En esta página</h2>
    
-  <ul>
-  <li><a href="#dos-versiones-de-la-imagen" id="toc-dos-versiones-de-la-imagen" class="nav-link active" data-scroll-target="#dos-versiones-de-la-imagen">Dos versiones de la imagen</a></li>
-  <li><a href="#tamaño-mínimo-de-objeto" id="toc-tamaño-mínimo-de-objeto" class="nav-link" data-scroll-target="#tamaño-mínimo-de-objeto">Tamaño mínimo de objeto</a></li>
-  <li><a href="#métricas" id="toc-métricas" class="nav-link" data-scroll-target="#métricas">Métricas</a></li>
+  <ul class="collapse">
+  <li><a href="#un-mismo-análisis-en-dos-herramientas" id="toc-un-mismo-análisis-en-dos-herramientas" class="nav-link active" data-scroll-target="#un-mismo-análisis-en-dos-herramientas">Un mismo análisis en dos herramientas</a></li>
+  <li><a href="#el-contrato-de-comparación" id="toc-el-contrato-de-comparación" class="nav-link" data-scroll-target="#el-contrato-de-comparación">El contrato de comparación</a></li>
+  <li><a href="#primera-etapa-preparar-la-imagen-común" id="toc-primera-etapa-preparar-la-imagen-común" class="nav-link" data-scroll-target="#primera-etapa-preparar-la-imagen-común">Primera etapa: preparar la imagen común</a></li>
+  <li><a href="#segunda-etapa-aplicar-el-umbral" id="toc-segunda-etapa-aplicar-el-umbral" class="nav-link" data-scroll-target="#segunda-etapa-aplicar-el-umbral">Segunda etapa: aplicar el umbral</a></li>
+  <li><a href="#tercera-etapa-identificar-los-puncta" id="toc-tercera-etapa-identificar-los-puncta" class="nav-link" data-scroll-target="#tercera-etapa-identificar-los-puncta">Tercera etapa: identificar los puncta</a></li>
+  <li><a href="#dos-representaciones-de-la-imagen" id="toc-dos-representaciones-de-la-imagen" class="nav-link" data-scroll-target="#dos-representaciones-de-la-imagen">Dos representaciones de la imagen</a></li>
+  <li><a href="#cuarta-etapa-control-visual" id="toc-cuarta-etapa-control-visual" class="nav-link" data-scroll-target="#cuarta-etapa-control-visual">Cuarta etapa: control visual</a></li>
+  <li><a href="#quinta-etapa-medir" id="toc-quinta-etapa-medir" class="nav-link" data-scroll-target="#quinta-etapa-medir">Quinta etapa: medir</a></li>
+  <li><a href="#métricas-por-punctum-y-por-imagen" id="toc-métricas-por-punctum-y-por-imagen" class="nav-link" data-scroll-target="#métricas-por-punctum-y-por-imagen">Métricas por punctum y por imagen</a></li>
+  <li><a href="#parámetros-iniciales" id="toc-parámetros-iniciales" class="nav-link" data-scroll-target="#parámetros-iniciales">Parámetros iniciales</a></li>
+  <li><a href="#decisiones-pendientes" id="toc-decisiones-pendientes" class="nav-link" data-scroll-target="#decisiones-pendientes">Decisiones pendientes</a></li>
+  <li><a href="#qué-permite-concluir-esta-comparación" id="toc-qué-permite-concluir-esta-comparación" class="nav-link" data-scroll-target="#qué-permite-concluir-esta-comparación">¿Qué permite concluir esta comparación?</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./contexto.html">Introducción</a></li><li class="breadcrumb-item"><a href="./flujo.html">3. Flujo de análisis</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Flujo común</h1>
-<p class="subtitle lead">Las mismas operaciones, dos implementaciones</p>
+<h1 class="title">Flujo de análisis</h1>
+<p class="subtitle lead">Las decisiones comunes a Fiji y Python</p>
 </div>
 
+<div>
+  <div class="description">
+    Etapas y parámetros utilizados para segmentar elementos (puncta) con Fiji y Python.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -265,7 +333,221 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p><span class="eyebrow">Metodología</span></p>
-<p>Para que la comparación sea justa, ambas herramientas parten exactamente del mismo archivo, canal, proyección y región de análisis. Esta tabla es el contrato: cada fila es una operación conceptual, y las dos columnas son la forma de escribirla en cada herramienta.</p>
+<section id="un-mismo-análisis-en-dos-herramientas" class="level2">
+<h2 class="anchored" data-anchor-id="un-mismo-análisis-en-dos-herramientas">Un mismo análisis en dos herramientas</h2>
+<p>Para comparar Fiji y Python no alcanza con utilizar la misma imagen original. Ambas herramientas deben trabajar sobre la misma representación de esa imagen y aplicar criterios equivalentes.</p>
+<p>En este tutorial, el flujo común es:</p>
+<p><strong>Archivo CZI</strong> → <strong>Canal T22</strong> → <strong>Proyección MIP</strong> → <strong>Imagen de 16 bits</strong> → <strong>Umbral</strong> → <strong>Máscara binaria</strong> → <strong>Identificación de puncta</strong> → <strong>Control visual</strong> → <strong>Mediciones</strong></p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>La imagen común
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El notebook de Python lee el archivo <code>.czi</code>, selecciona el canal T22 y genera una proyección de máxima intensidad en formato TIFF de 16 bits.</p>
+<p>Esa misma imagen TIFF se utiliza después como entrada para la segmentación en Fiji y Python. De esta manera, ambas herramientas reciben exactamente los mismos píxeles.</p>
+</div>
+</div>
+</section>
+<section id="el-contrato-de-comparación" class="level2">
+<h2 class="anchored" data-anchor-id="el-contrato-de-comparación">El contrato de comparación</h2>
+<p>La siguiente tabla resume las decisiones que deben permanecer constantes:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Etapa</th>
+<th>Decisión común</th>
+<th>Fiji</th>
+<th>Python</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Imagen de entrada</td>
+<td>MIP T22 de 16 bits</td>
+<td>Abrir el TIFF exportado</td>
+<td>Utilizar la misma matriz MIP</td>
+</tr>
+<tr class="even">
+<td>Corrección de fondo</td>
+<td>No aplicada</td>
+<td>Ninguna</td>
+<td>Ninguna</td>
+</tr>
+<tr class="odd">
+<td>Normalización</td>
+<td>No aplicada</td>
+<td>Ninguna</td>
+<td>Ninguna</td>
+</tr>
+<tr class="even">
+<td>Reducción de ruido</td>
+<td>No aplicada</td>
+<td>Ninguna</td>
+<td>Ninguna</td>
+</tr>
+<tr class="odd">
+<td>Umbral</td>
+<td>Manual y fijo</td>
+<td><code>15001–65535</code></td>
+<td><code>imagen &gt; 15000</code></td>
+</tr>
+<tr class="even">
+<td>Máscara</td>
+<td>Binaria</td>
+<td>Convert to Mask</td>
+<td>Array booleano</td>
+</tr>
+<tr class="odd">
+<td>Conectividad</td>
+<td>Ocho vecinos</td>
+<td>Analyze Particles</td>
+<td><code>connectivity=2</code></td>
+</tr>
+<tr class="even">
+<td>Watershed</td>
+<td>Desactivado</td>
+<td>No aplicar</td>
+<td><code>USAR_WATERSHED = False</code></td>
+</tr>
+<tr class="odd">
+<td>Área mínima inicial</td>
+<td>Sin filtro</td>
+<td><code>0–Infinity</code></td>
+<td><code>MIN_AREA_UM2 = 0</code></td>
+</tr>
+<tr class="even">
+<td>Circularidad inicial</td>
+<td>Sin filtro</td>
+<td><code>0.00–1.00</code></td>
+<td><code>MIN_CIRCULARIDAD = 0</code></td>
+</tr>
+<tr class="odd">
+<td>Objetos en el borde</td>
+<td>Se conservan</td>
+<td>No excluir</td>
+<td><code>EXCLUIR_BORDE = False</code></td>
+</tr>
+<tr class="even">
+<td>Medición de intensidad</td>
+<td>Sobre la MIP original</td>
+<td>Redirect a imagen original</td>
+<td><code>intensity_image=mip</code></td>
+</tr>
+<tr class="odd">
+<td>Exportación</td>
+<td>Máscara y resultados</td>
+<td>TIFF y tabla</td>
+<td>TIFF, PNG y CSV</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>¿Por qué Fiji comienza en 15001?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La condición utilizada en Python es:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>imagen <span class="op">&gt;</span> <span class="dv">15000</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Como las imágenes poseen valores enteros, en Fiji el intervalo equivalente es <code>15001–65535</code>. Si se utiliza <code>15000–65535</code>, Fiji también incluirá los píxeles cuyo valor sea exactamente <code>15000</code>.</p>
+<p>La diferencia probablemente sea pequeña, pero conviene mantener la equivalencia exacta.</p>
+</div>
+</div>
+</section>
+<section id="primera-etapa-preparar-la-imagen-común" class="level2">
+<h2 class="anchored" data-anchor-id="primera-etapa-preparar-la-imagen-común">Primera etapa: preparar la imagen común</h2>
+<p>El archivo CZI contiene cuatro canales y tres planos Z. Antes de segmentar se realizan tres operaciones:</p>
+<ol type="1">
+<li>Se identifica el canal correspondiente a T22.</li>
+<li>Se calcula una proyección de máxima intensidad.</li>
+<li>Se guarda el resultado como un TIFF calibrado de 16 bits.</li>
+</ol>
+<p>La imagen exportada conserva los valores originales de intensidad. No se normaliza ni se convierte a 8 bits.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>No convertir a 8 bits
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Una imagen de 16 bits puede contener valores entre <code>0</code> y <code>65535</code>. Al convertirla a 8 bits, ese rango se transforma en valores entre <code>0</code> y <code>255</code>.</p>
+<p>En ese caso, el umbral <code>15000</code> deja de tener sentido y la comparación ya no es válida.</p>
+</div>
+</div>
+</section>
+<section id="segunda-etapa-aplicar-el-umbral" class="level2">
+<h2 class="anchored" data-anchor-id="segunda-etapa-aplicar-el-umbral">Segunda etapa: aplicar el umbral</h2>
+<p>El umbral separa los píxeles considerados señal de los considerados fondo.</p>
+<p>La regla utilizada es:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mascara <span class="op">=</span> imagen <span class="op">&gt;</span> <span class="dv">15000</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Por lo tanto:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Intensidad del píxel</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">Menor o igual que 15000</td>
+<td>Fondo</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">Mayor que 15000</td>
+<td>Señal</td>
+</tr>
+</tbody>
+</table>
+<p>El resultado es una máscara binaria en la que la señal aparece blanca y el fondo negro.</p>
+</section>
+<section id="tercera-etapa-identificar-los-puncta" class="level2">
+<h2 class="anchored" data-anchor-id="tercera-etapa-identificar-los-puncta">Tercera etapa: identificar los puncta</h2>
+<p>Una vez creada la máscara, los píxeles blancos conectados se agrupan en objetos.</p>
+<p>Cada grupo conectado recibe una etiqueta diferente:</p>
+<ul>
+<li>Objeto 1.</li>
+<li>Objeto 2.</li>
+<li>Objeto 3.</li>
+<li>Y así sucesivamente.</li>
+</ul>
+<p>En esta primera versión no se aplica watershed. Por lo tanto, dos puncta que aparecen unidos en la máscara serán contabilizados como un único objeto.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>¿Por qué no usamos watershed inicialmente?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Watershed puede separar objetos en contacto, pero incorpora nuevas decisiones, como la ubicación y la distancia mínima entre semillas.</p>
+<p>Primero comparamos el resultado más sencillo. Su incorporación puede evaluarse después como una mejora independiente.</p>
+</div>
+</div>
+</section>
+<section id="dos-representaciones-de-la-imagen" class="level2">
+<h2 class="anchored" data-anchor-id="dos-representaciones-de-la-imagen">Dos representaciones de la imagen</h2>
+<p>Durante el análisis debemos distinguir entre la imagen original y la máscara.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -274,114 +556,237 @@ ul.task-list li input[type="checkbox"] {
 </colgroup>
 <thead>
 <tr class="header">
-<th>Etapa</th>
-<th>Fiji</th>
-<th>Python</th>
+<th>Representación</th>
+<th>Contenido</th>
+<th>Uso</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Abrir imagen</td>
-<td>Bio-Formats / TIFF</td>
-<td><code>tifffile</code> o <code>skimage.io</code></td>
+<td>MIP original</td>
+<td>Valores de intensidad de 16 bits</td>
+<td>Medir fluorescencia</td>
 </tr>
 <tr class="even">
-<td>Seleccionar canal</td>
-<td>Split Channels</td>
-<td>indexación del array</td>
+<td>Máscara binaria</td>
+<td>Fondo negro y señal blanca</td>
+<td>Identificar y delimitar objetos</td>
 </tr>
 <tr class="odd">
-<td>Proyección Z</td>
-<td>Z Project (máxima)</td>
-<td><code>np.max()</code> sobre el eje Z</td>
+<td>Imagen etiquetada</td>
+<td>Un número diferente para cada objeto</td>
+<td>Calcular mediciones por punctum</td>
 </tr>
 <tr class="even">
-<td>Corregir fondo</td>
-<td>Subtract Background</td>
-<td><code>restoration.rolling_ball</code></td>
-</tr>
-<tr class="odd">
-<td>Reducir ruido</td>
-<td>Median Filter</td>
-<td><code>filters.median</code></td>
-</tr>
-<tr class="even">
-<td>Umbralizar</td>
-<td>Otsu o umbral manual</td>
-<td><code>threshold_otsu</code> o valor fijo</td>
-</tr>
-<tr class="odd">
-<td>Limpiar máscara</td>
-<td>Binary Open / Close</td>
-<td><code>morphology.opening</code> / <code>closing</code></td>
-</tr>
-<tr class="even">
-<td>Quitar objetos pequeños</td>
-<td>Analyze Particles (size)</td>
-<td><code>remove_small_objects</code></td>
-</tr>
-<tr class="odd">
-<td>Separar solapamientos</td>
-<td>Watershed</td>
-<td><code>segmentation.watershed</code></td>
-</tr>
-<tr class="even">
-<td>Cuantificar</td>
-<td>Analyze Particles</td>
-<td><code>regionprops_table</code></td>
-</tr>
-<tr class="odd">
-<td>Exportar</td>
-<td>Results + máscara TIFF</td>
-<td>CSV + máscara TIFF</td>
+<td>Overlay</td>
+<td>Contornos sobre la imagen original</td>
+<td>Realizar el control visual</td>
 </tr>
 </tbody>
 </table>
-<section id="dos-versiones-de-la-imagen" class="level2">
-<h2 class="anchored" data-anchor-id="dos-versiones-de-la-imagen">Dos versiones de la imagen</h2>
-<p>Una decisión que conviene tomar explícitamente y dejar escrita:</p>
-<ul>
-<li><strong>Imagen de segmentación:</strong> puede recibir filtros o realce de contraste.</li>
-<li><strong>Imagen de medición:</strong> conserva las intensidades originales, o solo corregidas por fondo.</li>
-</ul>
-<p>Medir intensidad sobre una imagen procesada con CLAHE, Enhance Contrast o normalización independiente por campo cambia los valores de fluorescencia y hace incomparables los resultados entre imágenes.</p>
+<p>La intensidad debe medirse sobre la MIP original, utilizando la máscara únicamente para indicar dónde medir.</p>
+<p>No se debe medir intensidad sobre una imagen binaria, normalizada o modificada con herramientas de contraste.</p>
 </section>
-<section id="tamaño-mínimo-de-objeto" class="level2">
-<h2 class="anchored" data-anchor-id="tamaño-mínimo-de-objeto">Tamaño mínimo de objeto</h2>
-<p>No hay un umbral universal. Se define en µm² a partir de la calibración espacial, el tamaño aparente de los puncta reales, el tamaño del ruido y la resolución óptica, usando un conjunto pequeño de imágenes representativas. <strong>El valor elegido queda fijo para todas las imágenes comparadas.</strong></p>
+<section id="cuarta-etapa-control-visual" class="level2">
+<h2 class="anchored" data-anchor-id="cuarta-etapa-control-visual">Cuarta etapa: control visual</h2>
+<p>Antes de interpretar una tabla es necesario observar el resultado de la segmentación.</p>
+<p>El control visual compara:</p>
+<ol type="1">
+<li>La imagen MIP original.</li>
+<li>La máscara obtenida con el umbral.</li>
+<li>El overlay con los contornos de los objetos detectados.</li>
+</ol>
+<p>La segmentación se considera razonable cuando los contornos siguen los puncta visibles sin incluir grandes regiones del fondo.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Una tabla no reemplaza la inspección visual
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un análisis puede producir una tabla sin errores y, aun así, detectar ruido, excluir señal real o fusionar varios puncta.</p>
+<p>Por eso, cada cambio de parámetros debe acompañarse con una revisión de los overlays.</p>
+</div>
+</div>
 </section>
-<section id="métricas" class="level2">
-<h2 class="anchored" data-anchor-id="métricas">Métricas</h2>
+<section id="quinta-etapa-medir" class="level2">
+<h2 class="anchored" data-anchor-id="quinta-etapa-medir">Quinta etapa: medir</h2>
+<p>Una vez identificados los objetos pueden obtenerse las siguientes métricas:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Métrica</th>
-<th>Interpretación</th>
+<th>¿Qué representa?</th>
+<th>Unidad</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Número de puncta</td>
-<td>Objetos segmentados dentro de la ROI</td>
+<td>Cantidad de objetos conectados</td>
+<td>Conteo</td>
 </tr>
 <tr class="even">
-<td>Área (µm²)</td>
-<td>Tamaño 2D de cada objeto</td>
+<td>Área</td>
+<td>Superficie ocupada por cada objeto</td>
+<td>µm²</td>
+</tr>
+<tr class="odd">
+<td>Perímetro</td>
+<td>Longitud de su contorno</td>
+<td>µm</td>
+</tr>
+<tr class="even">
+<td>Diámetro equivalente</td>
+<td>Diámetro de un círculo con la misma área</td>
+<td>µm</td>
 </tr>
 <tr class="odd">
 <td>Circularidad</td>
-<td>Forma, sin asumir esfericidad</td>
+<td>Semejanza de la forma con un círculo</td>
+<td>0–1</td>
+</tr>
+<tr class="even">
+<td>Excentricidad</td>
+<td>Grado de elongación</td>
+<td>0–1</td>
+</tr>
+<tr class="odd">
+<td>Solidez</td>
+<td>Relación entre el objeto y su envolvente convexa</td>
+<td>0–1</td>
 </tr>
 <tr class="even">
 <td>Intensidad media</td>
-<td>Promedio dentro del objeto</td>
+<td>Brillo promedio dentro del objeto</td>
+<td>Unidades de intensidad</td>
 </tr>
 <tr class="odd">
-<td>Fracción de área positiva</td>
-<td>Porcentaje de la ROI ocupado por señal</td>
+<td>Intensidad máxima</td>
+<td>Mayor valor registrado dentro del objeto</td>
+<td>Unidades de intensidad</td>
+</tr>
+<tr class="even">
+<td>Intensidad integrada</td>
+<td>Intensidad media multiplicada por el área en píxeles</td>
+<td>Unidades integradas</td>
+</tr>
+<tr class="odd">
+<td>Área positiva</td>
+<td>Porcentaje de la imagen ocupado por la máscara</td>
+<td>%</td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="métricas-por-punctum-y-por-imagen" class="level2">
+<h2 class="anchored" data-anchor-id="métricas-por-punctum-y-por-imagen">Métricas por punctum y por imagen</h2>
+<p>Los resultados se organizan en dos niveles.</p>
+<section id="tabla-por-punctum" class="level3">
+<h3 class="anchored" data-anchor-id="tabla-por-punctum">Tabla por punctum</h3>
+<p>Cada fila representa un objeto detectado. Esta tabla permite estudiar el área, la forma y la intensidad de cada punctum.</p>
+</section>
+<section id="resumen-por-imagen" class="level3">
+<h3 class="anchored" data-anchor-id="resumen-por-imagen">Resumen por imagen</h3>
+<p>Cada fila representa una imagen completa. Puede incluir:</p>
+<ul>
+<li>Número total de puncta.</li>
+<li>Puncta por <code>1000 µm²</code>.</li>
+<li>Porcentaje de área positiva.</li>
+<li>Área mediana de los puncta.</li>
+<li>Circularidad mediana.</li>
+<li>Intensidad media de los puncta.</li>
+<li>Intensidad integrada total.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>¿Por qué utilizar la mediana?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El tamaño de los puncta puede presentar valores extremos. La mediana suele representar mejor el objeto típico cuando existen unos pocos objetos mucho más grandes que los demás.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="parámetros-iniciales" class="level2">
+<h2 class="anchored" data-anchor-id="parámetros-iniciales">Parámetros iniciales</h2>
+<p>Los parámetros utilizados en la primera comparación son:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th style="text-align: right;">Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Canal T22 esperado</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Proyección</td>
+<td style="text-align: right;">Máxima intensidad</td>
+</tr>
+<tr class="odd">
+<td>Umbral</td>
+<td style="text-align: right;"><code>&gt; 15000</code></td>
+</tr>
+<tr class="even">
+<td>Corrección de fondo</td>
+<td style="text-align: right;">No</td>
+</tr>
+<tr class="odd">
+<td>Normalización</td>
+<td style="text-align: right;">No</td>
+</tr>
+<tr class="even">
+<td>Filtro de ruido</td>
+<td style="text-align: right;">No</td>
+</tr>
+<tr class="odd">
+<td>Watershed</td>
+<td style="text-align: right;">No</td>
+</tr>
+<tr class="even">
+<td>Área mínima</td>
+<td style="text-align: right;"><code>0 µm²</code></td>
+</tr>
+<tr class="odd">
+<td>Circularidad mínima</td>
+<td style="text-align: right;"><code>0</code></td>
+</tr>
+<tr class="even">
+<td>Exclusión de bordes</td>
+<td style="text-align: right;">No</td>
+</tr>
+</tbody>
+</table>
+<p>Estos valores conservan la máscara inicial observada durante el desarrollo del proyecto. No deben considerarse parámetros universales.</p>
+</section>
+<section id="decisiones-pendientes" class="level2">
+<h2 class="anchored" data-anchor-id="decisiones-pendientes">Decisiones pendientes</h2>
+<p>Después de revisar los overlays será necesario determinar si conviene incorporar un área mínima para eliminar objetos compatibles con ruido.</p>
+<p>Ese límite debe expresarse en <code>µm²</code>, seleccionarse a partir de imágenes representativas y mantenerse fijo para todas las imágenes comparadas.</p>
+<p>La sustracción de fondo, los filtros, las operaciones morfológicas y watershed también pueden evaluarse posteriormente, pero cada modificación debe incorporarse de manera equivalente en Fiji y Python.</p>
+</section>
+<section id="qué-permite-concluir-esta-comparación" class="level2">
+<h2 class="anchored" data-anchor-id="qué-permite-concluir-esta-comparación">¿Qué permite concluir esta comparación?</h2>
+<p>Si las máscaras y mediciones son semejantes, podremos afirmar que las dos implementaciones presentan una buena concordancia para este conjunto de imágenes y parámetros.</p>
+<p>Sin una máscara manual de referencia no podremos determinar cuál segmentación representa mejor la señal biológica real.</p>
+<p><a href="./fiji.html" class="btn btn-primary">Continuar: análisis en Fiji →</a></p>
 
 
 </section>
@@ -412,12 +817,12 @@ ul.task-list li input[type="checkbox"] {
       // flash "checked"
       button.classList.add('code-copy-button-checked');
       var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
+      button.setAttribute("title", "Copiado");
       let tooltip;
       if (window.bootstrap) {
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
+        button.setAttribute("data-bs-title", "Copiado");
         tooltip = new bootstrap.Tooltip(button, 
           { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
@@ -460,7 +865,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/AdrianaGLG@github\.com\/AdrianaGLG\/curso_fiji_vs_python\.git");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -789,13 +1194,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./datos.html" class="pagination-link" aria-label="Imágenes y datos">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Imágenes y datos</span>
+      <a href="./datos.html" class="pagination-link" aria-label="2. Conocer las imágenes">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">2. Conocer las imágenes</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./fiji.html" class="pagination-link" aria-label="Fiji / ImageJ">
-        <span class="nav-page-text">Fiji / ImageJ</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./fiji.html" class="pagination-link" aria-label="4. Análisis en Fiji">
+        <span class="nav-page-text">4. Análisis en Fiji</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

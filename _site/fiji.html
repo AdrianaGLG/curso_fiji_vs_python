@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Tutorial introductorio para segmentar y medir puncta fluorescentes utilizando Fiji.">
 
-<title>Fiji / ImageJ – Fiji vs.&nbsp;Python</title>
+<title>Análisis en Fiji – Fiji vs.&nbsp;Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -98,21 +99,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
   }
 }</script>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet">
 
 
 </head>
@@ -128,8 +127,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">Fiji vs.&nbsp;Python</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -138,19 +137,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Inicio</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./flujo.html"> 
-<span class="menu-text">Flujo común</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Tutorial</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+        <li>
+    <a class="dropdown-item" href="./contexto.html">
+ <span class="dropdown-text">1. Contexto y pregunta</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./comparacion.html"> 
-<span class="menu-text">Comparación</span></a>
+        <li>
+    <a class="dropdown-item" href="./datos.html">
+ <span class="dropdown-text">2. Conocer las imágenes</span></a>
   </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+        <li>
+    <a class="dropdown-item" href="./flujo.html">
+ <span class="dropdown-text">3. Flujo de análisis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./fiji.html">
+ <span class="dropdown-text">4. Análisis en Fiji</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./python.html">
+ <span class="dropdown-text">5. Análisis en Python</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./comparacion.html">
+ <span class="dropdown-text">6. Comparación</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="./presentacion.html"> 
 <span class="menu-text">Presentación</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AdrianaGLG/curso_fiji_vs_python"> <i class="bi bi-github" role="img" aria-label="Repositorio en GitHub">
+</i> 
+<span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -160,15 +187,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-          <h1 class="quarto-secondary-nav-title">Fiji / ImageJ</h1>
-        </a>     
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fiji.html">Tutorial paso a paso</a></li><li class="breadcrumb-item"><a href="./fiji.html">4. Análisis en Fiji</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
     </div>
   </nav>
 </header>
@@ -176,11 +200,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -192,8 +211,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">El proyecto</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Introducción</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -201,19 +220,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contexto.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Contexto y pregunta</span></a>
+ <span class="menu-text">1. Contexto y pregunta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./datos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Imágenes y datos</span></a>
+ <span class="menu-text">2. Conocer las imágenes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./flujo.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Flujo común</span></a>
+ <span class="menu-text">3. Flujo de análisis</span></a>
   </div>
 </li>
       </ul>
@@ -221,8 +240,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Herramientas</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Tutorial paso a paso</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -230,23 +249,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fiji.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Fiji / ImageJ</span></a>
+ <span class="menu-text">4. Análisis en Fiji</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./python.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Python</span></a>
+ <span class="menu-text">5. Análisis en Python</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Comparación de resultados</span></a>
   </div>
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./comparacion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Comparación</span></a>
-  </div>
-</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -270,21 +289,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">En esta página</h2>
    
   <ul>
-  <li><a href="#procedimiento-manual" id="toc-procedimiento-manual" class="nav-link active" data-scroll-target="#procedimiento-manual">Procedimiento manual</a></li>
-  <li><a href="#macro" id="toc-macro" class="nav-link" data-scroll-target="#macro">Macro</a></li>
-  <li><a href="#máscara-obtenida" id="toc-máscara-obtenida" class="nav-link" data-scroll-target="#máscara-obtenida">Máscara obtenida</a></li>
+  <li><a href="#qué-es-fiji" id="toc-qué-es-fiji" class="nav-link active" data-scroll-target="#qué-es-fiji">¿Qué es Fiji?</a></li>
+  <li><a href="#sitio-oficial-y-descarga" id="toc-sitio-oficial-y-descarga" class="nav-link" data-scroll-target="#sitio-oficial-y-descarga">Sitio oficial y descarga</a></li>
+  <li><a href="#qué-haremos" id="toc-qué-haremos" class="nav-link" data-scroll-target="#qué-haremos">¿Qué haremos?</a></li>
+  <li><a href="#antes-de-comenzar" id="toc-antes-de-comenzar" class="nav-link" data-scroll-target="#antes-de-comenzar">Antes de comenzar</a></li>
+  <li><a href="#opción-recomendada-abrir-la-mip-común" id="toc-opción-recomendada-abrir-la-mip-común" class="nav-link" data-scroll-target="#opción-recomendada-abrir-la-mip-común">Opción recomendada: abrir la MIP común</a></li>
+  <li><a href="#alternativa-generar-la-mip-desde-el-czi" id="toc-alternativa-generar-la-mip-desde-el-czi" class="nav-link" data-scroll-target="#alternativa-generar-la-mip-desde-el-czi">Alternativa: generar la MIP desde el CZI</a>
+  <ul class="collapse">
+  <li><a href="#abrir-el-czi" id="toc-abrir-el-czi" class="nav-link" data-scroll-target="#abrir-el-czi">1. Abrir el CZI</a></li>
+  <li><a href="#verificar-las-dimensiones" id="toc-verificar-las-dimensiones" class="nav-link" data-scroll-target="#verificar-las-dimensiones">2. Verificar las dimensiones</a></li>
+  <li><a href="#separar-los-canales" id="toc-separar-los-canales" class="nav-link" data-scroll-target="#separar-los-canales">3. Separar los canales</a></li>
+  <li><a href="#crear-la-proyección" id="toc-crear-la-proyección" class="nav-link" data-scroll-target="#crear-la-proyección">4. Crear la proyección</a></li>
+  <li><a href="#guardar-la-mip" id="toc-guardar-la-mip" class="nav-link" data-scroll-target="#guardar-la-mip">5. Guardar la MIP</a></li>
+  </ul></li>
+  <li><a href="#crear-una-copia-para-segmentar" id="toc-crear-una-copia-para-segmentar" class="nav-link" data-scroll-target="#crear-una-copia-para-segmentar">Crear una copia para segmentar</a></li>
+  <li><a href="#aplicar-el-umbral" id="toc-aplicar-el-umbral" class="nav-link" data-scroll-target="#aplicar-el-umbral">Aplicar el umbral</a></li>
+  <li><a href="#comprobar-la-máscara" id="toc-comprobar-la-máscara" class="nav-link" data-scroll-target="#comprobar-la-máscara">Comprobar la máscara</a></li>
+  <li><a href="#configurar-las-mediciones" id="toc-configurar-las-mediciones" class="nav-link" data-scroll-target="#configurar-las-mediciones">Configurar las mediciones</a></li>
+  <li><a href="#detectar-los-puncta" id="toc-detectar-los-puncta" class="nav-link" data-scroll-target="#detectar-los-puncta">Detectar los puncta</a></li>
+  <li><a href="#interpretar-las-ventanas-de-resultados" id="toc-interpretar-las-ventanas-de-resultados" class="nav-link" data-scroll-target="#interpretar-las-ventanas-de-resultados">Interpretar las ventanas de resultados</a>
+  <ul class="collapse">
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#roi-manager" id="toc-roi-manager" class="nav-link" data-scroll-target="#roi-manager">ROI Manager</a></li>
+  </ul></li>
+  <li><a href="#guardar-los-resultados" id="toc-guardar-los-resultados" class="nav-link" data-scroll-target="#guardar-los-resultados">Guardar los resultados</a>
+  <ul class="collapse">
+  <li><a href="#tabla" id="toc-tabla" class="nav-link" data-scroll-target="#tabla">Tabla</a></li>
+  <li><a href="#máscara" id="toc-máscara" class="nav-link" data-scroll-target="#máscara">Máscara</a></li>
+  <li><a href="#overlay" id="toc-overlay" class="nav-link" data-scroll-target="#overlay">Overlay</a></li>
+  </ul></li>
+  <li><a href="#qué-se-logró-en-la-exploración-inicial" id="toc-qué-se-logró-en-la-exploración-inicial" class="nav-link" data-scroll-target="#qué-se-logró-en-la-exploración-inicial">¿Qué se logró en la exploración inicial?</a></li>
+  <li><a href="#ventajas-observadas" id="toc-ventajas-observadas" class="nav-link" data-scroll-target="#ventajas-observadas">Ventajas observadas</a></li>
+  <li><a href="#limitaciones-de-la-macro-actual" id="toc-limitaciones-de-la-macro-actual" class="nav-link" data-scroll-target="#limitaciones-de-la-macro-actual">Limitaciones de la macro actual</a></li>
+  <li><a href="#aspectos-pendientes" id="toc-aspectos-pendientes" class="nav-link" data-scroll-target="#aspectos-pendientes">Aspectos pendientes</a></li>
+  <li><a href="#posibles-observaciones-al-analizar-las-imágenes" id="toc-posibles-observaciones-al-analizar-las-imágenes" class="nav-link" data-scroll-target="#posibles-observaciones-al-analizar-las-imágenes">Posibles observaciones al analizar las imágenes</a></li>
+  <li><a href="#estado-actual-del-análisis-en-fiji" id="toc-estado-actual-del-análisis-en-fiji" class="nav-link" data-scroll-target="#estado-actual-del-análisis-en-fiji">Estado actual del análisis en Fiji</a></li>
+  <li><a href="#conclusión-provisional" id="toc-conclusión-provisional" class="nav-link" data-scroll-target="#conclusión-provisional">Conclusión provisional</a></li>
+  <li><a href="#descargar-la-macro-exploratoria" id="toc-descargar-la-macro-exploratoria" class="nav-link" data-scroll-target="#descargar-la-macro-exploratoria">Descargar la macro exploratoria</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fiji.html">Tutorial paso a paso</a></li><li class="breadcrumb-item"><a href="./fiji.html">4. Análisis en Fiji</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Fiji / ImageJ</h1>
-<p class="subtitle lead">Implementación con interfaz gráfica y macro</p>
+<h1 class="title">Análisis en Fiji</h1>
+<p class="subtitle lead">Segmentación y cuantificación de puncta paso a paso</p>
 </div>
 
+<div>
+  <div class="description">
+    Tutorial introductorio para segmentar y medir puncta fluorescentes utilizando Fiji.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -299,18 +358,640 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><span class="eyebrow">Implementación 1 de 2</span></p>
-<p>Contenido en preparación.</p>
-<section id="procedimiento-manual" class="level2">
-<h2 class="anchored" data-anchor-id="procedimiento-manual">Procedimiento manual</h2>
+<p><span class="eyebrow">Fiji / ImageJ</span></p>
+<section id="qué-es-fiji" class="level2">
+<h2 class="anchored" data-anchor-id="qué-es-fiji">¿Qué es Fiji?</h2>
+<p>Fiji es una distribución de ImageJ preparada para el análisis de imágenes científicas. Incluye herramientas para abrir formatos de microscopía, procesar imágenes, seleccionar regiones, detectar objetos y exportar mediciones.</p>
+<p>Su interfaz gráfica permite observar cada operación y evaluar inmediatamente cómo cambia la imagen. Por eso es una herramienta especialmente accesible para comenzar a trabajar con bioimágenes.</p>
 </section>
-<section id="macro" class="level2">
-<h2 class="anchored" data-anchor-id="macro">Macro</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// segmentacion_tau.ijm</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">run</span><span class="op">(</span><span class="st">"Bio-Formats Importer"</span><span class="op">);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="sitio-oficial-y-descarga" class="level2">
+<h2 class="anchored" data-anchor-id="sitio-oficial-y-descarga">Sitio oficial y descarga</h2>
+<p>Fiji puede consultarse y descargarse gratuitamente desde su página oficial. El sitio también incluye documentación, tutoriales, novedades y recursos de la comunidad.</p>
+<p><a href="https://fiji.sc/" class="btn btn-primary" target="_blank">Visitar el sitio oficial de Fiji</a></p>
+<p><a href="https://fiji.sc/#download" class="btn btn-outline-primary" target="_blank">Descargar Fiji</a></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Fiji está disponible para Windows, macOS y Linux. La descarga ya incluye ImageJ y complementos utilizados en bioimágenes, como Bio-Formats.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Fiji e ImageJ
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ImageJ es el programa base. Fiji incorpora ImageJ junto con numerosos complementos, entre ellos Bio-Formats, que permite abrir archivos de microscopía como <code>.czi</code>.</p>
+<p>En este tutorial utilizaremos Fiji.</p>
+</div>
+</div>
 </section>
-<section id="máscara-obtenida" class="level2">
-<h2 class="anchored" data-anchor-id="máscara-obtenida">Máscara obtenida</h2>
+<section id="qué-haremos" class="level2">
+<h2 class="anchored" data-anchor-id="qué-haremos">¿Qué haremos?</h2>
+<p>El procedimiento en Fiji permitirá:</p>
+<ol type="1">
+<li>Abrir la imagen de fluorescencia.</li>
+<li>Confirmar que conserva su profundidad de 16 bits.</li>
+<li>Aplicar el umbral acordado.</li>
+<li>Generar una máscara binaria.</li>
+<li>Identificar los puncta.</li>
+<li>Medir sus características.</li>
+<li>Guardar la máscara, el overlay y la tabla de resultados.</li>
+</ol>
+<p>Para la comparación con Python se recomienda utilizar como entrada la misma proyección MIP del canal T22 en formato TIFF.</p>
+</section>
+<section id="antes-de-comenzar" class="level2">
+<h2 class="anchored" data-anchor-id="antes-de-comenzar">Antes de comenzar</h2>
+<p>Descargá e instalá Fiji desde su sitio oficial. No es necesario instalar Bio-Formats por separado, porque ya está incluido en Fiji.</p>
+<p>Antes de procesar una imagen, comprobá que disponés de:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Archivo</th>
+<th>Función</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CZI original</td>
+<td>Contiene los canales, planos Z y metadatos</td>
+</tr>
+<tr class="even">
+<td>TIFF MIP T22</td>
+<td>Imagen común para comparar Fiji y Python</td>
+</tr>
+<tr class="odd">
+<td>Carpeta de resultados</td>
+<td>Destino de máscaras, overlays y tablas</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Para realizar una comparación directa
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Fiji y Python deben segmentar exactamente el mismo TIFF MIP de 16 bits. De esta manera, cualquier diferencia se produce durante la segmentación o la medición y no durante la lectura del archivo CZI.</p>
+</div>
+</div>
+</section>
+<section id="opción-recomendada-abrir-la-mip-común" class="level2">
+<h2 class="anchored" data-anchor-id="opción-recomendada-abrir-la-mip-común">Opción recomendada: abrir la MIP común</h2>
+<p>La forma más sencilla de seguir el tutorial es utilizar la proyección T22 ya exportada como TIFF.</p>
+<p>En Fiji:</p>
+<ol type="1">
+<li>Seleccioná <code>File → Open</code>.</li>
+<li>Elegí el archivo terminado en <code>_T22_MIP.tif</code>.</li>
+<li>Esperá a que la imagen aparezca en una nueva ventana.</li>
+<li>Seleccioná <code>Image → Show Info</code> para consultar sus metadatos.</li>
+<li>Confirmá en la barra superior de la imagen que se mantenga en 16 bits.</li>
+</ol>
+<p>La ventana debería indicar algo semejante a:</p>
+<pre class="text"><code>1437 × 1437 pixels; 16-bit</code></pre>
+<p>Si la imagen aparece como <code>8-bit</code>, no continúes con el umbral <code>15000</code>.</p>
+</section>
+<section id="alternativa-generar-la-mip-desde-el-czi" class="level2">
+<h2 class="anchored" data-anchor-id="alternativa-generar-la-mip-desde-el-czi">Alternativa: generar la MIP desde el CZI</h2>
+<p>Si todavía no contás con el TIFF común, podés generar una proyección en Fiji.</p>
+<section id="abrir-el-czi" class="level3">
+<h3 class="anchored" data-anchor-id="abrir-el-czi">1. Abrir el CZI</h3>
+<p>Seleccioná:</p>
+<pre class="text"><code>File → Import → Bio-Formats</code></pre>
+<p>Elegí el archivo <code>.czi</code>.</p>
+<p>En las opciones de importación, abrilo como un hyperstack para conservar los canales y planos Z dentro de una misma estructura.</p>
+</section>
+<section id="verificar-las-dimensiones" class="level3">
+<h3 class="anchored" data-anchor-id="verificar-las-dimensiones">2. Verificar las dimensiones</h3>
+<p>Comprobá que la imagen contenga:</p>
+<ul>
+<li>Cuatro canales.</li>
+<li>Tres planos Z.</li>
+<li>La profundidad de bits original.</li>
+<li>La calibración espacial.</li>
+</ul>
+</section>
+<section id="separar-los-canales" class="level3">
+<h3 class="anchored" data-anchor-id="separar-los-canales">3. Separar los canales</h3>
+<p>Seleccioná:</p>
+<pre class="text"><code>Image → Color → Split Channels</code></pre>
+<p>Fiji generará una ventana diferente para cada canal.</p>
+<p>Identificá visualmente el canal correspondiente a T22. En los archivos utilizados se espera que sea el canal 0, pero debe verificarse en cada conjunto de imágenes.</p>
+</section>
+<section id="crear-la-proyección" class="level3">
+<h3 class="anchored" data-anchor-id="crear-la-proyección">4. Crear la proyección</h3>
+<p>Con el canal T22 seleccionado, ingresá en:</p>
+<pre class="text"><code>Image → Stacks → Z Project</code></pre>
+<p>Elegí:</p>
+<pre class="text"><code>Projection type: Max Intensity</code></pre>
+<p>El resultado será una única imagen 2D.</p>
+</section>
+<section id="guardar-la-mip" class="level3">
+<h3 class="anchored" data-anchor-id="guardar-la-mip">5. Guardar la MIP</h3>
+<p>Seleccioná:</p>
+<pre class="text"><code>File → Save As → Tiff</code></pre>
+<p>Utilizá un nombre que permita reconocer el archivo:</p>
+<pre class="text"><code>Control_Experiment-178_T22_MIP.tif</code></pre>
+<p>Esa misma imagen deberá utilizarse luego en Python.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>No modificar la intensidad
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>No conviertas la MIP a 8 bits y no apliques <code>Enhance Contrast</code>, normalización o sustracción de fondo antes de guardarla como imagen común.</p>
+<p>Ajustar temporalmente brillo y contraste para observar la imagen es posible, pero no se debe presionar <code>Apply</code> ni modificar los valores utilizados para medir.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="crear-una-copia-para-segmentar" class="level2">
+<h2 class="anchored" data-anchor-id="crear-una-copia-para-segmentar">Crear una copia para segmentar</h2>
+<p>La MIP original debe conservarse sin modificaciones porque se utilizará para medir intensidad.</p>
+<p>Con la MIP seleccionada:</p>
+<pre class="text"><code>Image → Duplicate</code></pre>
+<p>Asignale un nombre reconocible, por ejemplo:</p>
+<pre class="text"><code>Control_Experiment-178_T22_mask</code></pre>
+<p>A partir de este momento trabajaremos sobre la copia.</p>
+</section>
+<section id="aplicar-el-umbral" class="level2">
+<h2 class="anchored" data-anchor-id="aplicar-el-umbral">Aplicar el umbral</h2>
+<p>Seleccioná:</p>
+<pre class="text"><code>Image → Adjust → Threshold</code></pre>
+<p>Configurá:</p>
+<pre class="text"><code>Lower threshold: 15001
+Upper threshold: 65535</code></pre>
+<p>La vista previa mostrará qué píxeles serán considerados señal.</p>
+<p>Cuando el resultado sea visible, seleccioná <code>Apply</code> para crear la máscara.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Equivalencia con Python
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Python utiliza la condición:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mascara <span class="op">=</span> imagen <span class="op">&gt;</span> <span class="dv">15000</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Como la imagen contiene valores enteros, el intervalo equivalente en Fiji es <code>15001–65535</code>.</p>
+</div>
+</div>
+</section>
+<section id="comprobar-la-máscara" class="level2">
+<h2 class="anchored" data-anchor-id="comprobar-la-máscara">Comprobar la máscara</h2>
+<p>La máscara debe mostrar:</p>
+<ul>
+<li>El fondo en negro.</li>
+<li>Los píxeles seleccionados en blanco.</li>
+<li>Los puncta como objetos blancos separados cuando no están en contacto.</li>
+</ul>
+<p>Antes de continuar, compará la máscara con la MIP original.</p>
+<p>Preguntate:</p>
+<ul>
+<li>¿Los objetos blancos coinciden con puncta visibles?</li>
+<li>¿Se incluyeron grandes regiones del fondo?</li>
+<li>¿Desaparecieron señales que parecían relevantes?</li>
+<li>¿Varios puncta cercanos quedaron unidos?</li>
+<li>¿Hay objetos muy pequeños compatibles con ruido?</li>
+</ul>
+<p>No corrijas todavía la máscara con erosión, dilatación o watershed. Primero registrá las observaciones.</p>
+</section>
+<section id="configurar-las-mediciones" class="level2">
+<h2 class="anchored" data-anchor-id="configurar-las-mediciones">Configurar las mediciones</h2>
+<p>Seleccioná:</p>
+<pre class="text"><code>Analyze → Set Measurements</code></pre>
+<p>Activá:</p>
+<ul>
+<li>Area.</li>
+<li>Mean gray value.</li>
+<li>Standard deviation.</li>
+<li>Min &amp; max gray value.</li>
+<li>Perimeter.</li>
+<li>Shape descriptors.</li>
+<li>Integrated density.</li>
+<li>Display label.</li>
+</ul>
+<p>En <code>Redirect to</code>, seleccioná la MIP original de T22.</p>
+<p>La máscara indica dónde medir, pero los valores de intensidad deben obtenerse de la imagen original.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Máscara e intensidad cumplen funciones diferentes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La máscara permite delimitar los puncta. La MIP original conserva los valores de fluorescencia.</p>
+<p>Si medimos sobre la máscara, obtendremos valores asociados a negro y blanco, no la intensidad original de T22.</p>
+</div>
+</div>
+</section>
+<section id="detectar-los-puncta" class="level2">
+<h2 class="anchored" data-anchor-id="detectar-los-puncta">Detectar los puncta</h2>
+<p>Con la máscara seleccionada, ingresá en:</p>
+<pre class="text"><code>Analyze → Analyze Particles</code></pre>
+<p>Para la primera comparación configurá:</p>
+<pre class="text"><code>Size: 0–Infinity
+Circularity: 0.00–1.00
+Show: Outlines</code></pre>
+<p>Activá:</p>
+<ul>
+<li>Display results.</li>
+<li>Summarize.</li>
+<li>Add to Manager.</li>
+</ul>
+<p>Dejá desactivado:</p>
+<ul>
+<li>Exclude on edges.</li>
+<li>Include holes.</li>
+</ul>
+<p>No apliques watershed en esta primera versión.</p>
+<p>Al aceptar, Fiji generará:</p>
+<ul>
+<li>Una tabla <code>Results</code>.</li>
+<li>Una tabla <code>Summary</code>.</li>
+<li>Una imagen con los contornos.</li>
+<li>Una colección de ROI en <code>ROI Manager</code>.</li>
+</ul>
+</section>
+<section id="interpretar-las-ventanas-de-resultados" class="level2">
+<h2 class="anchored" data-anchor-id="interpretar-las-ventanas-de-resultados">Interpretar las ventanas de resultados</h2>
+<section id="results" class="level3">
+<h3 class="anchored" data-anchor-id="results">Results</h3>
+<p>Contiene una fila por objeto detectado. Según las opciones seleccionadas, puede incluir:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Columna</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Area</td>
+<td>Área del objeto</td>
+</tr>
+<tr class="even">
+<td>Mean</td>
+<td>Intensidad media</td>
+</tr>
+<tr class="odd">
+<td>StdDev</td>
+<td>Variabilidad de la intensidad</td>
+</tr>
+<tr class="even">
+<td>Min</td>
+<td>Intensidad mínima</td>
+</tr>
+<tr class="odd">
+<td>Max</td>
+<td>Intensidad máxima</td>
+</tr>
+<tr class="even">
+<td>Perim.</td>
+<td>Perímetro</td>
+</tr>
+<tr class="odd">
+<td>Circ.</td>
+<td>Circularidad</td>
+</tr>
+<tr class="even">
+<td>Feret</td>
+<td>Diámetro máximo</td>
+</tr>
+<tr class="odd">
+<td>IntDen</td>
+<td>Densidad integrada</td>
+</tr>
+<tr class="even">
+<td>RawIntDen</td>
+<td>Suma de las intensidades originales</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="summary" class="level3">
+<h3 class="anchored" data-anchor-id="summary">Summary</h3>
+<p>Contiene un resumen general de la imagen, como:</p>
+<ul>
+<li>Cantidad de objetos.</li>
+<li>Área total.</li>
+<li>Tamaño promedio.</li>
+<li>Porcentaje del área ocupada.</li>
+</ul>
+</section>
+<section id="roi-manager" class="level3">
+<h3 class="anchored" data-anchor-id="roi-manager">ROI Manager</h3>
+<p>Conserva el contorno de cada objeto. Al seleccionar una ROI puede comprobarse qué punctum representa en la imagen original.</p>
+</section>
+</section>
+<section id="guardar-los-resultados" class="level2">
+<h2 class="anchored" data-anchor-id="guardar-los-resultados">Guardar los resultados</h2>
+<section id="tabla" class="level3">
+<h3 class="anchored" data-anchor-id="tabla">Tabla</h3>
+<p>En la ventana <code>Results</code>, seleccioná:</p>
+<pre class="text"><code>File → Save As</code></pre>
+<p>Guardá la tabla en formato <code>.csv</code>, por ejemplo:</p>
+<pre class="text"><code>Control_Experiment-178_fiji_puncta.csv</code></pre>
+</section>
+<section id="máscara" class="level3">
+<h3 class="anchored" data-anchor-id="máscara">Máscara</h3>
+<p>Con la máscara seleccionada:</p>
+<pre class="text"><code>File → Save As → Tiff</code></pre>
+<p>Utilizá:</p>
+<pre class="text"><code>Control_Experiment-178_fiji_mask.tif</code></pre>
+</section>
+<section id="overlay" class="level3">
+<h3 class="anchored" data-anchor-id="overlay">Overlay</h3>
+<p>Mostrá las ROI sobre la MIP original y utilizá:</p>
+<pre class="text"><code>Image → Overlay → Flatten</code></pre>
+<p>Guardá la imagen como PNG:</p>
+<pre class="text"><code>Control_Experiment-178_fiji_overlay.png</code></pre>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Mantener nombres consistentes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La comparación automática con Python depende de que los archivos conserven el mismo identificador de imagen.</p>
+<p>La máscara de Fiji debe terminar en:</p>
+<pre class="text"><code>_fiji_mask.tif</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="qué-se-logró-en-la-exploración-inicial" class="level2">
+<h2 class="anchored" data-anchor-id="qué-se-logró-en-la-exploración-inicial">¿Qué se logró en la exploración inicial?</h2>
+<p>Durante el desarrollo del proyecto se construyó una macro exploratoria mediante el grabador de Fiji. Esta permitió ensayar diferentes operaciones sobre las imágenes:</p>
+<ul>
+<li>Apertura de archivos CZI.</li>
+<li>Selección de canales y planos.</li>
+<li>Ajuste de contraste.</li>
+<li>Sustracción de fondo.</li>
+<li>Umbral automático de Huang.</li>
+<li>Erosión y dilatación.</li>
+<li>Relleno de agujeros.</li>
+<li>Desenfoque gaussiano.</li>
+<li>Detección de máximos.</li>
+<li>Analyze Particles.</li>
+<li>Mediciones mediante ROI.</li>
+<li>Conteo de núcleos.</li>
+</ul>
+<p>También se generó una planilla piloto con mediciones de tres campos control y tres campos tratados.</p>
+<p>La planilla contiene:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Interpretación inicial</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Foto</td>
+<td>Identificador del campo</td>
+</tr>
+<tr class="even">
+<td>Mean Fluoresc</td>
+<td>Medición media de fluorescencia</td>
+</tr>
+<tr class="odd">
+<td>RawIntDent (Puncta)</td>
+<td>Intensidad integrada de la señal segmentada</td>
+</tr>
+<tr class="even">
+<td>Núcleos</td>
+<td>Número de núcleos detectados</td>
+</tr>
+<tr class="odd">
+<td>Normalizado/núcleos</td>
+<td>Medición dividida por el número de núcleos</td>
+</tr>
+</tbody>
+</table>
+<p>Estos resultados demuestran que Fiji permite extraer y organizar mediciones, pero todavía corresponden a una etapa exploratoria.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Normalizar por núcleos no equivale a medir por célula
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>DAPI permite contar núcleos, pero no delimita el citoplasma. Dividir una medición por el número de núcleos produce un promedio por núcleo o una aproximación por campo.</p>
+<p>Para obtener valores verdaderamente intracelulares sería necesario segmentar cada célula completa.</p>
+</div>
+</div>
+</section>
+<section id="ventajas-observadas" class="level2">
+<h2 class="anchored" data-anchor-id="ventajas-observadas">Ventajas observadas</h2>
+<p>Fiji permitió explorar las imágenes de manera rápida y visual. La interfaz facilitó la identificación de canales, la evaluación de máscaras y la selección de parámetros. <code>Analyze Particles</code> permitió obtener mediciones sin programar cada cálculo, mientras que <code>ROI Manager</code> ayudó a relacionar las filas de las tablas con los objetos observados.</p>
+<p>El grabador de macros también fue útil para registrar las operaciones realizadas y convertir una secuencia manual en un primer borrador de automatización.</p>
+</section>
+<section id="limitaciones-de-la-macro-actual" class="level2">
+<h2 class="anchored" data-anchor-id="limitaciones-de-la-macro-actual">Limitaciones de la macro actual</h2>
+<p>La macro compartida todavía no constituye un pipeline generalizable porque:</p>
+<ul>
+<li>Contiene una ruta absoluta de una computadora particular.</li>
+<li>Trabaja únicamente con <code>Experiment-178.czi</code>.</li>
+<li>Selecciona ventanas mediante nombres específicos.</li>
+<li>Abre y cierra manualmente canales y planos.</li>
+<li>Depende de ROI creadas previamente.</li>
+<li>Elimina ROI utilizando posiciones fijas.</li>
+<li>Combina mediciones de T22, Tau5 y DAPI.</li>
+<li>Aplica parámetros diferentes de los acordados para Python.</li>
+<li>No guarda automáticamente todos los resultados.</li>
+<li>No procesa una carpeta completa.</li>
+<li>No verifica la calibración espacial.</li>
+<li>No registra de forma ordenada los parámetros utilizados.</li>
+</ul>
+<p>Por este motivo, la macro debe conservarse como evidencia del proceso de exploración, pero no utilizarse todavía para afirmar que el análisis es automático o completamente reproducible.</p>
+</section>
+<section id="aspectos-pendientes" class="level2">
+<h2 class="anchored" data-anchor-id="aspectos-pendientes">Aspectos pendientes</h2>
+<p>La siguiente versión de la macro debería:</p>
+<ol type="1">
+<li>Solicitar al usuario una carpeta de entrada y una carpeta de salida.</li>
+<li>Procesar todos los TIFF MIP sin depender de sus nombres.</li>
+<li>Verificar que las imágenes sean de 16 bits.</li>
+<li>Aplicar el umbral fijo equivalente a Python.</li>
+<li>Mantener desactivados los filtros y watershed en la comparación inicial.</li>
+<li>Permitir definir el área mínima en <code>µm²</code>.</li>
+<li>Medir intensidad sobre la MIP original.</li>
+<li>Guardar máscara, overlay, tabla y resumen.</li>
+<li>Reiniciar <code>Results</code> y <code>ROI Manager</code> entre imágenes.</li>
+<li>Crear un archivo con los parámetros utilizados.</li>
+</ol>
+</section>
+<section id="posibles-observaciones-al-analizar-las-imágenes" class="level2">
+<h2 class="anchored" data-anchor-id="posibles-observaciones-al-analizar-las-imágenes">Posibles observaciones al analizar las imágenes</h2>
+<p>Durante la revisión pueden aparecer diferentes situaciones:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Observación</th>
+<th>Posible explicación</th>
+<th>Acción recomendada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Muchos objetos muy pequeños</td>
+<td>Ruido o señal puntual débil</td>
+<td>Evaluar un área mínima</td>
+</tr>
+<tr class="even">
+<td>Grandes regiones blancas</td>
+<td>Fondo elevado o umbral bajo</td>
+<td>Revisar el histograma y el control negativo</td>
+</tr>
+<tr class="odd">
+<td>Varios puncta unidos</td>
+<td>Proximidad o superposición en la MIP</td>
+<td>Registrar el caso antes de probar watershed</td>
+</tr>
+<tr class="even">
+<td>Diferencias entre campos</td>
+<td>Variación biológica o de adquisición</td>
+<td>Revisar parámetros del microscopio</td>
+</tr>
+<tr class="odd">
+<td>Señal en zonas sin células</td>
+<td>Fondo o detecciones extracelulares</td>
+<td>Incorporar una máscara celular</td>
+</tr>
+<tr class="even">
+<td>Valores de intensidad extremos</td>
+<td>Saturación</td>
+<td>Revisar la imagen original</td>
+</tr>
+<tr class="odd">
+<td>Distintos resultados al repetir</td>
+<td>Parámetros o ROI no reiniciados</td>
+<td>Automatizar y registrar cada decisión</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="estado-actual-del-análisis-en-fiji" class="level2">
+<h2 class="anchored" data-anchor-id="estado-actual-del-análisis-en-fiji">Estado actual del análisis en Fiji</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Componente</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Apertura de archivos CZI</td>
+<td>Logrado</td>
+</tr>
+<tr class="even">
+<td>Identificación de canales</td>
+<td>Logrado de forma exploratoria</td>
+</tr>
+<tr class="odd">
+<td>Segmentación visual</td>
+<td>Lograda</td>
+</tr>
+<tr class="even">
+<td>Medición de intensidad</td>
+<td>Lograda</td>
+</tr>
+<tr class="odd">
+<td>Conteo de partículas</td>
+<td>Logrado</td>
+</tr>
+<tr class="even">
+<td>Conteo de núcleos</td>
+<td>Logrado de forma exploratoria</td>
+</tr>
+<tr class="odd">
+<td>Exportación de una planilla piloto</td>
+<td>Lograda</td>
+</tr>
+<tr class="even">
+<td>Uso del mismo flujo que Python</td>
+<td>Pendiente</td>
+</tr>
+<tr class="odd">
+<td>Procesamiento automático por lotes</td>
+<td>Pendiente</td>
+</tr>
+<tr class="even">
+<td>Segmentación celular</td>
+<td>Pendiente</td>
+</tr>
+<tr class="odd">
+<td>Validación del área mínima</td>
+<td>Pendiente</td>
+</tr>
+<tr class="even">
+<td>Comparación Dice/IoU</td>
+<td>Pendiente</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="conclusión-provisional" class="level2">
+<h2 class="anchored" data-anchor-id="conclusión-provisional">Conclusión provisional</h2>
+<p>Fiji permitió desarrollar una primera aproximación visual al problema y reconocer qué decisiones influyen sobre los resultados. Su principal ventaja en esta etapa fue facilitar la exploración de las imágenes sin necesidad de programar.</p>
+</section>
+<section id="descargar-la-macro-exploratoria" class="level2">
+<h2 class="anchored" data-anchor-id="descargar-la-macro-exploratoria">Descargar la macro exploratoria</h2>
+<p>La macro utilizada durante la primera etapa del proyecto está disponible para su consulta y descarga.</p>
+<p><a href="https://drive.google.com/file/d/17R7mfmJXH2B-3Zj12RDCAD_m0MzFyKEn/view?usp=sharing" class="btn btn-primary" target="_blank">Descargar macro de Fiji</a></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Versión exploratoria
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Esta macro documenta las pruebas realizadas durante el desarrollo inicial. Todavía contiene rutas, nombres de imágenes y selecciones específicas, por lo que no debe ejecutarse directamente sobre un conjunto nuevo de imágenes sin revisarla y adaptarla.</p>
+<p>Su función actual es mostrar cómo se registraron las operaciones en Fiji y servir como punto de partida para una futura macro generalizable.</p>
+</div>
+</div>
+<p>El siguiente paso es transformar esa exploración en una macro corta, generalizable y equivalente al pipeline de Python. Solo después será posible comparar cuantitativamente las máscaras generadas por ambas herramientas.</p>
+<p><a href="./python.html" class="btn btn-primary">Continuar: análisis en Python →</a></p>
 
 
 </section>
@@ -341,12 +1022,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       // flash "checked"
       button.classList.add('code-copy-button-checked');
       var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
+      button.setAttribute("title", "Copiado");
       let tooltip;
       if (window.bootstrap) {
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
+        button.setAttribute("data-bs-title", "Copiado");
         tooltip = new bootstrap.Tooltip(button, 
           { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
@@ -389,7 +1070,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/AdrianaGLG@github\.com\/AdrianaGLG\/curso_fiji_vs_python\.git");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -718,13 +1399,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./flujo.html" class="pagination-link" aria-label="Flujo común">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Flujo común</span>
+      <a href="./flujo.html" class="pagination-link" aria-label="3. Flujo de análisis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">3. Flujo de análisis</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./python.html" class="pagination-link" aria-label="Python">
-        <span class="nav-page-text">Python</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./python.html" class="pagination-link" aria-label="5. Análisis en Python">
+        <span class="nav-page-text">5. Análisis en Python</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

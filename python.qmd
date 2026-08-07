@@ -1,210 +1,471 @@
 ---
-title: "Python"
-subtitle: "¿Qué podemos lograr en Python?"
-body-class: pag-python
+title: "Análisis en Python"
+subtitle: "Segmentación y cuantificación reproducible en Google Colab"
+description: "Tutorial para procesar imágenes CZI y cuantificar puncta con Python."
+toc: true
+toc-depth: 3
 ---
 
 [Implementación 2 de 2]{.eyebrow}
 
-En Fiji cada operación se hace con el mouse: abrir la imagen, elegir un umbral con
-un deslizador, apretar *Analyze Particles*. En Python esas mismas operaciones se
-escriben como texto. Eso obliga a explicitar cada decisión, y a cambio permite
-repetir el análisis completo sobre cincuenta imágenes sin volver a tocar nada.
+## ¿Qué es Python?
 
-Esta página recorre el notebook paso a paso. No hace falta saber programar para
-seguirla: alcanza con entender qué pregunta responde cada línea.
+Python es un lenguaje de programación utilizado en análisis de datos, automatización y procesamiento de imágenes.
 
-## La idea de fondo: una imagen es una tabla de números
+En este proyecto permite escribir explícitamente cada operación aplicada a las imágenes. Una vez definidos los parámetros, el mismo procedimiento puede repetirse sobre todos los archivos sin realizar nuevamente cada paso de forma manual.
 
-Todo lo que sigue depende de una sola idea. Para Python, una imagen no es un dibujo:
-es una grilla de números, uno por píxel, donde cada número es la intensidad de
-fluorescencia medida en ese punto. Nuestras imágenes son de 16 bits, así que esos
-valores van de 0 a 65535.
+No es necesario tener experiencia previa en programación para ejecutar el notebook. El código ya está preparado y organizado en celdas que deben ejecutarse en orden.
 
-Segmentar es, entonces, una operación aritmética: preguntarle a cada número si supera
-cierto valor. Todo el resto —los filtros, el etiquetado, las mediciones— son
-manipulaciones de esa misma grilla.
+## Abrir el notebook
 
-## 1. Cargar las herramientas
+El notebook está preparado para ejecutarse en Google Colab, un entorno que permite utilizar Python desde el navegador sin realizar una instalación local.
 
-Python viene "vacío" de fábrica. Las funciones especializadas se agrupan en
-bibliotecas que hay que pedir explícitamente al empezar. La palabra `import`
-significa exactamente eso: traer una caja de herramientas a la mesa de trabajo.
+[Abrir el notebook en Google Colab](https://colab.research.google.com/drive/1yBDSKWkYui2RaaLLnegf4GiUsNC9HkUm){.btn .btn-primary target="_blank"}
 
-```python
-import numpy as np          # matemática sobre grillas de números
-import tifffile             # leer y escribir imágenes TIFF
-import czifile              # leer los archivos .czi del microscopio Zeiss
-import pandas as pd         # tablas de resultados, como una planilla
-from skimage import measure, segmentation   # análisis de imágenes
-import matplotlib.pyplot as plt             # gráficos y visualización
+::: {.callout-note}
+## Guardar una copia
+
+Después de abrir el notebook, seleccioná:
+
+```text
+Archivo → Guardar una copia en Drive
 ```
 
-`skimage` es **scikit-image**, el equivalente conceptual de las funciones de Fiji.
-`pandas` es lo que después produce el CSV que se abre en Excel.
+De esta manera podrás modificar las rutas, ejecutar el código y conservar tus propios resultados.
+:::
 
-## 2. Leer el archivo del microscopio
+Para descargar el notebook en la computadora, utilizá:
 
-Un `.czi` no contiene una imagen sino un bloque de cuatro dimensiones. En nuestro
-caso: **4 canales × 3 planos Z × 1437 × 1437 píxeles**.
+```text
+Archivo → Descargar → Descargar archivo .ipynb
+```
 
-Los canales son las cuatro marcaciones adquiridas (Alexa 488 / T22, Alexa 555 / Tau
-total, campo claro, DAPI). Los planos Z son los tres cortes ópticos en profundidad.
+## ¿Qué hace el notebook?
 
-El notebook no adivina ese orden: le pregunta al archivo cuáles son sus ejes y los
-reordena siempre a la misma disposición, `C-Z-Y-X`. Eso es lo que hace la función
-`leer_czi`. Es la parte menos vistosa del código y la que más problemas evita: si el
-orden de los ejes cambia entre archivos, todo lo demás mide la estructura equivocada.
+El flujo completo permite:
 
-De paso, esa función lee del archivo el **tamaño real del píxel en micrómetros**. Sin
-ese dato las áreas solo podrían informarse en píxeles, que no son comparables entre
-microscopios.
+1. Conectar Google Colab con Google Drive.
+2. Buscar los archivos CZI.
+3. Leer sus canales, planos y metadatos.
+4. Confirmar visualmente el canal T22.
+5. Generar una proyección de máxima intensidad.
+6. Aplicar el umbral manual de `15000`.
+7. Identificar los puncta.
+8. Medir su tamaño, forma e intensidad.
+9. Crear imágenes de control.
+10. Procesar todos los archivos.
+11. Exportar tablas y máscaras.
+12. Comparar los resultados con Fiji.
 
-## 3. Elegir el canal
+## Una imagen como matriz de intensidades
 
-Con el bloque ya ordenado, quedarse con el canal verde es pedir el primero:
+Para Python, una imagen es una matriz de números. Cada posición de la matriz corresponde a un píxel y contiene un valor de intensidad.
+
+Las imágenes utilizadas tienen una profundidad de 16 bits, por lo que sus intensidades pueden encontrarse entre:
+
+```text
+0 y 65535
+```
+
+Los valores bajos suelen corresponder al fondo y los más altos a regiones con mayor señal registrada.
+
+Segmentar consiste en aplicar una regla que determine qué píxeles serán considerados señal.
+
+## 1. Preparar Google Colab
+
+La primera celda instala dos bibliotecas necesarias para leer los archivos CZI:
 
 ```python
+%pip install -q "czifile==2019.7.2.3" "imagecodecs==2024.12.30"
+```
+
+Esta instalación debe ejecutarse una vez al comenzar una nueva sesión de Colab.
+
+::: {.callout-warning}
+## No reinstalar NumPy ni SciPy
+
+El notebook utiliza las versiones de NumPy y SciPy disponibles en Colab. Reinstalarlas sin controlar sus compatibilidades puede provocar errores en otras bibliotecas.
+:::
+
+Después se cargan las herramientas utilizadas:
+
+```python
+import czifile
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import tifffile
+
+from scipy import ndimage as ndi
+from skimage import feature, measure, segmentation
+```
+
+| Biblioteca | Función principal |
+|---|---|
+| NumPy | Trabajar con matrices de píxeles |
+| pandas | Organizar y exportar tablas |
+| Matplotlib | Mostrar imágenes y gráficos |
+| czifile | Leer archivos `.czi` |
+| tifffile | Guardar y abrir imágenes TIFF |
+| SciPy | Realizar operaciones numéricas |
+| scikit-image | Etiquetar, medir y segmentar objetos |
+
+## 2. Conectar Google Drive
+
+El notebook monta Google Drive para acceder a las imágenes y guardar los resultados.
+
+```python
+from google.colab import drive
+drive.mount("/content/drive")
+```
+
+Colab solicitará autorización para acceder a los archivos.
+
+Después deben comprobarse estas rutas:
+
+```python
+BASE = Path(
+    "/content/drive/MyDrive/Microbiologia/Taller/"
+    "Trabajo grupal/Fotos de Rodri CZI/"
+)
+
+SALIDA = Path(
+    "/content/drive/MyDrive/Microbiologia/Taller/"
+    "Trabajo grupal/Fotos de Rodri CZI/"
+)
+```
+
+`BASE` indica dónde se encuentran los archivos CZI y `SALIDA` dónde se guardarán los resultados.
+
+Solo es necesario modificar estas líneas si las carpetas se encuentran en otra ubicación.
+
+::: {.callout-tip}
+## Copiar la ruta de una carpeta
+
+En el panel izquierdo de Colab, buscá la carpeta dentro de Google Drive, presioná los tres puntos y seleccioná `Copiar ruta`.
+
+Luego reemplazá el contenido entre comillas de `BASE` o `SALIDA`.
+:::
+
+## 3. Buscar los archivos
+
+El notebook recorre la carpeta y sus subcarpetas para localizar todos los archivos terminados en `.czi`.
+
+```python
+archivos = sorted(
+    p for p in BASE.rglob("*")
+    if p.is_file() and p.suffix.lower() == ".czi"
+)
+```
+
+Si no encuentra archivos, muestra un mensaje de error con la ruta que debe revisarse.
+
+Las carpetas `Control` y `Tratada` también se utilizan para identificar la condición de cada imagen.
+
+## 4. Leer el CZI
+
+Un archivo CZI puede contener canales, planos Z y otros ejes. La función `leer_czi()` consulta esa información y reorganiza la matriz en el orden:
+
+```text
+C – Z – Y – X
+```
+
+Esto representa:
+
+| Eje | Significado |
+|---|---|
+| C | Canal |
+| Z | Plano óptico |
+| Y | Alto |
+| X | Ancho |
+
+Una imagen de ejemplo puede presentar la forma:
+
+```text
+(4, 3, 1437, 1437)
+```
+
+El notebook también intenta leer de los metadatos:
+
+- El tamaño del píxel.
+- La distancia entre planos Z.
+- Los nombres de los canales.
+- La forma original del archivo.
+
+Si el tamaño del píxel no está disponible, el análisis se detiene para evitar informar áreas incorrectas.
+
+## 5. Confirmar los canales
+
+Antes de segmentar, el notebook muestra todos los canales y planos Z.
+
+Este control permite comprobar que:
+
+- El canal verde corresponde a T22.
+- El canal rojo corresponde a Tau5.
+- El canal azul corresponde a DAPI.
+- El campo claro fue identificado correctamente.
+
+El parámetro inicial es:
+
 CANAL_T22 = 0
-verde = datos[CANAL_T22]
+
+
+Python comienza a contar desde cero, por lo que `0` representa el primer canal.
+
+::: {.callout-warning}
+## No asumir el orden de los canales
+
+El canal T22 se espera en la posición 0 para estas imágenes, pero debe confirmarse visualmente. Si la adquisición cambia, el orden también podría cambiar.
+:::
+
+## 6. Definir el umbral
+
+El parámetro central es:
+
+```python
+UMBRAL_INTENSIDAD = 15000
 ```
 
-Python numera desde cero, así que el canal 0 es el primero. `verde` ahora contiene los
-tres planos Z de la marcación T22 y nada más.
+La máscara se construye mediante:
 
-## 4. Aplanar el stack en una sola imagen
+```python
+mascara = imagen > 15000
+```
 
-Los tres planos Z se combinan en una única imagen 2D mediante una **proyección de
-máxima intensidad**: para cada posición (x, y) se conserva el valor más alto entre los
-tres cortes.
+Esto clasifica los píxeles de la siguiente manera:
+
+| Intensidad | Resultado |
+|---:|---|
+| Menor o igual que 15000 | Fondo |
+| Mayor que 15000 | Señal |
+
+El valor permanece escrito en el notebook y se aplica de la misma manera a todas las imágenes.
+
+::: {.callout-important}
+## El umbral debe validarse
+
+El histograma permite observar dónde se ubica el umbral dentro de la distribución de intensidades, pero no demuestra por sí solo que `15000` sea el valor correcto.
+
+Su validación requiere revisar overlays, controles negativos e imágenes representativas adquiridas con condiciones comparables.
+:::
+
+## 7. Revisar los planos Z
+
+Antes de crear una proyección, el notebook muestra cada plano del canal T22 y su máscara correspondiente.
+
+Este paso permite comprobar:
+
+- En qué planos aparece la señal.
+- Si los puncta se observan en más de un plano.
+- Si el umbral conserva las estructuras visibles.
+- Si existen diferencias importantes entre planos.
+
+Esta revisión se mantiene como control visual y no se utiliza todavía para realizar una cuantificación tridimensional.
+
+## 8. Crear la proyección MIP
+
+Los planos Z se combinan mediante una proyección de máxima intensidad:
 
 ```python
 mip = verde.max(axis=0)
 ```
 
-Esto no es un detalle estético. Si midiéramos los tres planos por separado, una misma
-estructura que aparece en dos cortes se contaría dos veces. La proyección es también
-lo que hace posible la comparación: ese mismo TIFF de 16 bits es el que se abre en
-Fiji, de modo que ambas herramientas parten del píxel idéntico.
+Para cada posición de la imagen se conserva la intensidad más alta encontrada entre los planos Z.
 
-## 5. El umbral: la línea que define todo
+La MIP resultante se guarda como TIFF calibrado de 16 bits. Ese archivo constituye la imagen común que también puede abrirse en Fiji.
 
-Acá está el corazón del análisis, y es una sola línea:
+::: {.callout-warning}
+## Limitación de la MIP
 
-```python
-mascara = mip > 15000
-```
-
-Se le pregunta a cada píxel si su intensidad supera 15000. El resultado es una imagen
-del mismo tamaño donde cada posición vale verdadero o falso: la **máscara**. Es
-exactamente lo que en Fiji produce el deslizador de *Threshold*, pero con el valor
-escrito y fijo en lugar de ajustado a ojo.
-
-::: {.callout-important}
-## El umbral es una decisión, no un resultado
-
-15000 está expresado en unidades crudas de la imagen de 16 bits. Solo tiene sentido
-entre imágenes adquiridas con los mismos parámetros del microscopio: si cambia la
-potencia del láser o el tiempo de exposición, ese número deja de significar lo mismo.
+La proyección simplifica el análisis a 2D, pero puede fusionar señales ubicadas en planos diferentes. Por lo tanto, no permite establecer cuántos objetos tridimensionales independientes existen en la muestra.
 :::
 
-El notebook toma una decisión metodológica deliberada: **no** resta fondo, **no**
-normaliza, **no** aplica Otsu ni filtro mediano. Esas operaciones se probaron y
-deformaban una máscara que ya se veía correcta. Es un caso instructivo: más
-procesamiento no es mejor procesamiento.
+## 9. Identificar los puncta
 
-Para justificarlo, el notebook grafica el histograma de intensidades con el umbral
-marcado en rojo. Ese gráfico muestra dónde cae el corte respecto de la distribución
-real de la imagen, y es lo que convierte a 15000 de número arbitrario en decisión
-defendible.
-
-## 6. De máscara a objetos contables
-
-La máscara dice qué píxeles son señal, pero no cuántos puncta hay: un píxel no sabe a
-qué objeto pertenece. Etiquetar es agrupar píxeles vecinos encendidos y darle un
-número a cada grupo.
+Después de aplicar el umbral, los píxeles blancos conectados se agrupan mediante:
 
 ```python
 etiquetas = measure.label(mascara, connectivity=2)
 ```
 
-`connectivity=2` significa que dos píxeles se consideran del mismo objeto también
-cuando se tocan en diagonal. Es uno de esos detalles que parecen menores y que
-explican discrepancias con Fiji, porque cada herramienta tiene su propio valor por
-defecto.
+`connectivity=2` considera conectados los píxeles que se tocan por los lados o en diagonal.
 
-El watershed —que separa objetos en contacto— está implementado pero **apagado**. Se
-puede encender cambiando una sola variable, y por eso es honesto informarlo: separar
-dos puncta pegados es una hipótesis sobre la biología, no una observación.
+Cada grupo recibe una etiqueta numérica diferente y se interpreta como un objeto segmentado.
 
-## 7. Medir
+## 10. Parámetros de medición
 
-Con los objetos numerados, `regionprops` recorre cada uno y calcula sus propiedades:
-área, circularidad, intensidad media, intensidad integrada. El resultado es una tabla
-—una fila por punctum— que se guarda como CSV.
-
-Las áreas se convierten a µm² usando el tamaño de píxel leído en el paso 2. Y un
-punto crítico: **la intensidad se mide sobre la imagen original**, no sobre ninguna
-versión procesada. Medir fluorescencia sobre una imagen con el contraste realzado
-devuelve números que no representan nada.
-
-Los filtros de tamaño, circularidad y exclusión de bordes se aplican *después* del
-etiquetado, igual que en *Analyze Particles*. En el notebook arrancan desactivados a
-propósito: primero se miran los overlays, después se elige un área mínima, y ese valor
-se usa idéntico en ambas herramientas.
-
-## 8. Mirar lo que se midió
-
-Ninguna cifra vale sin control visual. El notebook genera, para cada imagen, un panel
-de tres vistas: la proyección original, la máscara cruda, y la imagen con el contorno
-de cada objeto medido dibujado en rojo y su centro marcado.
-
-Ese tercer panel es la prueba de que el análisis detectó las estructuras que uno ve, y
-no ruido, bordes de célula o saturación.
-
-## 9. Procesar todo el conjunto
-
-Hasta acá el flujo corrió sobre una imagen. La ventaja decisiva de Python aparece
-ahora: el mismo procedimiento se aplica a todos los archivos con un bucle, y de cada
-uno se guardan la proyección, ambas máscaras, la imagen etiquetada, el overlay y las
-tablas.
-
-Todos los parámetros están reunidos en un único bloque al principio. Cambiar el umbral
-para todo el conjunto es editar un número y volver a ejecutar. Esa es la diferencia
-práctica entre las dos herramientas: en Fiji la reproducibilidad depende de recordar
-qué se apretó; acá está escrita.
-
-## 10. Comparar con Fiji
-
-El último paso responde la pregunta del proyecto. Cargadas las máscaras de Fiji, se
-calculan dos índices de superposición:
-
-- **Dice** y **IoU**, que miden cuánto se solapan ambas máscaras. Valen 1 si son
-  idénticas y 0 si no comparten ningún píxel.
+Los parámetros iniciales son:
 
 ```python
-dice = 2 * interseccion / (a.sum() + b.sum())
-iou  = interseccion / union
+MIN_AREA_UM2 = 0.0
+MAX_AREA_UM2 = np.inf
+MIN_CIRCULARIDAD = 0.0
+EXCLUIR_BORDE = False
+
+USAR_WATERSHED = False
+MIN_DISTANCE = 2
 ```
 
-Esto evalúa **concordancia entre métodos**, no exactitud. Sin una máscara manual de
-referencia, ninguna de las dos herramientas tiene la verdad: solo se puede decir
-cuánto se parecen y dónde difieren.
+En esta primera versión:
 
-## Parámetros a replicar en Fiji
+- No se eliminan objetos por tamaño.
+- No se eliminan objetos por circularidad.
+- No se excluyen objetos que tocan el borde.
+- No se separan objetos mediante watershed.
 
-| Decisión | Valor |
+Estos parámetros comienzan desactivados para conservar la máscara inicial. Después de revisar los overlays podrá definirse un área mínima y aplicarla también en Fiji.
+
+## 11. Medir los objetos
+
+La función `regionprops_table()` calcula las propiedades de cada objeto utilizando la MIP original como imagen de intensidad.
+
+Entre las variables obtenidas se encuentran:
+
+| Variable | Interpretación |
 |---|---|
-| Imagen | MIP del canal T22, 16 bits |
-| Corrección de fondo | Sin sustracción |
-| Umbral | Manual, 15000–65535 |
-| Watershed | Desactivado |
-| Conectividad | Diagonal incluida |
-| Filtros de tamaño y forma | Los mismos en ambas |
+| Área | Tamaño del objeto |
+| Perímetro | Longitud del contorno |
+| Circularidad | Semejanza con una forma circular |
+| Diámetro equivalente | Diámetro de un círculo con la misma área |
+| Intensidad media | Promedio de intensidades dentro del objeto |
+| Intensidad máxima | Mayor intensidad dentro del objeto |
+| Intensidad integrada | Intensidad media multiplicada por el área |
+| Excentricidad | Grado de elongación |
+| Solidez | Relación con la envolvente convexa |
+| Centroide | Posición central del objeto |
 
-## Ejecutar el notebook
+Las áreas y distancias se convierten a unidades físicas mediante el tamaño del píxel.
 
-El notebook está preparado para Google Colab, que corre Python en el navegador sin
-instalar nada. Lee los archivos directamente de Google Drive.
+::: {.callout-note}
+## Imagen para segmentar e imagen para medir
 
-[Abrir en Colab](https://colab.research.google.com/drive/1yBDSKWkYui2RaaLLnegf4GiUsNC9HkUm){.btn .btn-primary target="_blank"}
+La máscara indica qué píxeles pertenecen a cada objeto. La intensidad se obtiene de la MIP original.
+
+No se mide fluorescencia sobre una máscara binaria ni sobre una imagen con el contraste modificado.
+:::
+
+## 12. Realizar el control visual
+
+El notebook genera tres visualizaciones:
+
+1. MIP original.
+2. Máscara creada con el umbral.
+3. Overlay con los contornos rojos y centroides celestes.
+
+El overlay permite comprobar si los objetos medidos corresponden a los puncta observados.
+
+La cuantificación no debería interpretarse antes de revisar estas imágenes.
+
+## 13. Procesar todo el conjunto
+
+Después de comprobar una imagen, el notebook procesa todos los archivos CZI encontrados.
+
+Para cada archivo guarda:
+
+| Carpeta | Contenido |
+|---|---|
+| `tif_mip` | Proyección T22 de 16 bits |
+| `mascaras_crudas` | Máscara creada directamente con el umbral |
+| `mascaras_filtradas` | Máscara posterior a los filtros de medición |
+| `etiquetas` | Imagen con un número por objeto |
+| `overlays` | Control visual con los contornos |
+| `fiji` | Carpeta reservada para las máscaras de Fiji |
+
+También genera:
+
+```text
+python_puncta_segun_Majo.csv
+python_resumen_segun_Majo.csv
+python_parametros_segun_Majo.csv
+python_versiones.csv
+python_errores_segun_Majo.csv
+```
+
+## Tabla por punctum
+
+El archivo `python_puncta_segun_Majo.csv` contiene una fila por objeto detectado.
+
+Permite estudiar la distribución de tamaños, formas e intensidades de los puncta.
+
+## Resumen por imagen
+
+El archivo `python_resumen_segun_Majo.csv` contiene una fila por imagen e incluye:
+
+- Número de puncta.
+- Puncta por `1000 µm²`.
+- Porcentaje de área positiva.
+- Área mediana.
+- Circularidad mediana.
+- Intensidad media.
+- Intensidad integrada total.
+
+Estos valores permiten comparar campos o condiciones sin utilizar cada punctum como una réplica experimental independiente.
+
+## 14. Comparar con Fiji
+
+Para comparar las máscaras, los archivos generados en Fiji deben guardarse dentro de la carpeta `fiji` con nombres terminados en:
+
+```text
+_fiji_mask.tif
+```
+
+El notebook calcula dos métricas de superposición:
+
+| Métrica | Interpretación |
+|---|---|
+| Dice | Superposición relativa entre dos máscaras |
+| IoU | Intersección dividida por la unión |
+| Valor 1 | Máscaras idénticas |
+| Valor 0 | No existe superposición |
+
+Estas métricas evalúan concordancia entre Fiji y Python. No determinan cuál máscara representa mejor la señal biológica.
+
+## Ventajas de Python
+
+Python permite conservar los parámetros utilizados, repetir el análisis sobre varias imágenes y guardar automáticamente resultados intermedios. También facilita la creación de controles de calidad, el registro de versiones y la incorporación posterior de nuevas métricas.
+
+Su principal ventaja en este proyecto no es reemplazar Fiji, sino hacer explícita y repetible cada decisión del análisis.
+
+## ¿Qué se logró?
+
+| Componente | Estado |
+|---|---|
+| Lectura de archivos CZI | Logrado |
+| Reordenamiento de ejes | Logrado |
+| Lectura de calibración | Logrado |
+| Visualización de canales y planos | Logrado |
+| Proyección MIP | Logrado |
+| Umbral manual de 15000 | Logrado |
+| Etiquetado de puncta | Logrado |
+| Mediciones morfológicas | Logrado |
+| Mediciones de intensidad | Logrado |
+| Procesamiento por lotes | Logrado |
+| Exportación de TIFF, PNG y CSV | Logrado |
+| Control visual mediante overlays | Logrado |
+| Comparación Dice e IoU | Implementada, pendiente de máscaras de Fiji |
+| Validación del área mínima | Pendiente |
+| Segmentación celular | Pendiente |
+| Análisis tridimensional | Pendiente |
+
+## Posibles dificultades
+
+| Problema | Posible causa | Qué revisar |
+|---|---|---|
+| No se encuentran archivos | Ruta incorrecta | Valor de `BASE` |
+| Canal incorrecto | Orden diferente de canales | Panel de canales |
+| Máscara completamente negra | Umbral demasiado alto o imagen incorrecta | Rango de intensidad |
+| Máscara demasiado extensa | Fondo elevado o umbral bajo | Histograma y overlay |
+| Áreas sin unidades | Falta de calibración | Metadatos del CZI |
+| Puncta fusionados | Contacto o superposición en la MIP | Planos Z y watershed |
+| Error al importar paquetes | Versiones incompatibles | Reiniciar el entorno y ejecutar desde el comienzo |
+| Resultados duplicados | Ejecución parcial o archivos anteriores | Carpeta de salida y nombres |
+
+## Aspectos pendientes
+
+El siguiente paso metodológico es seleccionar un área mínima en `µm²` después de revisar imágenes control, tratadas y controles negativos. Ese valor deberá utilizarse sin cambios en Fiji y Python.
+
+También queda pendiente incorporar una máscara celular para determinar si los puncta se encuentran dentro de las células y calcular mediciones por célula. DAPI puede utilizarse para localizar núcleos, pero no representa por sí solo el citoplasma.
+
+Finalmente, las máscaras de Fiji deben guardarse con la estructura de nombres esperada para completar la comparación mediante Dice e IoU.
+
+[Continuar: comparación de resultados →](comparacion.qmd){.btn .btn-primary}

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Tutorial para procesar imágenes CZI y cuantificar puncta con Python.">
 
-<title>Python – Fiji vs.&nbsp;Python</title>
+<title>Análisis en Python – Fiji vs.&nbsp;Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -98,21 +99,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
   }
 }</script>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet">
 
 
 </head>
@@ -128,8 +127,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">Fiji vs.&nbsp;Python</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -138,19 +137,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Inicio</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./flujo.html"> 
-<span class="menu-text">Flujo común</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Tutorial</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+        <li>
+    <a class="dropdown-item" href="./contexto.html">
+ <span class="dropdown-text">1. Contexto y pregunta</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./comparacion.html"> 
-<span class="menu-text">Comparación</span></a>
+        <li>
+    <a class="dropdown-item" href="./datos.html">
+ <span class="dropdown-text">2. Conocer las imágenes</span></a>
   </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+        <li>
+    <a class="dropdown-item" href="./flujo.html">
+ <span class="dropdown-text">3. Flujo de análisis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./fiji.html">
+ <span class="dropdown-text">4. Análisis en Fiji</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./python.html">
+ <span class="dropdown-text">5. Análisis en Python</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./comparacion.html">
+ <span class="dropdown-text">6. Comparación</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="./presentacion.html"> 
 <span class="menu-text">Presentación</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AdrianaGLG/curso_fiji_vs_python"> <i class="bi bi-github" role="img" aria-label="Repositorio en GitHub">
+</i> 
+<span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -160,15 +187,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-          <h1 class="quarto-secondary-nav-title">Python</h1>
-        </a>     
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fiji.html">Tutorial paso a paso</a></li><li class="breadcrumb-item"><a href="./python.html">5. Análisis en Python</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
     </div>
   </nav>
 </header>
@@ -176,11 +200,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -192,8 +211,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">El proyecto</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Introducción</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -201,19 +220,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contexto.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Contexto y pregunta</span></a>
+ <span class="menu-text">1. Contexto y pregunta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./datos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Imágenes y datos</span></a>
+ <span class="menu-text">2. Conocer las imágenes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./flujo.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Flujo común</span></a>
+ <span class="menu-text">3. Flujo de análisis</span></a>
   </div>
 </li>
       </ul>
@@ -221,8 +240,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Herramientas</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Tutorial paso a paso</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -230,23 +249,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fiji.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Fiji / ImageJ</span></a>
+ <span class="menu-text">4. Análisis en Fiji</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./python.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Python</span></a>
+ <span class="menu-text">5. Análisis en Python</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Comparación de resultados</span></a>
   </div>
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./comparacion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Comparación</span></a>
-  </div>
-</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -270,31 +289,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">En esta página</h2>
    
   <ul>
-  <li><a href="#la-idea-de-fondo-una-imagen-es-una-tabla-de-números" id="toc-la-idea-de-fondo-una-imagen-es-una-tabla-de-números" class="nav-link active" data-scroll-target="#la-idea-de-fondo-una-imagen-es-una-tabla-de-números">La idea de fondo: una imagen es una tabla de números</a></li>
-  <li><a href="#cargar-las-herramientas" id="toc-cargar-las-herramientas" class="nav-link" data-scroll-target="#cargar-las-herramientas">1. Cargar las herramientas</a></li>
-  <li><a href="#leer-el-archivo-del-microscopio" id="toc-leer-el-archivo-del-microscopio" class="nav-link" data-scroll-target="#leer-el-archivo-del-microscopio">2. Leer el archivo del microscopio</a></li>
-  <li><a href="#elegir-el-canal" id="toc-elegir-el-canal" class="nav-link" data-scroll-target="#elegir-el-canal">3. Elegir el canal</a></li>
-  <li><a href="#aplanar-el-stack-en-una-sola-imagen" id="toc-aplanar-el-stack-en-una-sola-imagen" class="nav-link" data-scroll-target="#aplanar-el-stack-en-una-sola-imagen">4. Aplanar el stack en una sola imagen</a></li>
-  <li><a href="#el-umbral-la-línea-que-define-todo" id="toc-el-umbral-la-línea-que-define-todo" class="nav-link" data-scroll-target="#el-umbral-la-línea-que-define-todo">5. El umbral: la línea que define todo</a></li>
-  <li><a href="#de-máscara-a-objetos-contables" id="toc-de-máscara-a-objetos-contables" class="nav-link" data-scroll-target="#de-máscara-a-objetos-contables">6. De máscara a objetos contables</a></li>
-  <li><a href="#medir" id="toc-medir" class="nav-link" data-scroll-target="#medir">7. Medir</a></li>
-  <li><a href="#mirar-lo-que-se-midió" id="toc-mirar-lo-que-se-midió" class="nav-link" data-scroll-target="#mirar-lo-que-se-midió">8. Mirar lo que se midió</a></li>
-  <li><a href="#procesar-todo-el-conjunto" id="toc-procesar-todo-el-conjunto" class="nav-link" data-scroll-target="#procesar-todo-el-conjunto">9. Procesar todo el conjunto</a></li>
-  <li><a href="#comparar-con-fiji" id="toc-comparar-con-fiji" class="nav-link" data-scroll-target="#comparar-con-fiji">10. Comparar con Fiji</a></li>
-  <li><a href="#parámetros-a-replicar-en-fiji" id="toc-parámetros-a-replicar-en-fiji" class="nav-link" data-scroll-target="#parámetros-a-replicar-en-fiji">Parámetros a replicar en Fiji</a></li>
-  <li><a href="#ejecutar-el-notebook" id="toc-ejecutar-el-notebook" class="nav-link" data-scroll-target="#ejecutar-el-notebook">Ejecutar el notebook</a></li>
+  <li><a href="#qué-es-python" id="toc-qué-es-python" class="nav-link active" data-scroll-target="#qué-es-python">¿Qué es Python?</a></li>
+  <li><a href="#abrir-el-notebook" id="toc-abrir-el-notebook" class="nav-link" data-scroll-target="#abrir-el-notebook">Abrir el notebook</a></li>
+  <li><a href="#qué-hace-el-notebook" id="toc-qué-hace-el-notebook" class="nav-link" data-scroll-target="#qué-hace-el-notebook">¿Qué hace el notebook?</a></li>
+  <li><a href="#una-imagen-como-matriz-de-intensidades" id="toc-una-imagen-como-matriz-de-intensidades" class="nav-link" data-scroll-target="#una-imagen-como-matriz-de-intensidades">Una imagen como matriz de intensidades</a></li>
+  <li><a href="#preparar-google-colab" id="toc-preparar-google-colab" class="nav-link" data-scroll-target="#preparar-google-colab">1. Preparar Google Colab</a></li>
+  <li><a href="#conectar-google-drive" id="toc-conectar-google-drive" class="nav-link" data-scroll-target="#conectar-google-drive">2. Conectar Google Drive</a></li>
+  <li><a href="#buscar-los-archivos" id="toc-buscar-los-archivos" class="nav-link" data-scroll-target="#buscar-los-archivos">3. Buscar los archivos</a></li>
+  <li><a href="#leer-el-czi" id="toc-leer-el-czi" class="nav-link" data-scroll-target="#leer-el-czi">4. Leer el CZI</a></li>
+  <li><a href="#confirmar-los-canales" id="toc-confirmar-los-canales" class="nav-link" data-scroll-target="#confirmar-los-canales">5. Confirmar los canales</a></li>
+  <li><a href="#definir-el-umbral" id="toc-definir-el-umbral" class="nav-link" data-scroll-target="#definir-el-umbral">6. Definir el umbral</a></li>
+  <li><a href="#revisar-los-planos-z" id="toc-revisar-los-planos-z" class="nav-link" data-scroll-target="#revisar-los-planos-z">7. Revisar los planos Z</a></li>
+  <li><a href="#crear-la-proyección-mip" id="toc-crear-la-proyección-mip" class="nav-link" data-scroll-target="#crear-la-proyección-mip">8. Crear la proyección MIP</a></li>
+  <li><a href="#identificar-los-puncta" id="toc-identificar-los-puncta" class="nav-link" data-scroll-target="#identificar-los-puncta">9. Identificar los puncta</a></li>
+  <li><a href="#parámetros-de-medición" id="toc-parámetros-de-medición" class="nav-link" data-scroll-target="#parámetros-de-medición">10. Parámetros de medición</a></li>
+  <li><a href="#medir-los-objetos" id="toc-medir-los-objetos" class="nav-link" data-scroll-target="#medir-los-objetos">11. Medir los objetos</a></li>
+  <li><a href="#realizar-el-control-visual" id="toc-realizar-el-control-visual" class="nav-link" data-scroll-target="#realizar-el-control-visual">12. Realizar el control visual</a></li>
+  <li><a href="#procesar-todo-el-conjunto" id="toc-procesar-todo-el-conjunto" class="nav-link" data-scroll-target="#procesar-todo-el-conjunto">13. Procesar todo el conjunto</a></li>
+  <li><a href="#tabla-por-punctum" id="toc-tabla-por-punctum" class="nav-link" data-scroll-target="#tabla-por-punctum">Tabla por punctum</a></li>
+  <li><a href="#resumen-por-imagen" id="toc-resumen-por-imagen" class="nav-link" data-scroll-target="#resumen-por-imagen">Resumen por imagen</a></li>
+  <li><a href="#comparar-con-fiji" id="toc-comparar-con-fiji" class="nav-link" data-scroll-target="#comparar-con-fiji">14. Comparar con Fiji</a></li>
+  <li><a href="#ventajas-de-python" id="toc-ventajas-de-python" class="nav-link" data-scroll-target="#ventajas-de-python">Ventajas de Python</a></li>
+  <li><a href="#qué-se-logró" id="toc-qué-se-logró" class="nav-link" data-scroll-target="#qué-se-logró">¿Qué se logró?</a></li>
+  <li><a href="#posibles-dificultades" id="toc-posibles-dificultades" class="nav-link" data-scroll-target="#posibles-dificultades">Posibles dificultades</a></li>
+  <li><a href="#aspectos-pendientes" id="toc-aspectos-pendientes" class="nav-link" data-scroll-target="#aspectos-pendientes">Aspectos pendientes</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fiji.html">Tutorial paso a paso</a></li><li class="breadcrumb-item"><a href="./python.html">5. Análisis en Python</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Python</h1>
-<p class="subtitle lead">¿Qué podemos lograr en Python?</p>
+<h1 class="title">Análisis en Python</h1>
+<p class="subtitle lead">Segmentación y cuantificación reproducible en Google Colab</p>
 </div>
 
+<div>
+  <div class="description">
+    Tutorial para procesar imágenes CZI y cuantificar puncta con Python.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -310,139 +345,662 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><span class="eyebrow">Implementación 2 de 2</span></p>
-<p>En Fiji cada operación se hace con el mouse: abrir la imagen, elegir un umbral con un deslizador, apretar <em>Analyze Particles</em>. En Python esas mismas operaciones se escriben como texto. Eso obliga a explicitar cada decisión, y a cambio permite repetir el análisis completo sobre cincuenta imágenes sin volver a tocar nada.</p>
-<p>Esta página recorre el notebook paso a paso. No hace falta saber programar para seguirla: alcanza con entender qué pregunta responde cada línea.</p>
-<section id="la-idea-de-fondo-una-imagen-es-una-tabla-de-números" class="level2">
-<h2 class="anchored" data-anchor-id="la-idea-de-fondo-una-imagen-es-una-tabla-de-números">La idea de fondo: una imagen es una tabla de números</h2>
-<p>Todo lo que sigue depende de una sola idea. Para Python, una imagen no es un dibujo: es una grilla de números, uno por píxel, donde cada número es la intensidad de fluorescencia medida en ese punto. Nuestras imágenes son de 16 bits, así que esos valores van de 0 a 65535.</p>
-<p>Segmentar es, entonces, una operación aritmética: preguntarle a cada número si supera cierto valor. Todo el resto —los filtros, el etiquetado, las mediciones— son manipulaciones de esa misma grilla.</p>
+<section id="qué-es-python" class="level2">
+<h2 class="anchored" data-anchor-id="qué-es-python">¿Qué es Python?</h2>
+<p>Python es un lenguaje de programación utilizado en análisis de datos, automatización y procesamiento de imágenes.</p>
+<p>En este proyecto permite escribir explícitamente cada operación aplicada a las imágenes. Una vez definidos los parámetros, el mismo procedimiento puede repetirse sobre todos los archivos sin realizar nuevamente cada paso de forma manual.</p>
+<p>No es necesario tener experiencia previa en programación para ejecutar el notebook. El código ya está preparado y organizado en celdas que deben ejecutarse en orden.</p>
 </section>
-<section id="cargar-las-herramientas" class="level2">
-<h2 class="anchored" data-anchor-id="cargar-las-herramientas">1. Cargar las herramientas</h2>
-<p>Python viene “vacío” de fábrica. Las funciones especializadas se agrupan en bibliotecas que hay que pedir explícitamente al empezar. La palabra <code>import</code> significa exactamente eso: traer una caja de herramientas a la mesa de trabajo.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np          <span class="co"># matemática sobre grillas de números</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tifffile             <span class="co"># leer y escribir imágenes TIFF</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> czifile              <span class="co"># leer los archivos .czi del microscopio Zeiss</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd         <span class="co"># tablas de resultados, como una planilla</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> skimage <span class="im">import</span> measure, segmentation   <span class="co"># análisis de imágenes</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt             <span class="co"># gráficos y visualización</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>skimage</code> es <strong>scikit-image</strong>, el equivalente conceptual de las funciones de Fiji. <code>pandas</code> es lo que después produce el CSV que se abre en Excel.</p>
+<section id="abrir-el-notebook" class="level2">
+<h2 class="anchored" data-anchor-id="abrir-el-notebook">Abrir el notebook</h2>
+<p>El notebook está preparado para ejecutarse en Google Colab, un entorno que permite utilizar Python desde el navegador sin realizar una instalación local.</p>
+<p><a href="https://colab.research.google.com/drive/1yBDSKWkYui2RaaLLnegf4GiUsNC9HkUm" class="btn btn-primary" target="_blank">Abrir el notebook en Google Colab</a></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Guardar una copia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Después de abrir el notebook, seleccioná:</p>
+<pre class="text"><code>Archivo → Guardar una copia en Drive</code></pre>
+<p>De esta manera podrás modificar las rutas, ejecutar el código y conservar tus propios resultados.</p>
+</div>
+</div>
+<p>Para descargar el notebook en la computadora, utilizá:</p>
+<pre class="text"><code>Archivo → Descargar → Descargar archivo .ipynb</code></pre>
 </section>
-<section id="leer-el-archivo-del-microscopio" class="level2">
-<h2 class="anchored" data-anchor-id="leer-el-archivo-del-microscopio">2. Leer el archivo del microscopio</h2>
-<p>Un <code>.czi</code> no contiene una imagen sino un bloque de cuatro dimensiones. En nuestro caso: <strong>4 canales × 3 planos Z × 1437 × 1437 píxeles</strong>.</p>
-<p>Los canales son las cuatro marcaciones adquiridas (Alexa 488 / T22, Alexa 555 / Tau total, campo claro, DAPI). Los planos Z son los tres cortes ópticos en profundidad.</p>
-<p>El notebook no adivina ese orden: le pregunta al archivo cuáles son sus ejes y los reordena siempre a la misma disposición, <code>C-Z-Y-X</code>. Eso es lo que hace la función <code>leer_czi</code>. Es la parte menos vistosa del código y la que más problemas evita: si el orden de los ejes cambia entre archivos, todo lo demás mide la estructura equivocada.</p>
-<p>De paso, esa función lee del archivo el <strong>tamaño real del píxel en micrómetros</strong>. Sin ese dato las áreas solo podrían informarse en píxeles, que no son comparables entre microscopios.</p>
+<section id="qué-hace-el-notebook" class="level2">
+<h2 class="anchored" data-anchor-id="qué-hace-el-notebook">¿Qué hace el notebook?</h2>
+<p>El flujo completo permite:</p>
+<ol type="1">
+<li>Conectar Google Colab con Google Drive.</li>
+<li>Buscar los archivos CZI.</li>
+<li>Leer sus canales, planos y metadatos.</li>
+<li>Confirmar visualmente el canal T22.</li>
+<li>Generar una proyección de máxima intensidad.</li>
+<li>Aplicar el umbral manual de <code>15000</code>.</li>
+<li>Identificar los puncta.</li>
+<li>Medir su tamaño, forma e intensidad.</li>
+<li>Crear imágenes de control.</li>
+<li>Procesar todos los archivos.</li>
+<li>Exportar tablas y máscaras.</li>
+<li>Comparar los resultados con Fiji.</li>
+</ol>
 </section>
-<section id="elegir-el-canal" class="level2">
-<h2 class="anchored" data-anchor-id="elegir-el-canal">3. Elegir el canal</h2>
-<p>Con el bloque ya ordenado, quedarse con el canal verde es pedir el primero:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>CANAL_T22 <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>verde <span class="op">=</span> datos[CANAL_T22]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Python numera desde cero, así que el canal 0 es el primero. <code>verde</code> ahora contiene los tres planos Z de la marcación T22 y nada más.</p>
+<section id="una-imagen-como-matriz-de-intensidades" class="level2">
+<h2 class="anchored" data-anchor-id="una-imagen-como-matriz-de-intensidades">Una imagen como matriz de intensidades</h2>
+<p>Para Python, una imagen es una matriz de números. Cada posición de la matriz corresponde a un píxel y contiene un valor de intensidad.</p>
+<p>Las imágenes utilizadas tienen una profundidad de 16 bits, por lo que sus intensidades pueden encontrarse entre:</p>
+<pre class="text"><code>0 y 65535</code></pre>
+<p>Los valores bajos suelen corresponder al fondo y los más altos a regiones con mayor señal registrada.</p>
+<p>Segmentar consiste en aplicar una regla que determine qué píxeles serán considerados señal.</p>
 </section>
-<section id="aplanar-el-stack-en-una-sola-imagen" class="level2">
-<h2 class="anchored" data-anchor-id="aplanar-el-stack-en-una-sola-imagen">4. Aplanar el stack en una sola imagen</h2>
-<p>Los tres planos Z se combinan en una única imagen 2D mediante una <strong>proyección de máxima intensidad</strong>: para cada posición (x, y) se conserva el valor más alto entre los tres cortes.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mip <span class="op">=</span> verde.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Esto no es un detalle estético. Si midiéramos los tres planos por separado, una misma estructura que aparece en dos cortes se contaría dos veces. La proyección es también lo que hace posible la comparación: ese mismo TIFF de 16 bits es el que se abre en Fiji, de modo que ambas herramientas parten del píxel idéntico.</p>
+<section id="preparar-google-colab" class="level2">
+<h2 class="anchored" data-anchor-id="preparar-google-colab">1. Preparar Google Colab</h2>
+<p>La primera celda instala dos bibliotecas necesarias para leer los archivos CZI:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>pip install <span class="op">-</span>q <span class="st">"czifile==2019.7.2.3"</span> <span class="st">"imagecodecs==2024.12.30"</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Esta instalación debe ejecutarse una vez al comenzar una nueva sesión de Colab.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>No reinstalar NumPy ni SciPy
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El notebook utiliza las versiones de NumPy y SciPy disponibles en Colab. Reinstalarlas sin controlar sus compatibilidades puede provocar errores en otras bibliotecas.</p>
+</div>
+</div>
+<p>Después se cargan las herramientas utilizadas:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> czifile</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tifffile</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> ndimage <span class="im">as</span> ndi</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> skimage <span class="im">import</span> feature, measure, segmentation</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Biblioteca</th>
+<th>Función principal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>NumPy</td>
+<td>Trabajar con matrices de píxeles</td>
+</tr>
+<tr class="even">
+<td>pandas</td>
+<td>Organizar y exportar tablas</td>
+</tr>
+<tr class="odd">
+<td>Matplotlib</td>
+<td>Mostrar imágenes y gráficos</td>
+</tr>
+<tr class="even">
+<td>czifile</td>
+<td>Leer archivos <code>.czi</code></td>
+</tr>
+<tr class="odd">
+<td>tifffile</td>
+<td>Guardar y abrir imágenes TIFF</td>
+</tr>
+<tr class="even">
+<td>SciPy</td>
+<td>Realizar operaciones numéricas</td>
+</tr>
+<tr class="odd">
+<td>scikit-image</td>
+<td>Etiquetar, medir y segmentar objetos</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="el-umbral-la-línea-que-define-todo" class="level2">
-<h2 class="anchored" data-anchor-id="el-umbral-la-línea-que-define-todo">5. El umbral: la línea que define todo</h2>
-<p>Acá está el corazón del análisis, y es una sola línea:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mascara <span class="op">=</span> mip <span class="op">&gt;</span> <span class="dv">15000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Se le pregunta a cada píxel si su intensidad supera 15000. El resultado es una imagen del mismo tamaño donde cada posición vale verdadero o falso: la <strong>máscara</strong>. Es exactamente lo que en Fiji produce el deslizador de <em>Threshold</em>, pero con el valor escrito y fijo en lugar de ajustado a ojo.</p>
+<section id="conectar-google-drive" class="level2">
+<h2 class="anchored" data-anchor-id="conectar-google-drive">2. Conectar Google Drive</h2>
+<p>El notebook monta Google Drive para acceder a las imágenes y guardar los resultados.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">"/content/drive"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Colab solicitará autorización para acceder a los archivos.</p>
+<p>Después deben comprobarse estas rutas:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>BASE <span class="op">=</span> Path(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"/content/drive/MyDrive/Microbiologia/Taller/"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Trabajo grupal/Fotos de Rodri CZI/"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>SALIDA <span class="op">=</span> Path(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"/content/drive/MyDrive/Microbiologia/Taller/"</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Trabajo grupal/Fotos de Rodri CZI/"</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>BASE</code> indica dónde se encuentran los archivos CZI y <code>SALIDA</code> dónde se guardarán los resultados.</p>
+<p>Solo es necesario modificar estas líneas si las carpetas se encuentran en otra ubicación.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Copiar la ruta de una carpeta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En el panel izquierdo de Colab, buscá la carpeta dentro de Google Drive, presioná los tres puntos y seleccioná <code>Copiar ruta</code>.</p>
+<p>Luego reemplazá el contenido entre comillas de <code>BASE</code> o <code>SALIDA</code>.</p>
+</div>
+</div>
+</section>
+<section id="buscar-los-archivos" class="level2">
+<h2 class="anchored" data-anchor-id="buscar-los-archivos">3. Buscar los archivos</h2>
+<p>El notebook recorre la carpeta y sus subcarpetas para localizar todos los archivos terminados en <code>.czi</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>archivos <span class="op">=</span> <span class="bu">sorted</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    p <span class="cf">for</span> p <span class="kw">in</span> BASE.rglob(<span class="st">"*"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> p.is_file() <span class="kw">and</span> p.suffix.lower() <span class="op">==</span> <span class="st">".czi"</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Si no encuentra archivos, muestra un mensaje de error con la ruta que debe revisarse.</p>
+<p>Las carpetas <code>Control</code> y <code>Tratada</code> también se utilizan para identificar la condición de cada imagen.</p>
+</section>
+<section id="leer-el-czi" class="level2">
+<h2 class="anchored" data-anchor-id="leer-el-czi">4. Leer el CZI</h2>
+<p>Un archivo CZI puede contener canales, planos Z y otros ejes. La función <code>leer_czi()</code> consulta esa información y reorganiza la matriz en el orden:</p>
+<pre class="text"><code>C – Z – Y – X</code></pre>
+<p>Esto representa:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Eje</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C</td>
+<td>Canal</td>
+</tr>
+<tr class="even">
+<td>Z</td>
+<td>Plano óptico</td>
+</tr>
+<tr class="odd">
+<td>Y</td>
+<td>Alto</td>
+</tr>
+<tr class="even">
+<td>X</td>
+<td>Ancho</td>
+</tr>
+</tbody>
+</table>
+<p>Una imagen de ejemplo puede presentar la forma:</p>
+<pre class="text"><code>(4, 3, 1437, 1437)</code></pre>
+<p>El notebook también intenta leer de los metadatos:</p>
+<ul>
+<li>El tamaño del píxel.</li>
+<li>La distancia entre planos Z.</li>
+<li>Los nombres de los canales.</li>
+<li>La forma original del archivo.</li>
+</ul>
+<p>Si el tamaño del píxel no está disponible, el análisis se detiene para evitar informar áreas incorrectas.</p>
+</section>
+<section id="confirmar-los-canales" class="level2">
+<h2 class="anchored" data-anchor-id="confirmar-los-canales">5. Confirmar los canales</h2>
+<p>Antes de segmentar, el notebook muestra todos los canales y planos Z.</p>
+<p>Este control permite comprobar que:</p>
+<ul>
+<li>El canal verde corresponde a T22.</li>
+<li>El canal rojo corresponde a Tau5.</li>
+<li>El canal azul corresponde a DAPI.</li>
+<li>El campo claro fue identificado correctamente.</li>
+</ul>
+<p>El parámetro inicial es:</p>
+<p>CANAL_T22 = 0</p>
+<p>Python comienza a contar desde cero, por lo que <code>0</code> representa el primer canal.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>No asumir el orden de los canales
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El canal T22 se espera en la posición 0 para estas imágenes, pero debe confirmarse visualmente. Si la adquisición cambia, el orden también podría cambiar.</p>
+</div>
+</div>
+</section>
+<section id="definir-el-umbral" class="level2">
+<h2 class="anchored" data-anchor-id="definir-el-umbral">6. Definir el umbral</h2>
+<p>El parámetro central es:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>UMBRAL_INTENSIDAD <span class="op">=</span> <span class="dv">15000</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La máscara se construye mediante:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mascara <span class="op">=</span> imagen <span class="op">&gt;</span> <span class="dv">15000</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Esto clasifica los píxeles de la siguiente manera:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Intensidad</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">Menor o igual que 15000</td>
+<td>Fondo</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">Mayor que 15000</td>
+<td>Señal</td>
+</tr>
+</tbody>
+</table>
+<p>El valor permanece escrito en el notebook y se aplica de la misma manera a todas las imágenes.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>El umbral es una decisión, no un resultado
+<span class="screen-reader-only">Importante</span>El umbral debe validarse
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>15000 está expresado en unidades crudas de la imagen de 16 bits. Solo tiene sentido entre imágenes adquiridas con los mismos parámetros del microscopio: si cambia la potencia del láser o el tiempo de exposición, ese número deja de significar lo mismo.</p>
+<p>El histograma permite observar dónde se ubica el umbral dentro de la distribución de intensidades, pero no demuestra por sí solo que <code>15000</code> sea el valor correcto.</p>
+<p>Su validación requiere revisar overlays, controles negativos e imágenes representativas adquiridas con condiciones comparables.</p>
 </div>
 </div>
-<p>El notebook toma una decisión metodológica deliberada: <strong>no</strong> resta fondo, <strong>no</strong> normaliza, <strong>no</strong> aplica Otsu ni filtro mediano. Esas operaciones se probaron y deformaban una máscara que ya se veía correcta. Es un caso instructivo: más procesamiento no es mejor procesamiento.</p>
-<p>Para justificarlo, el notebook grafica el histograma de intensidades con el umbral marcado en rojo. Ese gráfico muestra dónde cae el corte respecto de la distribución real de la imagen, y es lo que convierte a 15000 de número arbitrario en decisión defendible.</p>
 </section>
-<section id="de-máscara-a-objetos-contables" class="level2">
-<h2 class="anchored" data-anchor-id="de-máscara-a-objetos-contables">6. De máscara a objetos contables</h2>
-<p>La máscara dice qué píxeles son señal, pero no cuántos puncta hay: un píxel no sabe a qué objeto pertenece. Etiquetar es agrupar píxeles vecinos encendidos y darle un número a cada grupo.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>etiquetas <span class="op">=</span> measure.label(mascara, connectivity<span class="op">=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>connectivity=2</code> significa que dos píxeles se consideran del mismo objeto también cuando se tocan en diagonal. Es uno de esos detalles que parecen menores y que explican discrepancias con Fiji, porque cada herramienta tiene su propio valor por defecto.</p>
-<p>El watershed —que separa objetos en contacto— está implementado pero <strong>apagado</strong>. Se puede encender cambiando una sola variable, y por eso es honesto informarlo: separar dos puncta pegados es una hipótesis sobre la biología, no una observación.</p>
-</section>
-<section id="medir" class="level2">
-<h2 class="anchored" data-anchor-id="medir">7. Medir</h2>
-<p>Con los objetos numerados, <code>regionprops</code> recorre cada uno y calcula sus propiedades: área, circularidad, intensidad media, intensidad integrada. El resultado es una tabla —una fila por punctum— que se guarda como CSV.</p>
-<p>Las áreas se convierten a µm² usando el tamaño de píxel leído en el paso 2. Y un punto crítico: <strong>la intensidad se mide sobre la imagen original</strong>, no sobre ninguna versión procesada. Medir fluorescencia sobre una imagen con el contraste realzado devuelve números que no representan nada.</p>
-<p>Los filtros de tamaño, circularidad y exclusión de bordes se aplican <em>después</em> del etiquetado, igual que en <em>Analyze Particles</em>. En el notebook arrancan desactivados a propósito: primero se miran los overlays, después se elige un área mínima, y ese valor se usa idéntico en ambas herramientas.</p>
-</section>
-<section id="mirar-lo-que-se-midió" class="level2">
-<h2 class="anchored" data-anchor-id="mirar-lo-que-se-midió">8. Mirar lo que se midió</h2>
-<p>Ninguna cifra vale sin control visual. El notebook genera, para cada imagen, un panel de tres vistas: la proyección original, la máscara cruda, y la imagen con el contorno de cada objeto medido dibujado en rojo y su centro marcado.</p>
-<p>Ese tercer panel es la prueba de que el análisis detectó las estructuras que uno ve, y no ruido, bordes de célula o saturación.</p>
-</section>
-<section id="procesar-todo-el-conjunto" class="level2">
-<h2 class="anchored" data-anchor-id="procesar-todo-el-conjunto">9. Procesar todo el conjunto</h2>
-<p>Hasta acá el flujo corrió sobre una imagen. La ventaja decisiva de Python aparece ahora: el mismo procedimiento se aplica a todos los archivos con un bucle, y de cada uno se guardan la proyección, ambas máscaras, la imagen etiquetada, el overlay y las tablas.</p>
-<p>Todos los parámetros están reunidos en un único bloque al principio. Cambiar el umbral para todo el conjunto es editar un número y volver a ejecutar. Esa es la diferencia práctica entre las dos herramientas: en Fiji la reproducibilidad depende de recordar qué se apretó; acá está escrita.</p>
-</section>
-<section id="comparar-con-fiji" class="level2">
-<h2 class="anchored" data-anchor-id="comparar-con-fiji">10. Comparar con Fiji</h2>
-<p>El último paso responde la pregunta del proyecto. Cargadas las máscaras de Fiji, se calculan dos índices de superposición:</p>
+<section id="revisar-los-planos-z" class="level2">
+<h2 class="anchored" data-anchor-id="revisar-los-planos-z">7. Revisar los planos Z</h2>
+<p>Antes de crear una proyección, el notebook muestra cada plano del canal T22 y su máscara correspondiente.</p>
+<p>Este paso permite comprobar:</p>
 <ul>
-<li><strong>Dice</strong> y <strong>IoU</strong>, que miden cuánto se solapan ambas máscaras. Valen 1 si son idénticas y 0 si no comparten ningún píxel.</li>
+<li>En qué planos aparece la señal.</li>
+<li>Si los puncta se observan en más de un plano.</li>
+<li>Si el umbral conserva las estructuras visibles.</li>
+<li>Si existen diferencias importantes entre planos.</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dice <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> interseccion <span class="op">/</span> (a.<span class="bu">sum</span>() <span class="op">+</span> b.<span class="bu">sum</span>())</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>iou  <span class="op">=</span> interseccion <span class="op">/</span> union</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Esto evalúa <strong>concordancia entre métodos</strong>, no exactitud. Sin una máscara manual de referencia, ninguna de las dos herramientas tiene la verdad: solo se puede decir cuánto se parecen y dónde difieren.</p>
+<p>Esta revisión se mantiene como control visual y no se utiliza todavía para realizar una cuantificación tridimensional.</p>
 </section>
-<section id="parámetros-a-replicar-en-fiji" class="level2">
-<h2 class="anchored" data-anchor-id="parámetros-a-replicar-en-fiji">Parámetros a replicar en Fiji</h2>
+<section id="crear-la-proyección-mip" class="level2">
+<h2 class="anchored" data-anchor-id="crear-la-proyección-mip">8. Crear la proyección MIP</h2>
+<p>Los planos Z se combinan mediante una proyección de máxima intensidad:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>mip <span class="op">=</span> verde.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Para cada posición de la imagen se conserva la intensidad más alta encontrada entre los planos Z.</p>
+<p>La MIP resultante se guarda como TIFF calibrado de 16 bits. Ese archivo constituye la imagen común que también puede abrirse en Fiji.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Limitación de la MIP
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La proyección simplifica el análisis a 2D, pero puede fusionar señales ubicadas en planos diferentes. Por lo tanto, no permite establecer cuántos objetos tridimensionales independientes existen en la muestra.</p>
+</div>
+</div>
+</section>
+<section id="identificar-los-puncta" class="level2">
+<h2 class="anchored" data-anchor-id="identificar-los-puncta">9. Identificar los puncta</h2>
+<p>Después de aplicar el umbral, los píxeles blancos conectados se agrupan mediante:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>etiquetas <span class="op">=</span> measure.label(mascara, connectivity<span class="op">=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>connectivity=2</code> considera conectados los píxeles que se tocan por los lados o en diagonal.</p>
+<p>Cada grupo recibe una etiqueta numérica diferente y se interpreta como un objeto segmentado.</p>
+</section>
+<section id="parámetros-de-medición" class="level2">
+<h2 class="anchored" data-anchor-id="parámetros-de-medición">10. Parámetros de medición</h2>
+<p>Los parámetros iniciales son:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>MIN_AREA_UM2 <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>MAX_AREA_UM2 <span class="op">=</span> np.inf</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>MIN_CIRCULARIDAD <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>EXCLUIR_BORDE <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>USAR_WATERSHED <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>MIN_DISTANCE <span class="op">=</span> <span class="dv">2</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>En esta primera versión:</p>
+<ul>
+<li>No se eliminan objetos por tamaño.</li>
+<li>No se eliminan objetos por circularidad.</li>
+<li>No se excluyen objetos que tocan el borde.</li>
+<li>No se separan objetos mediante watershed.</li>
+</ul>
+<p>Estos parámetros comienzan desactivados para conservar la máscara inicial. Después de revisar los overlays podrá definirse un área mínima y aplicarla también en Fiji.</p>
+</section>
+<section id="medir-los-objetos" class="level2">
+<h2 class="anchored" data-anchor-id="medir-los-objetos">11. Medir los objetos</h2>
+<p>La función <code>regionprops_table()</code> calcula las propiedades de cada objeto utilizando la MIP original como imagen de intensidad.</p>
+<p>Entre las variables obtenidas se encuentran:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th>Decisión</th>
-<th>Valor</th>
+<th>Variable</th>
+<th>Interpretación</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Imagen</td>
-<td>MIP del canal T22, 16 bits</td>
+<td>Área</td>
+<td>Tamaño del objeto</td>
 </tr>
 <tr class="even">
-<td>Corrección de fondo</td>
-<td>Sin sustracción</td>
+<td>Perímetro</td>
+<td>Longitud del contorno</td>
 </tr>
 <tr class="odd">
-<td>Umbral</td>
-<td>Manual, 15000–65535</td>
+<td>Circularidad</td>
+<td>Semejanza con una forma circular</td>
 </tr>
 <tr class="even">
-<td>Watershed</td>
-<td>Desactivado</td>
+<td>Diámetro equivalente</td>
+<td>Diámetro de un círculo con la misma área</td>
 </tr>
 <tr class="odd">
-<td>Conectividad</td>
-<td>Diagonal incluida</td>
+<td>Intensidad media</td>
+<td>Promedio de intensidades dentro del objeto</td>
 </tr>
 <tr class="even">
-<td>Filtros de tamaño y forma</td>
-<td>Los mismos en ambas</td>
+<td>Intensidad máxima</td>
+<td>Mayor intensidad dentro del objeto</td>
+</tr>
+<tr class="odd">
+<td>Intensidad integrada</td>
+<td>Intensidad media multiplicada por el área</td>
+</tr>
+<tr class="even">
+<td>Excentricidad</td>
+<td>Grado de elongación</td>
+</tr>
+<tr class="odd">
+<td>Solidez</td>
+<td>Relación con la envolvente convexa</td>
+</tr>
+<tr class="even">
+<td>Centroide</td>
+<td>Posición central del objeto</td>
+</tr>
+</tbody>
+</table>
+<p>Las áreas y distancias se convierten a unidades físicas mediante el tamaño del píxel.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Imagen para segmentar e imagen para medir
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La máscara indica qué píxeles pertenecen a cada objeto. La intensidad se obtiene de la MIP original.</p>
+<p>No se mide fluorescencia sobre una máscara binaria ni sobre una imagen con el contraste modificado.</p>
+</div>
+</div>
+</section>
+<section id="realizar-el-control-visual" class="level2">
+<h2 class="anchored" data-anchor-id="realizar-el-control-visual">12. Realizar el control visual</h2>
+<p>El notebook genera tres visualizaciones:</p>
+<ol type="1">
+<li>MIP original.</li>
+<li>Máscara creada con el umbral.</li>
+<li>Overlay con los contornos rojos y centroides celestes.</li>
+</ol>
+<p>El overlay permite comprobar si los objetos medidos corresponden a los puncta observados.</p>
+<p>La cuantificación no debería interpretarse antes de revisar estas imágenes.</p>
+</section>
+<section id="procesar-todo-el-conjunto" class="level2">
+<h2 class="anchored" data-anchor-id="procesar-todo-el-conjunto">13. Procesar todo el conjunto</h2>
+<p>Después de comprobar una imagen, el notebook procesa todos los archivos CZI encontrados.</p>
+<p>Para cada archivo guarda:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Carpeta</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tif_mip</code></td>
+<td>Proyección T22 de 16 bits</td>
+</tr>
+<tr class="even">
+<td><code>mascaras_crudas</code></td>
+<td>Máscara creada directamente con el umbral</td>
+</tr>
+<tr class="odd">
+<td><code>mascaras_filtradas</code></td>
+<td>Máscara posterior a los filtros de medición</td>
+</tr>
+<tr class="even">
+<td><code>etiquetas</code></td>
+<td>Imagen con un número por objeto</td>
+</tr>
+<tr class="odd">
+<td><code>overlays</code></td>
+<td>Control visual con los contornos</td>
+</tr>
+<tr class="even">
+<td><code>fiji</code></td>
+<td>Carpeta reservada para las máscaras de Fiji</td>
+</tr>
+</tbody>
+</table>
+<p>También genera:</p>
+<pre class="text"><code>python_puncta_segun_Majo.csv
+python_resumen_segun_Majo.csv
+python_parametros_segun_Majo.csv
+python_versiones.csv
+python_errores_segun_Majo.csv</code></pre>
+</section>
+<section id="tabla-por-punctum" class="level2">
+<h2 class="anchored" data-anchor-id="tabla-por-punctum">Tabla por punctum</h2>
+<p>El archivo <code>python_puncta_segun_Majo.csv</code> contiene una fila por objeto detectado.</p>
+<p>Permite estudiar la distribución de tamaños, formas e intensidades de los puncta.</p>
+</section>
+<section id="resumen-por-imagen" class="level2">
+<h2 class="anchored" data-anchor-id="resumen-por-imagen">Resumen por imagen</h2>
+<p>El archivo <code>python_resumen_segun_Majo.csv</code> contiene una fila por imagen e incluye:</p>
+<ul>
+<li>Número de puncta.</li>
+<li>Puncta por <code>1000 µm²</code>.</li>
+<li>Porcentaje de área positiva.</li>
+<li>Área mediana.</li>
+<li>Circularidad mediana.</li>
+<li>Intensidad media.</li>
+<li>Intensidad integrada total.</li>
+</ul>
+<p>Estos valores permiten comparar campos o condiciones sin utilizar cada punctum como una réplica experimental independiente.</p>
+</section>
+<section id="comparar-con-fiji" class="level2">
+<h2 class="anchored" data-anchor-id="comparar-con-fiji">14. Comparar con Fiji</h2>
+<p>Para comparar las máscaras, los archivos generados en Fiji deben guardarse dentro de la carpeta <code>fiji</code> con nombres terminados en:</p>
+<pre class="text"><code>_fiji_mask.tif</code></pre>
+<p>El notebook calcula dos métricas de superposición:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Métrica</th>
+<th>Interpretación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Dice</td>
+<td>Superposición relativa entre dos máscaras</td>
+</tr>
+<tr class="even">
+<td>IoU</td>
+<td>Intersección dividida por la unión</td>
+</tr>
+<tr class="odd">
+<td>Valor 1</td>
+<td>Máscaras idénticas</td>
+</tr>
+<tr class="even">
+<td>Valor 0</td>
+<td>No existe superposición</td>
+</tr>
+</tbody>
+</table>
+<p>Estas métricas evalúan concordancia entre Fiji y Python. No determinan cuál máscara representa mejor la señal biológica.</p>
+</section>
+<section id="ventajas-de-python" class="level2">
+<h2 class="anchored" data-anchor-id="ventajas-de-python">Ventajas de Python</h2>
+<p>Python permite conservar los parámetros utilizados, repetir el análisis sobre varias imágenes y guardar automáticamente resultados intermedios. También facilita la creación de controles de calidad, el registro de versiones y la incorporación posterior de nuevas métricas.</p>
+<p>Su principal ventaja en este proyecto no es reemplazar Fiji, sino hacer explícita y repetible cada decisión del análisis.</p>
+</section>
+<section id="qué-se-logró" class="level2">
+<h2 class="anchored" data-anchor-id="qué-se-logró">¿Qué se logró?</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Componente</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Lectura de archivos CZI</td>
+<td>Logrado</td>
+</tr>
+<tr class="even">
+<td>Reordenamiento de ejes</td>
+<td>Logrado</td>
+</tr>
+<tr class="odd">
+<td>Lectura de calibración</td>
+<td>Logrado</td>
+</tr>
+<tr class="even">
+<td>Visualización de canales y planos</td>
+<td>Logrado</td>
+</tr>
+<tr class="odd">
+<td>Proyección MIP</td>
+<td>Logrado</td>
+</tr>
+<tr class="even">
+<td>Umbral manual de 15000</td>
+<td>Logrado</td>
+</tr>
+<tr class="odd">
+<td>Etiquetado de puncta</td>
+<td>Logrado</td>
+</tr>
+<tr class="even">
+<td>Mediciones morfológicas</td>
+<td>Logrado</td>
+</tr>
+<tr class="odd">
+<td>Mediciones de intensidad</td>
+<td>Logrado</td>
+</tr>
+<tr class="even">
+<td>Procesamiento por lotes</td>
+<td>Logrado</td>
+</tr>
+<tr class="odd">
+<td>Exportación de TIFF, PNG y CSV</td>
+<td>Logrado</td>
+</tr>
+<tr class="even">
+<td>Control visual mediante overlays</td>
+<td>Logrado</td>
+</tr>
+<tr class="odd">
+<td>Comparación Dice e IoU</td>
+<td>Implementada, pendiente de máscaras de Fiji</td>
+</tr>
+<tr class="even">
+<td>Validación del área mínima</td>
+<td>Pendiente</td>
+</tr>
+<tr class="odd">
+<td>Segmentación celular</td>
+<td>Pendiente</td>
+</tr>
+<tr class="even">
+<td>Análisis tridimensional</td>
+<td>Pendiente</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="ejecutar-el-notebook" class="level2">
-<h2 class="anchored" data-anchor-id="ejecutar-el-notebook">Ejecutar el notebook</h2>
-<p>El notebook está preparado para Google Colab, que corre Python en el navegador sin instalar nada. Lee los archivos directamente de Google Drive.</p>
-<p><a href="https://colab.research.google.com/drive/1yBDSKWkYui2RaaLLnegf4GiUsNC9HkUm" class="btn btn-primary" target="_blank">Abrir en Colab</a></p>
+<section id="posibles-dificultades" class="level2">
+<h2 class="anchored" data-anchor-id="posibles-dificultades">Posibles dificultades</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Problema</th>
+<th>Posible causa</th>
+<th>Qué revisar</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No se encuentran archivos</td>
+<td>Ruta incorrecta</td>
+<td>Valor de <code>BASE</code></td>
+</tr>
+<tr class="even">
+<td>Canal incorrecto</td>
+<td>Orden diferente de canales</td>
+<td>Panel de canales</td>
+</tr>
+<tr class="odd">
+<td>Máscara completamente negra</td>
+<td>Umbral demasiado alto o imagen incorrecta</td>
+<td>Rango de intensidad</td>
+</tr>
+<tr class="even">
+<td>Máscara demasiado extensa</td>
+<td>Fondo elevado o umbral bajo</td>
+<td>Histograma y overlay</td>
+</tr>
+<tr class="odd">
+<td>Áreas sin unidades</td>
+<td>Falta de calibración</td>
+<td>Metadatos del CZI</td>
+</tr>
+<tr class="even">
+<td>Puncta fusionados</td>
+<td>Contacto o superposición en la MIP</td>
+<td>Planos Z y watershed</td>
+</tr>
+<tr class="odd">
+<td>Error al importar paquetes</td>
+<td>Versiones incompatibles</td>
+<td>Reiniciar el entorno y ejecutar desde el comienzo</td>
+</tr>
+<tr class="even">
+<td>Resultados duplicados</td>
+<td>Ejecución parcial o archivos anteriores</td>
+<td>Carpeta de salida y nombres</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="aspectos-pendientes" class="level2">
+<h2 class="anchored" data-anchor-id="aspectos-pendientes">Aspectos pendientes</h2>
+<p>El siguiente paso metodológico es seleccionar un área mínima en <code>µm²</code> después de revisar imágenes control, tratadas y controles negativos. Ese valor deberá utilizarse sin cambios en Fiji y Python.</p>
+<p>También queda pendiente incorporar una máscara celular para determinar si los puncta se encuentran dentro de las células y calcular mediciones por célula. DAPI puede utilizarse para localizar núcleos, pero no representa por sí solo el citoplasma.</p>
+<p>Finalmente, las máscaras de Fiji deben guardarse con la estructura de nombres esperada para completar la comparación mediante Dice e IoU.</p>
+<p><a href="./comparacion.html" class="btn btn-primary">Continuar: comparación de resultados →</a></p>
 
 
 </section>
@@ -473,12 +1031,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       // flash "checked"
       button.classList.add('code-copy-button-checked');
       var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
+      button.setAttribute("title", "Copiado");
       let tooltip;
       if (window.bootstrap) {
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
+        button.setAttribute("data-bs-title", "Copiado");
         tooltip = new bootstrap.Tooltip(button, 
           { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
@@ -521,7 +1079,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/AdrianaGLG@github\.com\/AdrianaGLG\/curso_fiji_vs_python\.git");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -850,13 +1408,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./fiji.html" class="pagination-link" aria-label="Fiji / ImageJ">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Fiji / ImageJ</span>
+      <a href="./fiji.html" class="pagination-link" aria-label="4. Análisis en Fiji">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">4. Análisis en Fiji</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./comparacion.html" class="pagination-link" aria-label="Comparación">
-        <span class="nav-page-text">Comparación</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./comparacion.html" class="pagination-link" aria-label="6. Comparación de resultados">
+        <span class="nav-page-text">6. Comparación de resultados</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

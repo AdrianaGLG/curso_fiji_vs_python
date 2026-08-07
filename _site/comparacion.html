@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Criterios y métricas para comparar los resultados obtenidos con Fiji y Python.">
 
-<title>Comparación – Fiji vs.&nbsp;Python</title>
+<title>Comparación de resultados – Fiji vs.&nbsp;Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -62,22 +63,49 @@ ul.task-list li input[type="checkbox"] {
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
   }
 }</script>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -92,8 +120,8 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">Fiji vs.&nbsp;Python</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -102,19 +130,47 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Inicio</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./flujo.html"> 
-<span class="menu-text">Flujo común</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Tutorial</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+        <li>
+    <a class="dropdown-item" href="./contexto.html">
+ <span class="dropdown-text">1. Contexto y pregunta</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./comparacion.html"> 
-<span class="menu-text">Comparación</span></a>
+        <li>
+    <a class="dropdown-item" href="./datos.html">
+ <span class="dropdown-text">2. Conocer las imágenes</span></a>
   </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+        <li>
+    <a class="dropdown-item" href="./flujo.html">
+ <span class="dropdown-text">3. Flujo de análisis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./fiji.html">
+ <span class="dropdown-text">4. Análisis en Fiji</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./python.html">
+ <span class="dropdown-text">5. Análisis en Python</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./comparacion.html">
+ <span class="dropdown-text">6. Comparación</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="./presentacion.html"> 
 <span class="menu-text">Presentación</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AdrianaGLG/curso_fiji_vs_python"> <i class="bi bi-github" role="img" aria-label="Repositorio en GitHub">
+</i> 
+<span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -124,15 +180,12 @@ ul.task-list li input[type="checkbox"] {
     </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-          <h1 class="quarto-secondary-nav-title">Comparación</h1>
-        </a>     
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fiji.html">Tutorial paso a paso</a></li><li class="breadcrumb-item"><a href="./comparacion.html">6. Comparación de resultados</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
     </div>
   </nav>
 </header>
@@ -140,11 +193,6 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -156,8 +204,8 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">El proyecto</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Introducción</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -165,19 +213,19 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contexto.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Contexto y pregunta</span></a>
+ <span class="menu-text">1. Contexto y pregunta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./datos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Imágenes y datos</span></a>
+ <span class="menu-text">2. Conocer las imágenes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./flujo.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Flujo común</span></a>
+ <span class="menu-text">3. Flujo de análisis</span></a>
   </div>
 </li>
       </ul>
@@ -185,8 +233,8 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Herramientas</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Tutorial paso a paso</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -194,23 +242,23 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fiji.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Fiji / ImageJ</span></a>
+ <span class="menu-text">4. Análisis en Fiji</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./python.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Python</span></a>
+ <span class="menu-text">5. Análisis en Python</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparacion.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">6. Comparación de resultados</span></a>
   </div>
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./comparacion.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Comparación</span></a>
-  </div>
-</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -229,18 +277,49 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#qué-queremos-comparar" id="toc-qué-queremos-comparar" class="nav-link active" data-scroll-target="#qué-queremos-comparar">¿Qué queremos comparar?</a></li>
+  <li><a href="#condiciones-necesarias" id="toc-condiciones-necesarias" class="nav-link" data-scroll-target="#condiciones-necesarias">Condiciones necesarias</a></li>
+  <li><a href="#archivos-necesarios" id="toc-archivos-necesarios" class="nav-link" data-scroll-target="#archivos-necesarios">Archivos necesarios</a></li>
+  <li><a href="#comparación-visual" id="toc-comparación-visual" class="nav-link" data-scroll-target="#comparación-visual">Comparación visual</a></li>
+  <li><a href="#dice-e-iou" id="toc-dice-e-iou" class="nav-link" data-scroll-target="#dice-e-iou">Dice e IoU</a>
+  <ul class="collapse">
+  <li><a href="#coeficiente-dice" id="toc-coeficiente-dice" class="nav-link" data-scroll-target="#coeficiente-dice">Coeficiente Dice</a></li>
+  <li><a href="#intersección-sobre-unión" id="toc-intersección-sobre-unión" class="nav-link" data-scroll-target="#intersección-sobre-unión">Intersección sobre unión</a></li>
+  </ul></li>
+  <li><a href="#interpretación-de-los-valores" id="toc-interpretación-de-los-valores" class="nav-link" data-scroll-target="#interpretación-de-los-valores">Interpretación de los valores</a></li>
+  <li><a href="#comparación-de-mediciones" id="toc-comparación-de-mediciones" class="nav-link" data-scroll-target="#comparación-de-mediciones">Comparación de mediciones</a></li>
+  <li><a href="#diferencias-que-pueden-aparecer" id="toc-diferencias-que-pueden-aparecer" class="nav-link" data-scroll-target="#diferencias-que-pueden-aparecer">Diferencias que pueden aparecer</a></li>
+  <li><a href="#fiji-y-python-fortalezas-complementarias" id="toc-fiji-y-python-fortalezas-complementarias" class="nav-link" data-scroll-target="#fiji-y-python-fortalezas-complementarias">Fiji y Python: fortalezas complementarias</a></li>
+  <li><a href="#resultados-piloto-disponibles" id="toc-resultados-piloto-disponibles" class="nav-link" data-scroll-target="#resultados-piloto-disponibles">Resultados piloto disponibles</a></li>
+  <li><a href="#estado-actual-1" id="toc-estado-actual-1" class="nav-link" data-scroll-target="#estado-actual-1">Estado actual</a></li>
+  <li><a href="#qué-falta-para-completar-la-comparación" id="toc-qué-falta-para-completar-la-comparación" class="nav-link" data-scroll-target="#qué-falta-para-completar-la-comparación">Qué falta para completar la comparación</a></li>
+  <li><a href="#máscaras-de-fiji-pendientes" id="toc-máscaras-de-fiji-pendientes" class="nav-link" data-scroll-target="#máscaras-de-fiji-pendientes">Máscaras de Fiji pendientes</a></li>
+  <li><a href="#tabla-final-esperada" id="toc-tabla-final-esperada" class="nav-link" data-scroll-target="#tabla-final-esperada">Tabla final esperada</a></li>
+  <li><a href="#posibles-gráficos" id="toc-posibles-gráficos" class="nav-link" data-scroll-target="#posibles-gráficos">Posibles gráficos</a></li>
+  <li><a href="#conclusiones-permitidas" id="toc-conclusiones-permitidas" class="nav-link" data-scroll-target="#conclusiones-permitidas">Conclusiones permitidas</a></li>
+  <li><a href="#conclusión-provisional" id="toc-conclusión-provisional" class="nav-link" data-scroll-target="#conclusión-provisional">Conclusión provisional</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fiji.html">Tutorial paso a paso</a></li><li class="breadcrumb-item"><a href="./comparacion.html">6. Comparación de resultados</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Comparación</h1>
-<p class="subtitle lead">Concordancia entre las dos implementaciones</p>
+<h1 class="title">Comparación de resultados</h1>
+<p class="subtitle lead">¿Qué tan concordantes son las segmentaciones de Fiji y Python?</p>
 </div>
 
+<div>
+  <div class="description">
+    Criterios y métricas para comparar los resultados obtenidos con Fiji y Python.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -255,9 +334,642 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Contenido en preparación.</p>
+<p><span class="eyebrow">Comparación</span></p>
+<section id="qué-queremos-comparar" class="level2">
+<h2 class="anchored" data-anchor-id="qué-queremos-comparar">¿Qué queremos comparar?</h2>
+<p>El objetivo es determinar en qué medida Fiji y Python producen resultados concordantes cuando analizan la misma imagen con parámetros equivalentes.</p>
+<p>La comparación se realiza en dos niveles:</p>
+<ol type="1">
+<li><strong>Comparación de las máscaras:</strong> evalúa si ambas herramientas seleccionan los mismos píxeles.</li>
+<li><strong>Comparación de las mediciones:</strong> evalúa si producen valores semejantes de número, área, forma e intensidad.</li>
+</ol>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Comparar métodos no es comparar condiciones
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La comparación entre <strong>Fiji y Python</strong> responde una pregunta metodológica: si ambas herramientas producen resultados semejantes.</p>
+<p>La comparación entre imágenes <strong>control y tratadas</strong> responde una pregunta biológica diferente.</p>
+<p>Primero debemos comprobar que los métodos sean comparables. Después podremos estudiar las diferencias entre condiciones.</p>
+</div>
+</div>
+</section>
+<section id="condiciones-necesarias" class="level2">
+<h2 class="anchored" data-anchor-id="condiciones-necesarias">Condiciones necesarias</h2>
+<p>Para que la comparación sea válida, Fiji y Python deben analizar exactamente la misma imagen y trabajar sobre el mismo canal y la misma proyección. También deben utilizar un umbral equivalente, los mismos límites de tamaño y criterios idénticos para incluir o excluir objetos.</p>
+<p>De esta manera, las diferencias observadas pueden atribuirse a la implementación de cada herramienta y no a cambios en las decisiones del análisis.</p>
+<p>El flujo acordado utiliza:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>Valor común</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Imagen</td>
+<td>MIP T22 de 16 bits</td>
+</tr>
+<tr class="even">
+<td>Corrección de fondo</td>
+<td>No aplicada</td>
+</tr>
+<tr class="odd">
+<td>Normalización</td>
+<td>No aplicada</td>
+</tr>
+<tr class="even">
+<td>Filtro de ruido</td>
+<td>No aplicado</td>
+</tr>
+<tr class="odd">
+<td>Umbral en Python</td>
+<td><code>imagen &gt; 15000</code></td>
+</tr>
+<tr class="even">
+<td>Umbral equivalente en Fiji</td>
+<td><code>15001–65535</code></td>
+</tr>
+<tr class="odd">
+<td>Watershed</td>
+<td>Desactivado</td>
+</tr>
+<tr class="even">
+<td>Área mínima inicial</td>
+<td>Sin filtro</td>
+</tr>
+<tr class="odd">
+<td>Circularidad inicial</td>
+<td>Sin filtro</td>
+</tr>
+<tr class="even">
+<td>Objetos en el borde</td>
+<td>Se conservan</td>
+</tr>
+<tr class="odd">
+<td>Medición de intensidad</td>
+<td>Sobre la MIP original</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="archivos-necesarios" class="level2">
+<h2 class="anchored" data-anchor-id="archivos-necesarios">Archivos necesarios</h2>
+<p>Para cada imagen deben existir dos máscaras:</p>
+<pre class="text"><code>Control_Experiment-178_python_mask.tif
+Control_Experiment-178_fiji_mask.tif</code></pre>
+<p>La máscara de Python se genera dentro de:</p>
+<pre class="text"><code>mascaras_filtradas/</code></pre>
+<p>La máscara de Fiji debe guardarse dentro de:</p>
+<pre class="text"><code>fiji/</code></pre>
+<p>Ambas máscaras deben tener:</p>
+<ul>
+<li>El mismo ancho.</li>
+<li>El mismo alto.</li>
+<li>La misma orientación.</li>
+<li>El mismo campo de visión.</li>
+<li>Fondo con valor 0.</li>
+<li>Señal con un valor mayor que 0.</li>
+</ul>
+<p>Si las dimensiones no coinciden, la comparación se detiene porque los píxeles no representan las mismas posiciones.</p>
+</section>
+<section id="comparación-visual" class="level2">
+<h2 class="anchored" data-anchor-id="comparación-visual">Comparación visual</h2>
+<p>La primera evaluación consiste en observar ambas máscaras junto con la imagen original.</p>
+<p>Para cada campo conviene mostrar:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Panel</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>MIP original del canal T22</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>Máscara generada en Fiji</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>Máscara generada en Python</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td>Superposición de ambas máscaras</td>
+</tr>
+</tbody>
+</table>
+<p>En una futura imagen de superposición pueden utilizarse diferentes colores:</p>
+<ul>
+<li>Verde: píxeles detectados por ambos métodos.</li>
+<li>Rojo: píxeles detectados solamente por Fiji.</li>
+<li>Azul: píxeles detectados solamente por Python.</li>
+</ul>
+<p>Una superposición mayor indica una mayor concordancia entre las máscaras.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>¿Por qué mirar las máscaras?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un único valor numérico puede ocultar diferencias importantes. Dos máscaras pueden tener áreas totales similares y, aun así, detectar regiones diferentes.</p>
+<p>La inspección visual permite reconocer desplazamientos, objetos fusionados, ruido y diferencias en los bordes.</p>
+</div>
+</div>
+</section>
+<section id="dice-e-iou" class="level2">
+<h2 class="anchored" data-anchor-id="dice-e-iou">Dice e IoU</h2>
+<p>El notebook incluye dos métricas para medir la superposición entre las máscaras.</p>
+<section id="coeficiente-dice" class="level3">
+<h3 class="anchored" data-anchor-id="coeficiente-dice">Coeficiente Dice</h3>
+<p>Dice compara la intersección entre las máscaras con la cantidad total de píxeles positivos.</p>
+<p><span class="math display">\[
+Dice = \frac{2 |A \cap B|}{|A| + |B|}
+\]</span></p>
+</section>
+<section id="intersección-sobre-unión" class="level3">
+<h3 class="anchored" data-anchor-id="intersección-sobre-unión">Intersección sobre unión</h3>
+<p>IoU compara la intersección con todos los píxeles detectados por al menos uno de los métodos.</p>
+<p><span class="math display">\[
+IoU = \frac{|A \cap B|}{|A \cup B|}
+\]</span></p>
+<p>En estas fórmulas:</p>
+<ul>
+<li><span class="math inline">\(A\)</span> representa la máscara de Fiji.</li>
+<li><span class="math inline">\(B\)</span> representa la máscara de Python.</li>
+<li><span class="math inline">\(A \cap B\)</span> representa los píxeles detectados por ambos.</li>
+<li><span class="math inline">\(A \cup B\)</span> representa los píxeles detectados por al menos uno.</li>
+</ul>
+</section>
+</section>
+<section id="interpretación-de-los-valores" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-de-los-valores">Interpretación de los valores</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 57%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Valor</th>
+<th>Interpretación general</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td>Las máscaras tienen una superposición completa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">Cercano a 1</td>
+<td>Superposición alta</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">Intermedio</td>
+<td>Existen discrepancias entre las máscaras</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">Cercano a 0</td>
+<td>Superposición muy baja</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td>No comparten píxeles positivos</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>NaN</code></td>
+<td>No puede calcularse, por ejemplo si ambas máscaras están vacías</td>
+</tr>
+</tbody>
+</table>
+<p>Estos valores deben interpretarse junto con los overlays. No se utilizará inicialmente un punto de corte universal para clasificar la concordancia como buena o mala.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Dice e IoU no miden exactitud
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Estas métricas indican cuánto se parecen las máscaras generadas en Fiji y Python. No demuestran que los puncta detectados correspondan correctamente a la señal biológica real.</p>
+<p>Para evaluar la exactitud sería necesaria una máscara de referencia validada de manera independiente.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Estado actual
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El cálculo de Dice e IoU ya está implementado en el notebook, pero todavía no se obtuvieron valores porque faltan las máscaras finales generadas en Fiji.</p>
+<p>Cuando esas máscaras se guarden con los nombres esperados, el notebook realizará la comparación automáticamente y creará:</p>
+<pre class="text"><code>comparacion_mascaras_fiji_python.csv</code></pre>
+</div>
+</div>
+</section>
+<section id="comparación-de-mediciones" class="level2">
+<h2 class="anchored" data-anchor-id="comparación-de-mediciones">Comparación de mediciones</h2>
+<p>Además de las máscaras, pueden compararse los valores obtenidos para cada imagen:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Métrica</th>
+<th>Pregunta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Número de puncta</td>
+<td>¿Ambos métodos detectan una cantidad semejante?</td>
+</tr>
+<tr class="even">
+<td>Área positiva</td>
+<td>¿Seleccionan una proporción similar de la imagen?</td>
+</tr>
+<tr class="odd">
+<td>Área mediana</td>
+<td>¿Los objetos tienen tamaños semejantes?</td>
+</tr>
+<tr class="even">
+<td>Circularidad mediana</td>
+<td>¿Las formas calculadas son comparables?</td>
+</tr>
+<tr class="odd">
+<td>Intensidad media</td>
+<td>¿Miden valores semejantes dentro de los objetos?</td>
+</tr>
+<tr class="even">
+<td>Intensidad integrada</td>
+<td>¿La señal total segmentada es comparable?</td>
+</tr>
+</tbody>
+</table>
+<p>La unidad principal de comparación debe ser la <strong>imagen o campo</strong>, no cada punctum individual.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Los puncta no son réplicas independientes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los objetos de una misma imagen comparten la misma preparación, adquisición y contexto celular. Por eso, no deben tratarse automáticamente como experimentos independientes.</p>
+<p>Para comparar métodos, primero se resumen las mediciones por imagen.</p>
+</div>
+</div>
+</section>
+<section id="diferencias-que-pueden-aparecer" class="level2">
+<h2 class="anchored" data-anchor-id="diferencias-que-pueden-aparecer">Diferencias que pueden aparecer</h2>
+<p>Aunque se utilicen parámetros equivalentes, algunas mediciones podrían presentar pequeñas diferencias.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Diferencia</th>
+<th>Posible explicación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Número de objetos</td>
+<td>Diferencias en la conectividad o en el tratamiento de píxeles diagonales</td>
+</tr>
+<tr class="even">
+<td>Área</td>
+<td>Inclusión diferente del valor exacto del umbral</td>
+</tr>
+<tr class="odd">
+<td>Perímetro</td>
+<td>Algoritmos diferentes para representar el borde</td>
+</tr>
+<tr class="even">
+<td>Circularidad</td>
+<td>Depende del perímetro calculado por cada herramienta</td>
+</tr>
+<tr class="odd">
+<td>Objetos en contacto</td>
+<td>Diferencias en el etiquetado</td>
+</tr>
+<tr class="even">
+<td>Intensidad integrada</td>
+<td>Diferencias entre <code>IntDen</code>, <code>RawIntDen</code> y la fórmula utilizada</td>
+</tr>
+<tr class="odd">
+<td>Objetos del borde</td>
+<td>Configuración diferente para excluirlos</td>
+</tr>
+<tr class="even">
+<td>Unidades</td>
+<td>Calibración espacial ausente o interpretada de forma distinta</td>
+</tr>
+</tbody>
+</table>
+<p>Las diferencias pequeñas no necesariamente representan errores. Algunas pueden surgir de la forma en que cada programa implementa una operación.</p>
+</section>
+<section id="fiji-y-python-fortalezas-complementarias" class="level2">
+<h2 class="anchored" data-anchor-id="fiji-y-python-fortalezas-complementarias">Fiji y Python: fortalezas complementarias</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspecto</th>
+<th>Fiji</th>
+<th>Python</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Inicio del análisis</td>
+<td>Accesible mediante interfaz gráfica</td>
+<td>Requiere ejecutar código</td>
+</tr>
+<tr class="even">
+<td>Exploración visual</td>
+<td>Muy directa</td>
+<td>Depende de visualizaciones programadas</td>
+</tr>
+<tr class="odd">
+<td>Registro de parámetros</td>
+<td>Puede hacerse mediante macros y documentación</td>
+<td>Queda explícito en el notebook</td>
+</tr>
+<tr class="even">
+<td>Procesamiento por lotes</td>
+<td>Posible mediante macros</td>
+<td>Integrado naturalmente en el flujo</td>
+</tr>
+<tr class="odd">
+<td>Incorporación de nuevas métricas</td>
+<td>Depende de herramientas y complementos</td>
+<td>Flexible mediante bibliotecas</td>
+</tr>
+<tr class="even">
+<td>Relación objeto–imagen</td>
+<td>ROI Manager facilita la inspección</td>
+<td>Etiquetas y overlays permiten rastrear objetos</td>
+</tr>
+<tr class="odd">
+<td>Reproducibilidad</td>
+<td>Alta si se utiliza una macro estable</td>
+<td>Alta si se conservan código, parámetros y versiones</td>
+</tr>
+<tr class="even">
+<td>Curva de aprendizaje</td>
+<td>Más sencilla para comenzar</td>
+<td>Mayor al modificar el pipeline</td>
+</tr>
+</tbody>
+</table>
+<p>Ninguna herramienta es universalmente mejor. La elección depende del objetivo, la experiencia del usuario y el grado de automatización necesario.</p>
+</section>
+<section id="resultados-piloto-disponibles" class="level2">
+<h2 class="anchored" data-anchor-id="resultados-piloto-disponibles">Resultados piloto disponibles</h2>
+<p>La exploración inicial en Fiji produjo una planilla con mediciones correspondientes a tres campos control y tres campos tratados.</p>
+<p>Se registraron variables como:</p>
+<ul>
+<li>Intensidad media.</li>
+<li>Intensidad integrada de la señal.</li>
+<li>Número de núcleos.</li>
+<li>Mediciones normalizadas por el número de núcleos.</li>
+</ul>
+<p>Estos datos muestran que es posible obtener mediciones y organizarlas por condición, pero todavía no constituyen una comparación directa con Python.</p>
+<p>La macro inicial utilizó sustracción de fondo, el umbral automático Huang, operaciones morfológicas y un filtro de tamaño de <code>20–Infinity</code>. El notebook final utiliza una máscara con un umbral manual de <code>15000</code> y comienza sin filtro de tamaño.</p>
+<p>Por lo tanto, los resultados actuales de ambos flujos no deben compararse numéricamente como si provinieran del mismo procedimiento.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Resultado exploratorio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La planilla piloto documenta lo que se consiguió durante la exploración en Fiji, pero sus valores no representan todavía una validación del pipeline ni una comparación final entre herramientas.</p>
+</div>
+</div>
+</section>
+<section id="estado-actual-1" class="level2">
+<h2 class="anchored" data-anchor-id="estado-actual-1">Estado actual</h2>
+<p>El notebook procesó siete imágenes CZI: cuatro controles y tres tratadas.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Componente</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Lectura de los siete archivos CZI</td>
+<td>Completada</td>
+</tr>
+<tr class="even">
+<td>Imágenes control encontradas</td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td>Imágenes tratadas encontradas</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>Pipeline de Python</td>
+<td>Implementado</td>
+</tr>
+<tr class="odd">
+<td>Procesamiento por lotes en Python</td>
+<td>Implementado</td>
+</tr>
+<tr class="even">
+<td>MIP, máscaras y overlays de Python</td>
+<td>Generados</td>
+</tr>
+<tr class="odd">
+<td>Exportación de resultados de Python</td>
+<td>Implementada</td>
+</tr>
+<tr class="even">
+<td>Análisis exploratorio en Fiji</td>
+<td>Realizado</td>
+</tr>
+<tr class="odd">
+<td>Planilla piloto de Fiji</td>
+<td>Disponible</td>
+</tr>
+<tr class="even">
+<td>Macro de Fiji equivalente a Python</td>
+<td>Pendiente</td>
+</tr>
+<tr class="odd">
+<td>Máscaras finales de Fiji</td>
+<td>Pendientes</td>
+</tr>
+<tr class="even">
+<td>Función para calcular Dice e IoU</td>
+<td>Implementada</td>
+</tr>
+<tr class="odd">
+<td>Valores de Dice e IoU</td>
+<td>Pendientes</td>
+</tr>
+<tr class="even">
+<td>Comparación de métricas por imagen</td>
+<td>Pendiente</td>
+</tr>
+<tr class="odd">
+<td>Máscara manual de referencia</td>
+<td>No disponible</td>
+</tr>
+<tr class="even">
+<td>Análisis estadístico</td>
+<td>Pendiente</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="qué-falta-para-completar-la-comparación" class="level2">
+<h2 class="anchored" data-anchor-id="qué-falta-para-completar-la-comparación">Qué falta para completar la comparación</h2>
+<p>Para completar el análisis será necesario generar una nueva versión de la macro de Fiji que utilice la misma MIP, el mismo umbral y los mismos criterios del notebook.</p>
+<p>La macro deberá procesar todas las imágenes, guardar una máscara por campo y exportar las mediciones con nombres consistentes.</p>
+<p>Una vez obtenidas las máscaras de Fiji, deberán copiarse a la carpeta <code>fiji</code> esperada por el notebook. Python calculará Dice e IoU y generará una tabla con una fila por imagen.</p>
+<p>Después podrán compararse el número de puncta, el área positiva, el área mediana y las mediciones de intensidad.</p>
+</section>
+<section id="máscaras-de-fiji-pendientes" class="level2">
+<h2 class="anchored" data-anchor-id="máscaras-de-fiji-pendientes">Máscaras de Fiji pendientes</h2>
+<p>El notebook busca actualmente estas siete máscaras:</p>
+<pre class="text"><code>Control_Experiment-178_fiji_mask.tif
+Control_Experiment-179_fiji_mask.tif
+Control_Experiment-185_fiji_mask.tif
+Control_Experiment-186_fiji_mask.tif
+Tratadas_Experiment-198_fiji_mask.tif
+Tratadas_Experiment-199_fiji_mask.tif
+Tratadas_Experiment-200_fiji_mask.tif</code></pre>
+<p>Todas deben guardarse dentro de:</p>
+<pre class="text"><code>Fotos de Rodri CZI/fiji/</code></pre>
+</section>
+<section id="tabla-final-esperada" class="level2">
+<h2 class="anchored" data-anchor-id="tabla-final-esperada">Tabla final esperada</h2>
+<p>Cuando estén disponibles las máscaras de Fiji, el notebook generará una tabla con una fila por imagen:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Imagen</th>
+<th>Condición</th>
+<th style="text-align: right;">Dice</th>
+<th style="text-align: right;">IoU</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Control_Experiment-178</td>
+<td>Control</td>
+<td style="text-align: right;">Pendiente</td>
+<td style="text-align: right;">Pendiente</td>
+</tr>
+<tr class="even">
+<td>Control_Experiment-179</td>
+<td>Control</td>
+<td style="text-align: right;">Pendiente</td>
+<td style="text-align: right;">Pendiente</td>
+</tr>
+<tr class="odd">
+<td>Control_Experiment-185</td>
+<td>Control</td>
+<td style="text-align: right;">Pendiente</td>
+<td style="text-align: right;">Pendiente</td>
+</tr>
+<tr class="even">
+<td>Control_Experiment-186</td>
+<td>Control</td>
+<td style="text-align: right;">Pendiente</td>
+<td style="text-align: right;">Pendiente</td>
+</tr>
+<tr class="odd">
+<td>Tratadas_Experiment-198</td>
+<td>Tratada</td>
+<td style="text-align: right;">Pendiente</td>
+<td style="text-align: right;">Pendiente</td>
+</tr>
+<tr class="even">
+<td>Tratadas_Experiment-199</td>
+<td>Tratada</td>
+<td style="text-align: right;">Pendiente</td>
+<td style="text-align: right;">Pendiente</td>
+</tr>
+<tr class="odd">
+<td>Tratadas_Experiment-200</td>
+<td>Tratada</td>
+<td style="text-align: right;">Pendiente</td>
+<td style="text-align: right;">Pendiente</td>
+</tr>
+</tbody>
+</table>
+<p>Después, esta tabla podrá ampliarse con el número de puncta, el área positiva y otras mediciones obtenidas mediante cada herramienta.</p>
+</section>
+<section id="posibles-gráficos" class="level2">
+<h2 class="anchored" data-anchor-id="posibles-gráficos">Posibles gráficos</h2>
+<p>La comparación podrá visualizarse mediante:</p>
+<ul>
+<li>Un gráfico de dispersión de Fiji frente a Python.</li>
+<li>Líneas que conecten ambas mediciones para cada imagen.</li>
+<li>Diferencias entre métodos por imagen.</li>
+<li>Distribución de Dice e IoU.</li>
+<li>Paneles de superposición de máscaras.</li>
+</ul>
+<p>Un gráfico de correlación puede mostrar asociación, pero no demuestra por sí solo concordancia. Con un número suficiente de imágenes también podría incorporarse un análisis de diferencias entre métodos, como un gráfico de Bland–Altman.</p>
+</section>
+<section id="conclusiones-permitidas" class="level2">
+<h2 class="anchored" data-anchor-id="conclusiones-permitidas">Conclusiones permitidas</h2>
+<p>Si Fiji y Python producen máscaras superpuestas y mediciones semejantes, podrá concluirse que ambos métodos presentan buena concordancia bajo los parámetros evaluados.</p>
+<p>Si aparecen diferencias, será necesario determinar en qué etapa se originan: umbral, conectividad, tratamiento del borde, cálculo del perímetro, filtro de tamaño o medición de intensidad.</p>
+<p>Los resultados no permitirán afirmar todavía:</p>
+<ul>
+<li>Que una herramienta es universalmente superior.</li>
+<li>Que cada punctum representa un agregado tridimensional individual.</li>
+<li>Que existe un efecto biológico definitivo del tratamiento.</li>
+<li>Que el umbral es válido para imágenes adquiridas con otros parámetros.</li>
+<li>Que las máscaras son exactas sin una referencia independiente.</li>
+</ul>
+</section>
+<section id="conclusión-provisional" class="level2">
+<h2 class="anchored" data-anchor-id="conclusión-provisional">Conclusión provisional</h2>
+<p>El proyecto permitió implementar el procesamiento completo en Python y realizar una primera exploración en Fiji. También se programó la comparación automática de las máscaras mediante Dice e IoU.</p>
+<p>Sin embargo, todavía no existen valores de Dice e IoU porque faltan las siete máscaras finales de Fiji generadas con parámetros equivalentes a Python.</p>
+<p>Por lo tanto, el cálculo está <strong>implementado</strong>, pero la comparación cuantitativa está <strong>pendiente de ejecución</strong>. Esta distinción evita presentar como resultados valores que todavía no fueron obtenidos.</p>
+<p><a href="./index.html" class="btn btn-outline-primary">Volver al inicio</a></p>
+<p><a href="./presentacion.html" class="btn btn-primary">Ver la presentación</a></p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -285,12 +997,12 @@ ul.task-list li input[type="checkbox"] {
       // flash "checked"
       button.classList.add('code-copy-button-checked');
       var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
+      button.setAttribute("title", "Copiado");
       let tooltip;
       if (window.bootstrap) {
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
+        button.setAttribute("data-bs-title", "Copiado");
         tooltip = new bootstrap.Tooltip(button, 
           { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
@@ -333,7 +1045,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/AdrianaGLG@github\.com\/AdrianaGLG\/curso_fiji_vs_python\.git");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -662,8 +1374,8 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./python.html" class="pagination-link" aria-label="Python">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Python</span>
+      <a href="./python.html" class="pagination-link" aria-label="5. Análisis en Python">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">5. Análisis en Python</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

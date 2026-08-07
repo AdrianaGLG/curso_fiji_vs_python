@@ -1,6 +1,137 @@
 ---
 title: "Contexto y pregunta"
-subtitle: "Por qué la segmentación depende de decisiones"
+subtitle: "¿Qué señal queremos medir y por qué comparamos Fiji con Python?"
+description: "Contexto biológico y pregunta metodológica del tutorial de cuantificación de puncta fluorescentes."
+toc: true
+toc-depth: 2
 ---
 
-Contenido en preparación.
+## ¿Qué estamos observando?
+
+En este proyecto trabajamos con imágenes de microscopía confocal de células marcadas mediante inmunofluorescencia.
+
+La inmunofluorescencia utiliza anticuerpos asociados a fluoróforos para visualizar moléculas específicas. Cuando la muestra se ilumina con la longitud de onda adecuada, los fluoróforos emiten luz que puede ser registrada por el microscopio.
+
+En las imágenes analizadas se utilizaron diferentes marcaciones para observar:
+
+| Marcación | Canal | ¿Qué permite visualizar? |
+|---|---|---|
+| T22 | Verde, Alexa Fluor 488 | Señal asociada a oligómeros de Tau reconocidos por el anticuerpo T22 |
+| Tau5 | Rojo, Alexa Fluor 555 | Tau total |
+| DAPI | Azul | Núcleos celulares |
+| Campo claro | Gris | Morfología general y ubicación aproximada de las células |
+
+::: {.callout-note}
+## ¿Qué es un canal?
+
+Una imagen multicanal registra por separado la señal de cada fluoróforo. Por eso, una misma imagen puede contener un canal verde, uno rojo, uno azul y un canal de campo claro.
+
+En este tutorial analizaremos principalmente el **canal verde correspondiente a T22**.
+:::
+
+## El modelo celular
+
+Se utilizó la línea celular **HEK293-HS3ST2/Tau**, que expresa la proteína Tau humana y la enzima HS3ST2.
+
+Las células fueron procesadas mediante inmunofluorescencia y observadas en un microscopio confocal. Algunas muestras recibieron tratamiento con **DDMC 50 µM**, mientras que otras se utilizaron como controles.
+
+El tratamiento forma parte del contexto biológico del experimento. Sin embargo, en este tutorial las imágenes se emplean principalmente como un caso de estudio para desarrollar y comparar métodos de análisis.
+
+## ¿Qué son los puncta?
+
+En el canal T22 pueden observarse regiones pequeñas y brillantes. En análisis de bioimágenes, estas estructuras suelen denominarse *puncta*.
+
+Un punctum es una región localizada de señal fluorescente que se distingue del fondo de la imagen.
+
+::: {.callout-important}
+## Señal observada y significado biológico
+
+El análisis computacional detecta regiones brillantes reconocidas por T22. Por sí solo, no demuestra que cada objeto segmentado corresponda a un agregado individual ni permite reconstruir completamente su organización tridimensional.
+
+Por este motivo, en el tutorial hablaremos de **puncta fluorescentes detectados con T22**.
+:::
+
+## El problema de la cuantificación
+
+Observar una imagen permite describir si parece haber más o menos señal, pero esa apreciación puede depender de la persona que realiza el análisis.
+
+Para obtener resultados cuantitativos necesitamos establecer reglas:
+
+1. Seleccionar el canal que contiene la señal de interés.
+2. Convertir el z-stack en una representación 2D comparable.
+3. Definir qué intensidades corresponden a señal y cuáles al fondo.
+4. Construir una máscara binaria.
+5. Identificar objetos separados.
+6. Medir sus características.
+7. Comprobar visualmente que la detección sea razonable.
+
+Estas decisiones pueden cambiar el número, el tamaño y la forma de los objetos detectados.
+
+## ¿Por qué comparar Fiji y Python?
+
+Fiji y Python pueden realizar operaciones equivalentes, pero permiten trabajar de maneras diferentes.
+
+| Fiji / ImageJ | Python |
+|---|---|
+| Utiliza principalmente una interfaz gráfica | Utiliza instrucciones escritas como código |
+| Permite observar las operaciones paso a paso | Permite registrar explícitamente todos los parámetros |
+| Puede automatizarse mediante macros | Facilita el procesamiento de varias imágenes |
+| Es ampliamente utilizado en bioimágenes | Ofrece flexibilidad para ampliar el análisis |
+| Es accesible para comenzar sin programar | Favorece la reproducibilidad computacional |
+
+Para que la comparación sea válida, Fiji y Python deben analizar exactamente la misma imagen y trabajar sobre el mismo canal y la misma proyección. También deben utilizar un umbral equivalente, los mismos límites de tamaño y criterios idénticos para incluir o excluir objetos. De esta manera, las diferencias observadas pueden atribuirse a la implementación de cada herramienta y no a cambios en las decisiones del análisis.
+
+## Pregunta principal
+
+> ¿En qué medida Fiji y Python producen segmentaciones y cuantificaciones concordantes de los puncta fluorescentes detectados con T22 cuando se aplican sobre las mismas imágenes y con parámetros similares?
+
+## Objetivo general
+
+Desarrollar y documentar un flujo reproducible para detectar y cuantificar puncta fluorescentes en imágenes confocales, implementándolo en Fiji y Python para comparar sus resultados.
+
+## Objetivos específicos
+
+- Reconocer la estructura de las imágenes confocales y sus canales.
+- Seleccionar el canal correspondiente a T22.
+- Generar una proyección de máxima intensidad del z-stack.
+- Segmentar los puncta mediante un umbral de intensidad.
+- Obtener una máscara binaria y verificarla visualmente.
+- Medir el número, área, forma e intensidad de los objetos detectados.
+- Automatizar el procedimiento en Fiji y Python.
+- Comparar las máscaras y mediciones generadas por ambas herramientas.
+- Identificar diferencias, limitaciones y decisiones críticas del análisis.
+
+## ¿Qué estamos comparando realmente?
+
+La comparación permite evaluar si Fiji y Python producen resultados semejantes cuando reciben instrucciones equivalentes.
+
+Podemos comparar:
+
+- El número de objetos detectados.
+- El área ocupada por la señal.
+- El tamaño de los puncta.
+- La intensidad dentro de los objetos.
+- La superposición entre las máscaras.
+
+Sin una segmentación manual validada como referencia, no podemos afirmar cuál de los dos métodos es más exacto.
+
+::: {.callout-warning}
+## Concordancia no significa exactitud
+
+Si Fiji y Python producen máscaras similares, podemos decir que existe una buena **concordancia entre implementaciones**.
+
+Para determinar si los puncta fueron identificados correctamente sería necesario compararlos con una referencia independiente, como una segmentación manual revisada por especialistas.
+:::
+
+## Alcance del tutorial
+
+Este trabajo constituye una primera aproximación metodológica. No busca todavía:
+
+- Demostrar un efecto biológico definitivo del tratamiento.
+- Identificar individualmente agregados en tres dimensiones.
+- Reemplazar la validación experimental.
+- Determinar cuál herramienta es universalmente mejor.
+
+El objetivo es construir una base sencilla, comprensible y reproducible que pueda ampliarse en etapas posteriores y entender los alcances y limitaciones iniciales de ambas herramientas.
+
+

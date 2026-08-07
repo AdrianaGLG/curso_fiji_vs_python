@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Tutorial paso a paso para segmentar y cuantificar elementos fluorescentes detectados con T22 en imágenes confocales.">
 
-<title>Cuantificación reproducible de patrones de fosforilación proteínas: comparación entre Fiji y Python – Fiji vs.&nbsp;Python</title>
+<title>Detección y cuantificación de puncta fluorescentes – Fiji vs.&nbsp;Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -62,26 +63,24 @@ ul.task-list li input[type="checkbox"] {
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
   }
 }</script>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet">
 
 
 </head>
 
-<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
+<body class="nav-sidebar floating nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -92,8 +91,8 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">Fiji vs.&nbsp;Python</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -102,19 +101,47 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Inicio</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./flujo.html"> 
-<span class="menu-text">Flujo común</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Tutorial</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+        <li>
+    <a class="dropdown-item" href="./contexto.html">
+ <span class="dropdown-text">1. Contexto y pregunta</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./comparacion.html"> 
-<span class="menu-text">Comparación</span></a>
+        <li>
+    <a class="dropdown-item" href="./datos.html">
+ <span class="dropdown-text">2. Conocer las imágenes</span></a>
   </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+        <li>
+    <a class="dropdown-item" href="./flujo.html">
+ <span class="dropdown-text">3. Flujo de análisis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./fiji.html">
+ <span class="dropdown-text">4. Análisis en Fiji</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./python.html">
+ <span class="dropdown-text">5. Análisis en Python</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./comparacion.html">
+ <span class="dropdown-text">6. Comparación</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="./presentacion.html"> 
 <span class="menu-text">Presentación</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AdrianaGLG/curso_fiji_vs_python"> <i class="bi bi-github" role="img" aria-label="Repositorio en GitHub">
+</i> 
+<span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -124,27 +151,19 @@ ul.task-list li input[type="checkbox"] {
     </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-          <h1 class="quarto-secondary-nav-title">Cuantificación reproducible de patrones de fosforilación proteínas: comparación entre Fiji y Python</h1>
-        </a>     
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Inicio</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
     </div>
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -156,8 +175,8 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">El proyecto</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Introducción</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -165,19 +184,19 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contexto.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Contexto y pregunta</span></a>
+ <span class="menu-text">1. Contexto y pregunta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./datos.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Imágenes y datos</span></a>
+ <span class="menu-text">2. Conocer las imágenes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./flujo.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Flujo común</span></a>
+ <span class="menu-text">3. Flujo de análisis</span></a>
   </div>
 </li>
       </ul>
@@ -185,8 +204,8 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Herramientas</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Tutorial paso a paso</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -194,23 +213,23 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fiji.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Fiji / ImageJ</span></a>
+ <span class="menu-text">4. Análisis en Fiji</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./python.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Python</span></a>
+ <span class="menu-text">5. Análisis en Python</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Comparación de resultados</span></a>
   </div>
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./comparacion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Comparación</span></a>
-  </div>
-</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -231,16 +250,22 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content column-page-right" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Cuantificación reproducible de patrones de fosforilación proteínas: comparación entre Fiji y Python</h1>
+<h1 class="title">Detección y cuantificación de puncta fluorescentes</h1>
+<p class="subtitle lead">Un tutorial introductorio con Fiji y Python</p>
+</div>
+
+<div>
+  <div class="description">
+    Tutorial paso a paso para segmentar y cuantificar elementos fluorescentes detectados con T22 en imágenes confocales.
+  </div>
 </div>
 
 
-
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-right">
 
     
   
@@ -253,59 +278,37 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p><span class="eyebrow">Trabajo práctico integrador</span></p>
-<p>Dos personas analizan la misma imagen de microscopía confocal. Una usa Fiji, otra usa Python. Aplican los mismos pasos conceptuales: corregir el fondo, filtrar el ruido, umbralizar, separar objetos en contacto y medir. ¿Obtienen el mismo resultado?</p>
-<p>Este sitio documenta un flujo clásico de segmentación implementado dos veces sobre las mismas imágenes, para medir cuánto concuerdan y dónde se separan.</p>
-<div class="duo">
-<section id="fiji-imagej" class="level3 panel-fiji">
-<h3 class="anchored" data-anchor-id="fiji-imagej">Fiji / ImageJ</h3>
-<p>Interfaz gráfica, decisiones visibles paso a paso y automatización por macro. Es la vía de entrada habitual en biología.</p>
-<p><a href="./fiji.html">Ver la implementación →</a></p>
-</section>
-<section id="python" class="level3 panel-python">
-<h3 class="anchored" data-anchor-id="python">Python</h3>
-<p>Las mismas operaciones escritas como código: procesamiento por lotes, parámetros explícitos y un registro exacto de lo que se hizo.</p>
-<p><a href="./python.html">Ver la implementación →</a></p>
-</section>
-</div>
-<section id="la-pregunta" class="level2">
-<h2 class="anchored" data-anchor-id="la-pregunta">La pregunta</h2>
+<p>Dos personas analizan la misma imagen de microscopía confocal. Una utiliza Fiji y la otra Python. Ambas parten de la misma imagen y aplican criterios de segmentación.</p>
+<p>Pero, ¿obtienen los mismos resultados?</p>
+<p>Este sitio busca presentar un tutorial paso a paso para aprender a detectar, visualizar y medir <em>puncta</em> o elementos intracelulares fluorescentes mediante dos herramientas diferentes.</p>
 <blockquote class="blockquote">
-<p>¿En qué medida dos implementaciones equivalentes de un mismo flujo clásico, una en Fiji y otra en Python, producen segmentaciones y cuantificaciones concordantes de los puncta intracelulares reconocidos por el anticuerpo T22 en las mismas imágenes confocales?</p>
+<p><strong>No es necesario tener experiencia previa en programación ni en análisis de bioimágenes.</strong></p>
 </blockquote>
-<p>El objetivo no es evaluar el efecto biológico del tratamiento. Las imágenes funcionan como caso de estudio para enseñar segmentación, cuantificación, automatización y comparación entre herramientas.</p>
+<section id="qué-vas-a-aprender" class="level2">
+<h2 class="anchored" data-anchor-id="qué-vas-a-aprender">¿Qué vas a aprender?</h2>
+<p>Al finalizar este tutorial podrás:</p>
+<ul>
+<li>Reconocer los canales y planos de una imagen confocal.</li>
+<li>Comprender qué es una proyección de máxima intensidad.</li>
+<li>Diferenciar una imagen original de una máscara binaria.</li>
+<li>Aplicar un umbral para separar señal y fondo.</li>
+<li>Detectar y medir puncta fluorescentes.</li>
+<li>Automatizar el análisis en Fiji mediante una macro.</li>
+<li>Ejecutar el mismo análisis en Python utilizando Google Colab.</li>
+<li>Comparar las máscaras y mediciones producidas por ambos métodos.</li>
+<li>Reconocer las principales limitaciones del análisis.</li>
+</ul>
 </section>
-<section id="cómo-recorrer-el-sitio" class="level2">
-<h2 class="anchored" data-anchor-id="cómo-recorrer-el-sitio">Cómo recorrer el sitio</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Página</th>
-<th>Qué encontrás</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="./contexto.html">Contexto y pregunta</a></td>
-<td>Por qué la segmentación depende de decisiones</td>
-</tr>
-<tr class="even">
-<td><a href="./datos.html">Imágenes y datos</a></td>
-<td>Canales, z-stack, calibración espacial</td>
-</tr>
-<tr class="odd">
-<td><a href="./flujo.html">Flujo común</a></td>
-<td>La tabla de equivalencias entre ambas herramientas</td>
-</tr>
-<tr class="even">
-<td><a href="./comparacion.html">Comparación</a></td>
-<td>Máscaras superpuestas, métricas y discrepancias</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="alcance" class="level2">
-<h2 class="anchored" data-anchor-id="alcance">Alcance</h2>
-<p>El análisis se hace en 2D sobre la misma proyección del z-stack, en el canal verde. Los objetos se describen como <em>puncta segmentados en la proyección</em>, sin asumir que cada uno corresponda a un agregado individual en tres dimensiones. Sin una máscara manual de referencia, lo que se mide es <strong>concordancia entre métodos</strong>, no exactitud.</p>
+<section id="el-problema-en-pocas-palabras" class="level2">
+<h2 class="anchored" data-anchor-id="el-problema-en-pocas-palabras">El problema, en pocas palabras</h2>
+<p>Una imagen de fluorescencia está formada por píxeles con diferentes valores de intensidad. Algunos corresponden a la señal que queremos estudiar y otros al fondo.</p>
+<p>Para poder medir los puncta necesitamos transformar la imagen original en una <strong>máscara binaria</strong>:</p>
+<ul>
+<li>Los píxeles blancos representan la señal seleccionada.</li>
+<li>Los píxeles negros representan el fondo.</li>
+</ul>
+<p>A este proceso lo llamamos <strong>segmentación</strong>.</p>
+<p><strong>Imagen .CZI</strong> → <strong>Segmentación</strong> → <strong>Resultados</strong></p>
 
 
 </section>
@@ -336,12 +339,12 @@ ul.task-list li input[type="checkbox"] {
       // flash "checked"
       button.classList.add('code-copy-button-checked');
       var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
+      button.setAttribute("title", "Copiado");
       let tooltip;
       if (window.bootstrap) {
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
+        button.setAttribute("data-bs-title", "Copiado");
         tooltip = new bootstrap.Tooltip(button, 
           { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
@@ -711,12 +714,12 @@ ul.task-list li input[type="checkbox"] {
     }
   });
   </script>
-<nav class="page-navigation">
+<nav class="page-navigation column-page-right">
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./contexto.html" class="pagination-link" aria-label="Contexto y pregunta">
-        <span class="nav-page-text">Contexto y pregunta</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./contexto.html" class="pagination-link" aria-label="1. Contexto y pregunta">
+        <span class="nav-page-text">1. Contexto y pregunta</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

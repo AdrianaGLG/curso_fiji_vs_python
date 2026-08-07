@@ -7,27 +7,57 @@ subtitle: "Canales y adquisición"
 
 ![Modelo experimental y adquisición. Células HEK-Tau+HS3ST2 tratadas con DDMC 50 µM, inmunomarcadas con T22 y Tau5, contrastadas con DAPI y adquiridas por microscopía confocal. Panel superior adaptado de [Huynh et al., 2022](https://www.nature.com/articles/s41598-022-13486-6).](media/Presentacion_.png){width=80%}
 
-Las imágenes son stacks confocales adquiridos en formato `.czi` (Zeiss), con cuatro
-canales y tres planos Z por campo.
+---
+title: "Conocer las imágenes"
+subtitle: "Canales, planos Z, intensidad y calibración"
+description: "Introducción a las imágenes confocales utilizadas en el tutorial."
+toc: true
+toc-depth: 2
+---
 
-| Canal | Marcación |
-|---|---|
-| 0 | Alexa Fluor 488 — anticuerpo T22 (Tau oligomérica) |
-| 1 | Alexa Fluor 555 — Tau total |
-| 2 | Campo claro |
-| 3 | DAPI — núcleos |
+## Antes de comenzar
 
-El análisis se realiza sobre el canal 0. El resto se conserva como información
-complementaria y para definir regiones celulares.
+Antes de segmentar una imagen necesitamos conocer cómo está organizada. Una imagen de microscopía confocal puede contener varios canales, planos y valores de intensidad.
+
+En este proyecto trabajamos con imágenes adquiridas en formato `.czi` mediante un microscopio confocal Zeiss.
+
+## ¿Qué es un archivo CZI?
+
+El formato `.czi` puede guardar en un mismo archivo:
+
+- Los diferentes canales de fluorescencia.
+- Los planos que componen el z-stack.
+- El tamaño de la imagen.
+- La profundidad de bits.
+- La calibración espacial.
+- Información sobre las condiciones de adquisición.
+
+Por eso, un archivo `.czi` no debe interpretarse como una única fotografía. En realidad, funciona como un contenedor que reúne varias imágenes y sus metadatos.
+
+::: {.callout-note}
+## ¿Qué son los metadatos?
+
+Los metadatos son datos que describen cómo se adquirió la imagen. Pueden incluir el tamaño del píxel, la distancia entre planos Z, el objetivo utilizado y la identificación de los canales.
+
+Esta información es necesaria para transformar mediciones en píxeles a unidades físicas, como micrómetros.
+:::
+
+## Organización de las imágenes
+
+Los archivos utilizados en este tutorial contienen cuatro canales y tres planos Z por campo.
+
+Una forma simplificada de representar su estructura es:
+
+**4 canales × 3 planos Z × alto × ancho**
+
+En Python, una imagen de ejemplo puede tener la forma:
+
+(4, 3, 1437, 1437)
 
 ## Acceso a las imágenes
+
+Las imágenes están organizadas en dos carpetas de Google Drive según la condición experimental. Los enlaces se abrirán en una pestaña nueva.
 
 [Carpeta de imágenes control](https://drive.google.com/drive/folders/1X41TaVmOoNw8Ib_pixlh-E2HoWsH21Pj?usp=sharing){.btn .btn-primary target="_blank"}
 
 [Carpeta de imágenes tratadas](https://drive.google.com/drive/folders/1_niGxXvsaPEXFCDAudcdaos_J5BxDaDX?usp=sharing){.btn .btn-primary target="_blank"}
-
-## Calibración
-
-El tamaño de píxel se lee directamente de los metadatos del `.czi`, sin cargarlo a mano.
-De ese valor dependen todas las áreas informadas en µm²: sin él, las mediciones solo
-podrían expresarse en píxeles y no serían comparables entre equipos.

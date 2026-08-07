@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Introducción a las imágenes confocales utilizadas en el tutorial.">
 
-<title>Imágenes y datos – Fiji vs.&nbsp;Python</title>
+<title>Conocer las imágenes – Fiji vs.&nbsp;Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -66,21 +67,19 @@ ul.task-list li input[type="checkbox"] {
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
   }
 }</script>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet">
 
 
 </head>
@@ -96,8 +95,8 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">Fiji vs.&nbsp;Python</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -106,19 +105,47 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Inicio</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./flujo.html"> 
-<span class="menu-text">Flujo común</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Tutorial</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+        <li>
+    <a class="dropdown-item" href="./contexto.html">
+ <span class="dropdown-text">1. Contexto y pregunta</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./comparacion.html"> 
-<span class="menu-text">Comparación</span></a>
+        <li>
+    <a class="dropdown-item" href="./datos.html">
+ <span class="dropdown-text">2. Conocer las imágenes</span></a>
   </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+        <li>
+    <a class="dropdown-item" href="./flujo.html">
+ <span class="dropdown-text">3. Flujo de análisis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./fiji.html">
+ <span class="dropdown-text">4. Análisis en Fiji</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./python.html">
+ <span class="dropdown-text">5. Análisis en Python</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./comparacion.html">
+ <span class="dropdown-text">6. Comparación</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="./presentacion.html"> 
 <span class="menu-text">Presentación</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AdrianaGLG/curso_fiji_vs_python"> <i class="bi bi-github" role="img" aria-label="Repositorio en GitHub">
+</i> 
+<span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -128,15 +155,12 @@ ul.task-list li input[type="checkbox"] {
     </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-          <h1 class="quarto-secondary-nav-title">Imágenes y datos</h1>
-        </a>     
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./contexto.html">Introducción</a></li><li class="breadcrumb-item"><a href="./datos.html">2. Conocer las imágenes</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
     </div>
   </nav>
 </header>
@@ -144,11 +168,6 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -160,8 +179,8 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">El proyecto</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Introducción</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -169,19 +188,19 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contexto.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Contexto y pregunta</span></a>
+ <span class="menu-text">1. Contexto y pregunta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./datos.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Imágenes y datos</span></a>
+ <span class="menu-text">2. Conocer las imágenes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./flujo.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Flujo común</span></a>
+ <span class="menu-text">3. Flujo de análisis</span></a>
   </div>
 </li>
       </ul>
@@ -189,8 +208,8 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Herramientas</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+ <span class="menu-text">Tutorial paso a paso</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -198,23 +217,23 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fiji.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Fiji / ImageJ</span></a>
+ <span class="menu-text">4. Análisis en Fiji</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./python.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Python</span></a>
+ <span class="menu-text">5. Análisis en Python</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Comparación de resultados</span></a>
   </div>
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./comparacion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Comparación</span></a>
-  </div>
-</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -237,21 +256,28 @@ ul.task-list li input[type="checkbox"] {
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">En esta página</h2>
    
-  <ul>
-  <li><a href="#acceso-a-las-imágenes" id="toc-acceso-a-las-imágenes" class="nav-link active" data-scroll-target="#acceso-a-las-imágenes">Acceso a las imágenes</a></li>
-  <li><a href="#calibración" id="toc-calibración" class="nav-link" data-scroll-target="#calibración">Calibración</a></li>
+  <ul class="collapse">
+  <li><a href="#antes-de-comenzar" id="toc-antes-de-comenzar" class="nav-link active" data-scroll-target="#antes-de-comenzar">Antes de comenzar</a></li>
+  <li><a href="#qué-es-un-archivo-czi" id="toc-qué-es-un-archivo-czi" class="nav-link" data-scroll-target="#qué-es-un-archivo-czi">¿Qué es un archivo CZI?</a></li>
+  <li><a href="#organización-de-las-imágenes" id="toc-organización-de-las-imágenes" class="nav-link" data-scroll-target="#organización-de-las-imágenes">Organización de las imágenes</a></li>
+  <li><a href="#acceso-a-las-imágenes" id="toc-acceso-a-las-imágenes" class="nav-link" data-scroll-target="#acceso-a-las-imágenes">Acceso a las imágenes</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./contexto.html">Introducción</a></li><li class="breadcrumb-item"><a href="./datos.html">2. Conocer las imágenes</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Imágenes y datos</h1>
-<p class="subtitle lead">Canales y adquisición</p>
+<h1 class="title">Conocer las imágenes</h1>
+<p class="subtitle lead">Canales, planos Z, intensidad y calibración</p>
 </div>
 
+<div>
+  <div class="description">
+    Introducción a las imágenes confocales utilizadas en el tutorial.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -273,42 +299,51 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Modelo experimental y adquisición. Células HEK-Tau+HS3ST2 tratadas con DDMC 50 µM, inmunomarcadas con T22 y Tau5, contrastadas con DAPI y adquiridas por microscopía confocal. Panel superior adaptado de <a href="https://www.nature.com/articles/s41598-022-13486-6">Huynh et al., 2022</a>.</figcaption>
 </figure>
 </div>
-<p>Las imágenes son stacks confocales adquiridos en formato <code>.czi</code> (Zeiss), con cuatro canales y tres planos Z por campo.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Canal</th>
-<th>Marcación</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>0</td>
-<td>Alexa Fluor 488 — anticuerpo T22 (Tau oligomérica)</td>
-</tr>
-<tr class="even">
-<td>1</td>
-<td>Alexa Fluor 555 — Tau total</td>
-</tr>
-<tr class="odd">
-<td>2</td>
-<td>Campo claro</td>
-</tr>
-<tr class="even">
-<td>3</td>
-<td>DAPI — núcleos</td>
-</tr>
-</tbody>
-</table>
-<p>El análisis se realiza sobre el canal 0. El resto se conserva como información complementaria y para definir regiones celulares.</p>
+<section id="antes-de-comenzar" class="level2">
+<h2 class="anchored" data-anchor-id="antes-de-comenzar">Antes de comenzar</h2>
+<p>Antes de segmentar una imagen necesitamos conocer cómo está organizada. Una imagen de microscopía confocal puede contener varios canales, planos y valores de intensidad.</p>
+<p>En este proyecto trabajamos con imágenes adquiridas en formato <code>.czi</code> mediante un microscopio confocal Zeiss.</p>
+</section>
+<section id="qué-es-un-archivo-czi" class="level2">
+<h2 class="anchored" data-anchor-id="qué-es-un-archivo-czi">¿Qué es un archivo CZI?</h2>
+<p>El formato <code>.czi</code> puede guardar en un mismo archivo:</p>
+<ul>
+<li>Los diferentes canales de fluorescencia.</li>
+<li>Los planos que componen el z-stack.</li>
+<li>El tamaño de la imagen.</li>
+<li>La profundidad de bits.</li>
+<li>La calibración espacial.</li>
+<li>Información sobre las condiciones de adquisición.</li>
+</ul>
+<p>Por eso, un archivo <code>.czi</code> no debe interpretarse como una única fotografía. En realidad, funciona como un contenedor que reúne varias imágenes y sus metadatos.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>¿Qué son los metadatos?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los metadatos son datos que describen cómo se adquirió la imagen. Pueden incluir el tamaño del píxel, la distancia entre planos Z, el objetivo utilizado y la identificación de los canales.</p>
+<p>Esta información es necesaria para transformar mediciones en píxeles a unidades físicas, como micrómetros.</p>
+</div>
+</div>
+</section>
+<section id="organización-de-las-imágenes" class="level2">
+<h2 class="anchored" data-anchor-id="organización-de-las-imágenes">Organización de las imágenes</h2>
+<p>Los archivos utilizados en este tutorial contienen cuatro canales y tres planos Z por campo.</p>
+<p>Una forma simplificada de representar su estructura es:</p>
+<p><strong>4 canales × 3 planos Z × alto × ancho</strong></p>
+<p>En Python, una imagen de ejemplo puede tener la forma:</p>
+<p>(4, 3, 1437, 1437)</p>
+</section>
 <section id="acceso-a-las-imágenes" class="level2">
 <h2 class="anchored" data-anchor-id="acceso-a-las-imágenes">Acceso a las imágenes</h2>
+<p>Las imágenes están organizadas en dos carpetas de Google Drive según la condición experimental. Los enlaces se abrirán en una pestaña nueva.</p>
 <p><a href="https://drive.google.com/drive/folders/1X41TaVmOoNw8Ib_pixlh-E2HoWsH21Pj?usp=sharing" class="btn btn-primary" target="_blank">Carpeta de imágenes control</a></p>
 <p><a href="https://drive.google.com/drive/folders/1_niGxXvsaPEXFCDAudcdaos_J5BxDaDX?usp=sharing" class="btn btn-primary" target="_blank">Carpeta de imágenes tratadas</a></p>
-</section>
-<section id="calibración" class="level2">
-<h2 class="anchored" data-anchor-id="calibración">Calibración</h2>
-<p>El tamaño de píxel se lee directamente de los metadatos del <code>.czi</code>, sin cargarlo a mano. De ese valor dependen todas las áreas informadas en µm²: sin él, las mediciones solo podrían expresarse en píxeles y no serían comparables entre equipos.</p>
 
 
 </section>
@@ -339,12 +374,12 @@ ul.task-list li input[type="checkbox"] {
       // flash "checked"
       button.classList.add('code-copy-button-checked');
       var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
+      button.setAttribute("title", "Copiado");
       let tooltip;
       if (window.bootstrap) {
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
+        button.setAttribute("data-bs-title", "Copiado");
         tooltip = new bootstrap.Tooltip(button, 
           { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
@@ -716,13 +751,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./contexto.html" class="pagination-link" aria-label="Contexto y pregunta">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Contexto y pregunta</span>
+      <a href="./contexto.html" class="pagination-link" aria-label="1. Contexto y pregunta">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">1. Contexto y pregunta</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./flujo.html" class="pagination-link" aria-label="Flujo común">
-        <span class="nav-page-text">Flujo común</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./flujo.html" class="pagination-link" aria-label="3. Flujo de análisis">
+        <span class="nav-page-text">3. Flujo de análisis</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

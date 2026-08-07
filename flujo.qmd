@@ -1,53 +1,231 @@
 ---
-title: "Flujo común"
-subtitle: "Las mismas operaciones, dos implementaciones"
+title: "Flujo de análisis"
+subtitle: "Las decisiones comunes a Fiji y Python"
+description: "Etapas y parámetros utilizados para segmentar elementos (puncta) con Fiji y Python."
+toc: true
+toc-depth: 2
 ---
 
 [Metodología]{.eyebrow}
 
-Para que la comparación sea justa, ambas herramientas parten exactamente del mismo
-archivo, canal, proyección y región de análisis. Esta tabla es el contrato: cada fila
-es una operación conceptual, y las dos columnas son la forma de escribirla en cada
-herramienta.
+## Un mismo análisis en dos herramientas
 
-| Etapa | Fiji | Python |
+Para comparar Fiji y Python no alcanza con utilizar la misma imagen original. Ambas herramientas deben trabajar sobre la misma representación de esa imagen y aplicar criterios equivalentes.
+
+En este tutorial, el flujo común es:
+
+**Archivo CZI** → **Canal T22** → **Proyección MIP** → **Imagen de 16 bits** → **Umbral** → **Máscara binaria** → **Identificación de puncta** → **Control visual** → **Mediciones**
+
+::: {.callout-important}
+## La imagen común
+
+El notebook de Python lee el archivo `.czi`, selecciona el canal T22 y genera una proyección de máxima intensidad en formato TIFF de 16 bits.
+
+Esa misma imagen TIFF se utiliza después como entrada para la segmentación en Fiji y Python. De esta manera, ambas herramientas reciben exactamente los mismos píxeles.
+:::
+
+## El contrato de comparación
+
+La siguiente tabla resume las decisiones que deben permanecer constantes:
+
+| Etapa | Decisión común | Fiji | Python |
+|---|---|---|---|
+| Imagen de entrada | MIP T22 de 16 bits | Abrir el TIFF exportado | Utilizar la misma matriz MIP |
+| Corrección de fondo | No aplicada | Ninguna | Ninguna |
+| Normalización | No aplicada | Ninguna | Ninguna |
+| Reducción de ruido | No aplicada | Ninguna | Ninguna |
+| Umbral | Manual y fijo | `15001–65535` | `imagen > 15000` |
+| Máscara | Binaria | Convert to Mask | Array booleano |
+| Conectividad | Ocho vecinos | Analyze Particles | `connectivity=2` |
+| Watershed | Desactivado | No aplicar | `USAR_WATERSHED = False` |
+| Área mínima inicial | Sin filtro | `0–Infinity` | `MIN_AREA_UM2 = 0` |
+| Circularidad inicial | Sin filtro | `0.00–1.00` | `MIN_CIRCULARIDAD = 0` |
+| Objetos en el borde | Se conservan | No excluir | `EXCLUIR_BORDE = False` |
+| Medición de intensidad | Sobre la MIP original | Redirect a imagen original | `intensity_image=mip` |
+| Exportación | Máscara y resultados | TIFF y tabla | TIFF, PNG y CSV |
+
+::: {.callout-note}
+## ¿Por qué Fiji comienza en 15001?
+
+La condición utilizada en Python es:
+
+```python
+imagen > 15000
+```
+
+Como las imágenes poseen valores enteros, en Fiji el intervalo equivalente es `15001–65535`. Si se utiliza `15000–65535`, Fiji también incluirá los píxeles cuyo valor sea exactamente `15000`.
+
+La diferencia probablemente sea pequeña, pero conviene mantener la equivalencia exacta.
+:::
+
+## Primera etapa: preparar la imagen común
+
+El archivo CZI contiene cuatro canales y tres planos Z. Antes de segmentar se realizan tres operaciones:
+
+1. Se identifica el canal correspondiente a T22.
+2. Se calcula una proyección de máxima intensidad.
+3. Se guarda el resultado como un TIFF calibrado de 16 bits.
+
+La imagen exportada conserva los valores originales de intensidad. No se normaliza ni se convierte a 8 bits.
+
+::: {.callout-warning}
+## No convertir a 8 bits
+
+Una imagen de 16 bits puede contener valores entre `0` y `65535`. Al convertirla a 8 bits, ese rango se transforma en valores entre `0` y `255`.
+
+En ese caso, el umbral `15000` deja de tener sentido y la comparación ya no es válida.
+:::
+
+## Segunda etapa: aplicar el umbral
+
+El umbral separa los píxeles considerados señal de los considerados fondo.
+
+La regla utilizada es:
+
+```python
+mascara = imagen > 15000
+```
+
+Por lo tanto:
+
+| Intensidad del píxel | Clasificación |
+|---:|---|
+| Menor o igual que 15000 | Fondo |
+| Mayor que 15000 | Señal |
+
+El resultado es una máscara binaria en la que la señal aparece blanca y el fondo negro.
+
+## Tercera etapa: identificar los puncta
+
+Una vez creada la máscara, los píxeles blancos conectados se agrupan en objetos.
+
+Cada grupo conectado recibe una etiqueta diferente:
+
+- Objeto 1.
+- Objeto 2.
+- Objeto 3.
+- Y así sucesivamente.
+
+En esta primera versión no se aplica watershed. Por lo tanto, dos puncta que aparecen unidos en la máscara serán contabilizados como un único objeto.
+
+::: {.callout-note}
+## ¿Por qué no usamos watershed inicialmente?
+
+Watershed puede separar objetos en contacto, pero incorpora nuevas decisiones, como la ubicación y la distancia mínima entre semillas.
+
+Primero comparamos el resultado más sencillo. Su incorporación puede evaluarse después como una mejora independiente.
+:::
+
+## Dos representaciones de la imagen
+
+Durante el análisis debemos distinguir entre la imagen original y la máscara.
+
+| Representación | Contenido | Uso |
 |---|---|---|
-| Abrir imagen | Bio-Formats / TIFF | `tifffile` o `skimage.io` |
-| Seleccionar canal | Split Channels | indexación del array |
-| Proyección Z | Z Project (máxima) | `np.max()` sobre el eje Z |
-| Corregir fondo | Subtract Background | `restoration.rolling_ball` |
-| Reducir ruido | Median Filter | `filters.median` |
-| Umbralizar | Otsu o umbral manual | `threshold_otsu` o valor fijo |
-| Limpiar máscara | Binary Open / Close | `morphology.opening` / `closing` |
-| Quitar objetos pequeños | Analyze Particles (size) | `remove_small_objects` |
-| Separar solapamientos | Watershed | `segmentation.watershed` |
-| Cuantificar | Analyze Particles | `regionprops_table` |
-| Exportar | Results + máscara TIFF | CSV + máscara TIFF |
+| MIP original | Valores de intensidad de 16 bits | Medir fluorescencia |
+| Máscara binaria | Fondo negro y señal blanca | Identificar y delimitar objetos |
+| Imagen etiquetada | Un número diferente para cada objeto | Calcular mediciones por punctum |
+| Overlay | Contornos sobre la imagen original | Realizar el control visual |
 
-## Dos versiones de la imagen
+La intensidad debe medirse sobre la MIP original, utilizando la máscara únicamente para indicar dónde medir.
 
-Una decisión que conviene tomar explícitamente y dejar escrita:
+No se debe medir intensidad sobre una imagen binaria, normalizada o modificada con herramientas de contraste.
 
-- **Imagen de segmentación:** puede recibir filtros o realce de contraste.
-- **Imagen de medición:** conserva las intensidades originales, o solo corregidas por fondo.
+## Cuarta etapa: control visual
 
-Medir intensidad sobre una imagen procesada con CLAHE, Enhance Contrast o normalización
-independiente por campo cambia los valores de fluorescencia y hace incomparables los
-resultados entre imágenes.
+Antes de interpretar una tabla es necesario observar el resultado de la segmentación.
 
-## Tamaño mínimo de objeto
+El control visual compara:
 
-No hay un umbral universal. Se define en µm² a partir de la calibración espacial, el
-tamaño aparente de los puncta reales, el tamaño del ruido y la resolución óptica,
-usando un conjunto pequeño de imágenes representativas. **El valor elegido queda fijo
-para todas las imágenes comparadas.**
+1. La imagen MIP original.
+2. La máscara obtenida con el umbral.
+3. El overlay con los contornos de los objetos detectados.
 
-## Métricas
+La segmentación se considera razonable cuando los contornos siguen los puncta visibles sin incluir grandes regiones del fondo.
 
-| Métrica | Interpretación |
-|---|---|
-| Número de puncta | Objetos segmentados dentro de la ROI |
-| Área (µm²) | Tamaño 2D de cada objeto |
-| Circularidad | Forma, sin asumir esfericidad |
-| Intensidad media | Promedio dentro del objeto |
-| Fracción de área positiva | Porcentaje de la ROI ocupado por señal |
+::: {.callout-warning}
+## Una tabla no reemplaza la inspección visual
+
+Un análisis puede producir una tabla sin errores y, aun así, detectar ruido, excluir señal real o fusionar varios puncta.
+
+Por eso, cada cambio de parámetros debe acompañarse con una revisión de los overlays.
+:::
+
+## Quinta etapa: medir
+
+Una vez identificados los objetos pueden obtenerse las siguientes métricas:
+
+| Métrica | ¿Qué representa? | Unidad |
+|---|---|---|
+| Número de puncta | Cantidad de objetos conectados | Conteo |
+| Área | Superficie ocupada por cada objeto | µm² |
+| Perímetro | Longitud de su contorno | µm |
+| Diámetro equivalente | Diámetro de un círculo con la misma área | µm |
+| Circularidad | Semejanza de la forma con un círculo | 0–1 |
+| Excentricidad | Grado de elongación | 0–1 |
+| Solidez | Relación entre el objeto y su envolvente convexa | 0–1 |
+| Intensidad media | Brillo promedio dentro del objeto | Unidades de intensidad |
+| Intensidad máxima | Mayor valor registrado dentro del objeto | Unidades de intensidad |
+| Intensidad integrada | Intensidad media multiplicada por el área en píxeles | Unidades integradas |
+| Área positiva | Porcentaje de la imagen ocupado por la máscara | % |
+
+## Métricas por punctum y por imagen
+
+Los resultados se organizan en dos niveles.
+
+### Tabla por punctum
+
+Cada fila representa un objeto detectado. Esta tabla permite estudiar el área, la forma y la intensidad de cada punctum.
+
+### Resumen por imagen
+
+Cada fila representa una imagen completa. Puede incluir:
+
+- Número total de puncta.
+- Puncta por `1000 µm²`.
+- Porcentaje de área positiva.
+- Área mediana de los puncta.
+- Circularidad mediana.
+- Intensidad media de los puncta.
+- Intensidad integrada total.
+
+::: {.callout-note}
+## ¿Por qué utilizar la mediana?
+
+El tamaño de los puncta puede presentar valores extremos. La mediana suele representar mejor el objeto típico cuando existen unos pocos objetos mucho más grandes que los demás.
+:::
+
+## Parámetros iniciales
+
+Los parámetros utilizados en la primera comparación son:
+
+| Parámetro | Valor |
+|---|---:|
+| Canal T22 esperado | 0 |
+| Proyección | Máxima intensidad |
+| Umbral | `> 15000` |
+| Corrección de fondo | No |
+| Normalización | No |
+| Filtro de ruido | No |
+| Watershed | No |
+| Área mínima | `0 µm²` |
+| Circularidad mínima | `0` |
+| Exclusión de bordes | No |
+
+Estos valores conservan la máscara inicial observada durante el desarrollo del proyecto. No deben considerarse parámetros universales.
+
+## Decisiones pendientes
+
+Después de revisar los overlays será necesario determinar si conviene incorporar un área mínima para eliminar objetos compatibles con ruido.
+
+Ese límite debe expresarse en `µm²`, seleccionarse a partir de imágenes representativas y mantenerse fijo para todas las imágenes comparadas.
+
+La sustracción de fondo, los filtros, las operaciones morfológicas y watershed también pueden evaluarse posteriormente, pero cada modificación debe incorporarse de manera equivalente en Fiji y Python.
+
+## ¿Qué permite concluir esta comparación?
+
+Si las máscaras y mediciones son semejantes, podremos afirmar que las dos implementaciones presentan una buena concordancia para este conjunto de imágenes y parámetros.
+
+Sin una máscara manual de referencia no podremos determinar cuál segmentación representa mejor la señal biológica real.
+
+[Continuar: análisis en Fiji →](fiji.qmd){.btn .btn-primary}

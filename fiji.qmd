@@ -1,20 +1,522 @@
 ---
-title: "Fiji / ImageJ"
-subtitle: "Implementación con interfaz gráfica y macro"
-body-class: pag-fiji
+title: "Análisis en Fiji"
+subtitle: "Segmentación y cuantificación de puncta paso a paso"
+description: "Tutorial introductorio para segmentar y medir puncta fluorescentes utilizando Fiji."
+toc: true
+toc-depth: 3
 ---
 
-[Implementación 1 de 2]{.eyebrow}
+[Fiji / ImageJ]{.eyebrow}
 
-Contenido en preparación.
+## ¿Qué es Fiji?
 
-## Procedimiento manual
+Fiji es una distribución de ImageJ preparada para el análisis de imágenes científicas. Incluye herramientas para abrir formatos de microscopía, procesar imágenes, seleccionar regiones, detectar objetos y exportar mediciones.
 
-## Macro
+Su interfaz gráfica permite observar cada operación y evaluar inmediatamente cómo cambia la imagen. Por eso es una herramienta especialmente accesible para comenzar a trabajar con bioimágenes.
 
-```java
-// segmentacion_tau.ijm
-run("Bio-Formats Importer");
+
+## Sitio oficial y descarga
+
+Fiji puede consultarse y descargarse gratuitamente desde su página oficial. El sitio también incluye documentación, tutoriales, novedades y recursos de la comunidad.
+
+[Visitar el sitio oficial de Fiji](https://fiji.sc/){.btn .btn-primary target="_blank"}
+
+[Descargar Fiji](https://fiji.sc/#download){.btn .btn-outline-primary target="_blank"}
+
+::: {.callout-note}
+Fiji está disponible para Windows, macOS y Linux. La descarga ya incluye ImageJ y complementos utilizados en bioimágenes, como Bio-Formats.
+:::
+
+::: {.callout-note}
+## Fiji e ImageJ
+
+ImageJ es el programa base. Fiji incorpora ImageJ junto con numerosos complementos, entre ellos Bio-Formats, que permite abrir archivos de microscopía como `.czi`.
+
+En este tutorial utilizaremos Fiji.
+:::
+
+## ¿Qué haremos?
+
+El procedimiento en Fiji permitirá:
+
+1. Abrir la imagen de fluorescencia.
+2. Confirmar que conserva su profundidad de 16 bits.
+3. Aplicar el umbral acordado.
+4. Generar una máscara binaria.
+5. Identificar los puncta.
+6. Medir sus características.
+7. Guardar la máscara, el overlay y la tabla de resultados.
+
+Para la comparación con Python se recomienda utilizar como entrada la misma proyección MIP del canal T22 en formato TIFF.
+
+## Antes de comenzar
+
+Descargá e instalá Fiji desde su sitio oficial. No es necesario instalar Bio-Formats por separado, porque ya está incluido en Fiji.
+
+Antes de procesar una imagen, comprobá que disponés de:
+
+| Archivo | Función |
+|---|---|
+| CZI original | Contiene los canales, planos Z y metadatos |
+| TIFF MIP T22 | Imagen común para comparar Fiji y Python |
+| Carpeta de resultados | Destino de máscaras, overlays y tablas |
+
+::: {.callout-important}
+## Para realizar una comparación directa
+
+Fiji y Python deben segmentar exactamente el mismo TIFF MIP de 16 bits. De esta manera, cualquier diferencia se produce durante la segmentación o la medición y no durante la lectura del archivo CZI.
+:::
+
+## Opción recomendada: abrir la MIP común
+
+La forma más sencilla de seguir el tutorial es utilizar la proyección T22 ya exportada como TIFF.
+
+En Fiji:
+
+1. Seleccioná `File → Open`.
+2. Elegí el archivo terminado en `_T22_MIP.tif`.
+3. Esperá a que la imagen aparezca en una nueva ventana.
+4. Seleccioná `Image → Show Info` para consultar sus metadatos.
+5. Confirmá en la barra superior de la imagen que se mantenga en 16 bits.
+
+La ventana debería indicar algo semejante a:
+
+```text
+1437 × 1437 pixels; 16-bit
 ```
 
-## Máscara obtenida
+Si la imagen aparece como `8-bit`, no continúes con el umbral `15000`.
+
+## Alternativa: generar la MIP desde el CZI
+
+Si todavía no contás con el TIFF común, podés generar una proyección en Fiji.
+
+### 1. Abrir el CZI
+
+Seleccioná:
+
+```text
+File → Import → Bio-Formats
+```
+
+Elegí el archivo `.czi`.
+
+En las opciones de importación, abrilo como un hyperstack para conservar los canales y planos Z dentro de una misma estructura.
+
+### 2. Verificar las dimensiones
+
+Comprobá que la imagen contenga:
+
+- Cuatro canales.
+- Tres planos Z.
+- La profundidad de bits original.
+- La calibración espacial.
+
+### 3. Separar los canales
+
+Seleccioná:
+
+```text
+Image → Color → Split Channels
+```
+
+Fiji generará una ventana diferente para cada canal.
+
+Identificá visualmente el canal correspondiente a T22. En los archivos utilizados se espera que sea el canal 0, pero debe verificarse en cada conjunto de imágenes.
+
+### 4. Crear la proyección
+
+Con el canal T22 seleccionado, ingresá en:
+
+```text
+Image → Stacks → Z Project
+```
+
+Elegí:
+
+```text
+Projection type: Max Intensity
+```
+
+El resultado será una única imagen 2D.
+
+### 5. Guardar la MIP
+
+Seleccioná:
+
+```text
+File → Save As → Tiff
+```
+
+Utilizá un nombre que permita reconocer el archivo:
+
+```text
+Control_Experiment-178_T22_MIP.tif
+```
+
+Esa misma imagen deberá utilizarse luego en Python.
+
+::: {.callout-warning}
+## No modificar la intensidad
+
+No conviertas la MIP a 8 bits y no apliques `Enhance Contrast`, normalización o sustracción de fondo antes de guardarla como imagen común.
+
+Ajustar temporalmente brillo y contraste para observar la imagen es posible, pero no se debe presionar `Apply` ni modificar los valores utilizados para medir.
+:::
+
+## Crear una copia para segmentar
+
+La MIP original debe conservarse sin modificaciones porque se utilizará para medir intensidad.
+
+Con la MIP seleccionada:
+
+```text
+Image → Duplicate
+```
+
+Asignale un nombre reconocible, por ejemplo:
+
+```text
+Control_Experiment-178_T22_mask
+```
+
+A partir de este momento trabajaremos sobre la copia.
+
+## Aplicar el umbral
+
+Seleccioná:
+
+```text
+Image → Adjust → Threshold
+```
+
+Configurá:
+
+```text
+Lower threshold: 15001
+Upper threshold: 65535
+```
+
+La vista previa mostrará qué píxeles serán considerados señal.
+
+Cuando el resultado sea visible, seleccioná `Apply` para crear la máscara.
+
+::: {.callout-note}
+## Equivalencia con Python
+
+Python utiliza la condición:
+
+```python
+mascara = imagen > 15000
+```
+
+Como la imagen contiene valores enteros, el intervalo equivalente en Fiji es `15001–65535`.
+:::
+
+## Comprobar la máscara
+
+La máscara debe mostrar:
+
+- El fondo en negro.
+- Los píxeles seleccionados en blanco.
+- Los puncta como objetos blancos separados cuando no están en contacto.
+
+Antes de continuar, compará la máscara con la MIP original.
+
+Preguntate:
+
+- ¿Los objetos blancos coinciden con puncta visibles?
+- ¿Se incluyeron grandes regiones del fondo?
+- ¿Desaparecieron señales que parecían relevantes?
+- ¿Varios puncta cercanos quedaron unidos?
+- ¿Hay objetos muy pequeños compatibles con ruido?
+
+No corrijas todavía la máscara con erosión, dilatación o watershed. Primero registrá las observaciones.
+
+## Configurar las mediciones
+
+Seleccioná:
+
+```text
+Analyze → Set Measurements
+```
+
+Activá:
+
+- Area.
+- Mean gray value.
+- Standard deviation.
+- Min & max gray value.
+- Perimeter.
+- Shape descriptors.
+- Integrated density.
+- Display label.
+
+En `Redirect to`, seleccioná la MIP original de T22.
+
+La máscara indica dónde medir, pero los valores de intensidad deben obtenerse de la imagen original.
+
+::: {.callout-important}
+## Máscara e intensidad cumplen funciones diferentes
+
+La máscara permite delimitar los puncta. La MIP original conserva los valores de fluorescencia.
+
+Si medimos sobre la máscara, obtendremos valores asociados a negro y blanco, no la intensidad original de T22.
+:::
+
+## Detectar los puncta
+
+Con la máscara seleccionada, ingresá en:
+
+```text
+Analyze → Analyze Particles
+```
+
+Para la primera comparación configurá:
+
+```text
+Size: 0–Infinity
+Circularity: 0.00–1.00
+Show: Outlines
+```
+
+Activá:
+
+- Display results.
+- Summarize.
+- Add to Manager.
+
+Dejá desactivado:
+
+- Exclude on edges.
+- Include holes.
+
+No apliques watershed en esta primera versión.
+
+Al aceptar, Fiji generará:
+
+- Una tabla `Results`.
+- Una tabla `Summary`.
+- Una imagen con los contornos.
+- Una colección de ROI en `ROI Manager`.
+
+## Interpretar las ventanas de resultados
+
+### Results
+
+Contiene una fila por objeto detectado. Según las opciones seleccionadas, puede incluir:
+
+| Columna | Significado |
+|---|---|
+| Area | Área del objeto |
+| Mean | Intensidad media |
+| StdDev | Variabilidad de la intensidad |
+| Min | Intensidad mínima |
+| Max | Intensidad máxima |
+| Perim. | Perímetro |
+| Circ. | Circularidad |
+| Feret | Diámetro máximo |
+| IntDen | Densidad integrada |
+| RawIntDen | Suma de las intensidades originales |
+
+### Summary
+
+Contiene un resumen general de la imagen, como:
+
+- Cantidad de objetos.
+- Área total.
+- Tamaño promedio.
+- Porcentaje del área ocupada.
+
+### ROI Manager
+
+Conserva el contorno de cada objeto. Al seleccionar una ROI puede comprobarse qué punctum representa en la imagen original.
+
+## Guardar los resultados
+
+### Tabla
+
+En la ventana `Results`, seleccioná:
+
+```text
+File → Save As
+```
+
+Guardá la tabla en formato `.csv`, por ejemplo:
+
+```text
+Control_Experiment-178_fiji_puncta.csv
+```
+
+### Máscara
+
+Con la máscara seleccionada:
+
+```text
+File → Save As → Tiff
+```
+
+Utilizá:
+
+```text
+Control_Experiment-178_fiji_mask.tif
+```
+
+### Overlay
+
+Mostrá las ROI sobre la MIP original y utilizá:
+
+```text
+Image → Overlay → Flatten
+```
+
+Guardá la imagen como PNG:
+
+```text
+Control_Experiment-178_fiji_overlay.png
+```
+
+::: {.callout-warning}
+## Mantener nombres consistentes
+
+La comparación automática con Python depende de que los archivos conserven el mismo identificador de imagen.
+
+La máscara de Fiji debe terminar en:
+
+```text
+_fiji_mask.tif
+```
+:::
+
+## ¿Qué se logró en la exploración inicial?
+
+Durante el desarrollo del proyecto se construyó una macro exploratoria mediante el grabador de Fiji. Esta permitió ensayar diferentes operaciones sobre las imágenes:
+
+- Apertura de archivos CZI.
+- Selección de canales y planos.
+- Ajuste de contraste.
+- Sustracción de fondo.
+- Umbral automático de Huang.
+- Erosión y dilatación.
+- Relleno de agujeros.
+- Desenfoque gaussiano.
+- Detección de máximos.
+- Analyze Particles.
+- Mediciones mediante ROI.
+- Conteo de núcleos.
+
+También se generó una planilla piloto con mediciones de tres campos control y tres campos tratados.
+
+La planilla contiene:
+
+| Variable | Interpretación inicial |
+|---|---|
+| Foto | Identificador del campo |
+| Mean Fluoresc | Medición media de fluorescencia |
+| RawIntDent (Puncta) | Intensidad integrada de la señal segmentada |
+| Núcleos | Número de núcleos detectados |
+| Normalizado/núcleos | Medición dividida por el número de núcleos |
+
+Estos resultados demuestran que Fiji permite extraer y organizar mediciones, pero todavía corresponden a una etapa exploratoria.
+
+::: {.callout-warning}
+## Normalizar por núcleos no equivale a medir por célula
+
+DAPI permite contar núcleos, pero no delimita el citoplasma. Dividir una medición por el número de núcleos produce un promedio por núcleo o una aproximación por campo.
+
+Para obtener valores verdaderamente intracelulares sería necesario segmentar cada célula completa.
+:::
+
+## Ventajas observadas
+
+Fiji permitió explorar las imágenes de manera rápida y visual. La interfaz facilitó la identificación de canales, la evaluación de máscaras y la selección de parámetros. `Analyze Particles` permitió obtener mediciones sin programar cada cálculo, mientras que `ROI Manager` ayudó a relacionar las filas de las tablas con los objetos observados.
+
+El grabador de macros también fue útil para registrar las operaciones realizadas y convertir una secuencia manual en un primer borrador de automatización.
+
+## Limitaciones de la macro actual
+
+La macro compartida todavía no constituye un pipeline generalizable porque:
+
+- Contiene una ruta absoluta de una computadora particular.
+- Trabaja únicamente con `Experiment-178.czi`.
+- Selecciona ventanas mediante nombres específicos.
+- Abre y cierra manualmente canales y planos.
+- Depende de ROI creadas previamente.
+- Elimina ROI utilizando posiciones fijas.
+- Combina mediciones de T22, Tau5 y DAPI.
+- Aplica parámetros diferentes de los acordados para Python.
+- No guarda automáticamente todos los resultados.
+- No procesa una carpeta completa.
+- No verifica la calibración espacial.
+- No registra de forma ordenada los parámetros utilizados.
+
+Por este motivo, la macro debe conservarse como evidencia del proceso de exploración, pero no utilizarse todavía para afirmar que el análisis es automático o completamente reproducible.
+
+## Aspectos pendientes
+
+La siguiente versión de la macro debería:
+
+1. Solicitar al usuario una carpeta de entrada y una carpeta de salida.
+2. Procesar todos los TIFF MIP sin depender de sus nombres.
+3. Verificar que las imágenes sean de 16 bits.
+4. Aplicar el umbral fijo equivalente a Python.
+5. Mantener desactivados los filtros y watershed en la comparación inicial.
+6. Permitir definir el área mínima en `µm²`.
+7. Medir intensidad sobre la MIP original.
+8. Guardar máscara, overlay, tabla y resumen.
+9. Reiniciar `Results` y `ROI Manager` entre imágenes.
+10. Crear un archivo con los parámetros utilizados.
+
+## Posibles observaciones al analizar las imágenes
+
+Durante la revisión pueden aparecer diferentes situaciones:
+
+| Observación | Posible explicación | Acción recomendada |
+|---|---|---|
+| Muchos objetos muy pequeños | Ruido o señal puntual débil | Evaluar un área mínima |
+| Grandes regiones blancas | Fondo elevado o umbral bajo | Revisar el histograma y el control negativo |
+| Varios puncta unidos | Proximidad o superposición en la MIP | Registrar el caso antes de probar watershed |
+| Diferencias entre campos | Variación biológica o de adquisición | Revisar parámetros del microscopio |
+| Señal en zonas sin células | Fondo o detecciones extracelulares | Incorporar una máscara celular |
+| Valores de intensidad extremos | Saturación | Revisar la imagen original |
+| Distintos resultados al repetir | Parámetros o ROI no reiniciados | Automatizar y registrar cada decisión |
+
+## Estado actual del análisis en Fiji
+
+| Componente | Estado |
+|---|---|
+| Apertura de archivos CZI | Logrado |
+| Identificación de canales | Logrado de forma exploratoria |
+| Segmentación visual | Lograda |
+| Medición de intensidad | Lograda |
+| Conteo de partículas | Logrado |
+| Conteo de núcleos | Logrado de forma exploratoria |
+| Exportación de una planilla piloto | Lograda |
+| Uso del mismo flujo que Python | Pendiente |
+| Procesamiento automático por lotes | Pendiente |
+| Segmentación celular | Pendiente |
+| Validación del área mínima | Pendiente |
+| Comparación Dice/IoU | Pendiente |
+
+## Conclusión provisional
+
+Fiji permitió desarrollar una primera aproximación visual al problema y reconocer qué decisiones influyen sobre los resultados. Su principal ventaja en esta etapa fue facilitar la exploración de las imágenes sin necesidad de programar.
+
+## Descargar la macro exploratoria
+
+La macro utilizada durante la primera etapa del proyecto está disponible para su consulta y descarga.
+
+[Descargar macro de Fiji](https://drive.google.com/file/d/17R7mfmJXH2B-3Zj12RDCAD_m0MzFyKEn/view?usp=sharing){.btn .btn-primary target="_blank"}
+
+::: {.callout-warning}
+## Versión exploratoria
+
+Esta macro documenta las pruebas realizadas durante el desarrollo inicial. Todavía contiene rutas, nombres de imágenes y selecciones específicas, por lo que no debe ejecutarse directamente sobre un conjunto nuevo de imágenes sin revisarla y adaptarla.
+
+Su función actual es mostrar cómo se registraron las operaciones en Fiji y servir como punto de partida para una futura macro generalizable.
+:::
+
+El siguiente paso es transformar esa exploración en una macro corta, generalizable y equivalente al pipeline de Python. Solo después será posible comparar cuantitativamente las máscaras generadas por ambas herramientas.
+
+
+[Continuar: análisis en Python →](python.qmd){.btn .btn-primary}
